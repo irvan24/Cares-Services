@@ -9,6 +9,8 @@ import {
   ArrowRightIcon,
 } from "@heroicons/react/24/outline";
 import Navigation from "../components/Navigation";
+import Link from "next/link";
+
 
 export default function Home() {
   const [vehicle, setVehicle] = useState<"citadine" | "berline" | "suv">(
@@ -194,36 +196,34 @@ export default function Home() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <a
-                href="/reservation"
-                className="blob-btn blob-btn--blue inline-flex items-center justify-center border-2 border-cyan-500"
-              >
-                <span>Réserver un Lavage</span>
-                <ArrowRightIcon className="w-5 h-5 ml-2" />
-                <span className="blob-btn__inner">
-                  <span className="blob-btn__blobs">
-                    <span className="blob-btn__blob"></span>
-                    <span className="blob-btn__blob"></span>
-                    <span className="blob-btn__blob"></span>
-                    <span className="blob-btn__blob"></span>
-                  </span>
-                </span>
-              </a>
-              <a
-                href="#services"
-                className="blob-btn inline-flex items-center justify-center"
-              >
-                Voir nos Services
-                <span className="blob-btn__inner">
-                  <span className="blob-btn__blobs">
-                    <span className="blob-btn__blob"></span>
-                    <span className="blob-btn__blob"></span>
-                    <span className="blob-btn__blob"></span>
-                    <span className="blob-btn__blob"></span>
-                  </span>
-                </span>
-              </a>
-            </div>
+  <Link
+    href="/reservation"
+    className="blob-btn blob-btn--blue inline-flex items-center justify-center border-2 border-cyan-500"
+  >
+    <span>Réserver un Lavage</span>
+    <ArrowRightIcon className="w-5 h-5 ml-2" />
+    <span className="blob-btn__inner">
+      <span className="blob-btn__blobs">
+        <span className="blob-btn__blob"></span>
+        <span className="blob-btn__blob"></span>
+        <span className="blob-btn__blob"></span>
+        <span className="blob-btn__blob"></span>
+      </span>
+    </span>
+  </Link>
+
+  <Link href="#services" className="blob-btn inline-flex items-center justify-center">
+    Voir nos Services
+    <span className="blob-btn__inner">
+      <span className="blob-btn__blobs">
+        <span className="blob-btn__blob"></span>
+        <span className="blob-btn__blob"></span>
+        <span className="blob-btn__blob"></span>
+        <span className="blob-btn__blob"></span>
+      </span>
+    </span>
+  </Link>
+</div>
 
             {/* Statistics Section - Left side with separator line */}
             <div className="pt-12 border-t border-gray-200">
@@ -800,7 +800,7 @@ export default function Home() {
                       </li>
                     ))}
                   </ul>
-                  <a
+                  <Link
                     href="/reservation"
                     className="blob-btn w-full inline-block text-center"
                   >
@@ -813,7 +813,7 @@ export default function Home() {
                         <span className="blob-btn__blob"></span>
                       </span>
                     </span>
-                  </a>
+                  </Link>
                 </div>
               ))}
             </div>
@@ -949,7 +949,7 @@ export default function Home() {
 
               <div className="space-y-6 text-gray-600 leading-relaxed text-lg">
                 <p>
-                  Care est né d'une idée simple : le lavage de voiture doit être
+                  Care est né d'une idée simple: le lavage de voiture doit être
                   pratique, professionnel et respectueux de l'environnement. En
                   tant que propriétaires de voitures occupés nous-mêmes, nous
                   comprenions la frustration de trouver du temps pour
