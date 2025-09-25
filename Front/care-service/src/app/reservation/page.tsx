@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 import {
   CalendarIcon,
@@ -331,30 +332,30 @@ export default function ReservationPage() {
 
             {/* Navigation */}
             <nav className="hidden md:flex space-x-8">
-              <a href="/" className="hover:text-cyan-400 transition-colors">
+              <Link href="/" className="hover:text-cyan-400 transition-colors">
                 Accueil
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/#services"
                 className="hover:text-cyan-400 transition-colors"
               >
                 Services
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/#formules"
                 className="hover:text-cyan-400 transition-colors"
               >
                 Formules
-              </a>
-              <a href="/reservation" className="text-cyan-400 font-semibold">
+              </Link>
+              <Link href="/reservation" className="text-cyan-400 font-semibold">
                 Réservation
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/#contact"
                 className="hover:text-cyan-400 transition-colors"
               >
                 Contact
-              </a>
+              </Link>
             </nav>
 
             {/* Contact */}
