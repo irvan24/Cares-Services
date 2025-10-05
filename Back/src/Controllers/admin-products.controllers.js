@@ -22,7 +22,7 @@ export const getAllProducts = async (req, res) => {
 
     // Filtre par catégorie
     if (category) {
-      query = query.eq("category_id", category);
+      query = query.eq("category", category);
     }
 
     // Pagination
@@ -50,7 +50,7 @@ export const getAllProducts = async (req, res) => {
     }
 
     if (category) {
-      countQuery = countQuery.eq("category_id", category);
+      countQuery = countQuery.eq("category", category);
     }
 
     const { count: totalCount } = await countQuery;
@@ -67,7 +67,6 @@ export const getAllProducts = async (req, res) => {
             stock: product.stock || 0,
             image: product.image_url,
             category: product.category || "Général", // Utiliser la vraie catégorie du produit
-            category_id: product.category_id,
             is_active: true, // Valeur par défaut
             created_at: product.created_at,
             updated_at: product.created_at,
@@ -121,7 +120,6 @@ export const getProductById = async (req, res) => {
         stock: product.stock || 0,
         image: product.image_url,
         category: product.category || "Général", // Utiliser la vraie catégorie du produit
-        category_id: product.category_id,
         is_active: true, // Valeur par défaut
         created_at: product.created_at,
         updated_at: product.created_at,
@@ -147,7 +145,7 @@ export const createProduct = async (req, res) => {
       description,
       price,
       stock,
-      category_id,
+      category,
       is_active = true,
     } = req.body;
 
@@ -180,22 +178,13 @@ export const createProduct = async (req, res) => {
       }
     }
 
-    // Déterminer la catégorie basée sur category_id
-    let categoryName = "Général";
-    if (category_id === "1") {
-      categoryName = "Intérieur";
-    } else if (category_id === "2") {
-      categoryName = "Extérieur";
-    }
-
     const productData = {
       name,
       description: description || "",
       price: parseFloat(price),
       stock: parseInt(stock) || 0,
       image_url: imageUrl,
-      category: categoryName,
-      category_id: category_id || null,
+      category: category || "Général",
       created_at: new Date().toISOString(),
     };
 
@@ -236,7 +225,7 @@ export const createProduct = async (req, res) => {
 export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, price, stock, image, category_id, is_active } =
+    const { name, description, price, stock, image, category, is_active } =
       req.body;
 
     const updateData = {};
@@ -245,16 +234,8 @@ export const updateProduct = async (req, res) => {
     if (price !== undefined) updateData.price = parseFloat(price);
     if (stock !== undefined) updateData.stock = parseInt(stock);
     if (image !== undefined) updateData.image = image;
-    if (category_id !== undefined) {
-      updateData.category_id = category_id;
-      // Mettre à jour aussi le nom de la catégorie
-      let categoryName = "Général";
-      if (category_id === "1") {
-        categoryName = "Intérieur";
-      } else if (category_id === "2") {
-        categoryName = "Extérieur";
-      }
-      updateData.category = categoryName;
+    if (category !== undefined) {
+      updateData.category = category;
     }
     if (is_active !== undefined) updateData.is_active = Boolean(is_active);
 

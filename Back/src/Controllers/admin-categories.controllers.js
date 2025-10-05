@@ -181,11 +181,25 @@ export const deleteCategory = async (req, res) => {
   try {
     const { id } = req.params;
 
+    // Récupérer d'abord la catégorie
+    const { data: category, error: catError } = await supabase
+      .from("Categories")
+      .select("name")
+      .eq("id", id)
+      .single();
+
+    if (catError || !category) {
+      return res.status(404).json({
+        success: false,
+        message: "Catégorie non trouvée",
+      });
+    }
+
     // Vérifier qu'aucun produit n'utilise cette catégorie
     const { data: products, error: productsError } = await supabase
       .from("Products")
       .select("id")
-      .eq("category_id", id)
+      .eq("category", category.name)
       .limit(1);
 
     if (productsError) {

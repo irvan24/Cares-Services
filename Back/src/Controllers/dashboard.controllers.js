@@ -108,19 +108,106 @@ export const getDashboardStats = async (req, res) => {
       topProducts = [];
     }
 
-    // Calculer les variations (pour les badges)
-    const previousMonth = new Date();
-    previousMonth.setMonth(previousMonth.getMonth() - 1);
+    // Calculer les variations réelles (mois actuel vs mois précédent)
+    const now = new Date();
+    const startOfCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfPreviousMonth = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      1
+    );
+    const endOfPreviousMonth = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      0,
+      23,
+      59,
+      59
+    );
 
-    // Simuler des données de comparaison (à remplacer par de vraies données si disponibles)
-    const productsVariation =
-      productsCount > 0 ? Math.round((Math.random() * 10 - 5) * 100) / 100 : 0;
-    const usersVariation =
-      usersCount > 0 ? Math.round((Math.random() * 10 - 5) * 100) / 100 : 0;
-    const ordersVariation =
-      ordersCount > 0 ? Math.round((Math.random() * 10 - 5) * 100) / 100 : 0;
-    const revenueVariation =
-      totalRevenue > 0 ? Math.round((Math.random() * 10 - 5) * 100) / 100 : 0;
+    // Produits créés ce mois vs mois précédent
+    const { count: currentMonthProducts } = await supabase
+      .from("Products")
+      .select("*", { count: "exact", head: true })
+      .gte("created_at", startOfCurrentMonth.toISOString());
+
+    const { count: previousMonthProducts } = await supabase
+      .from("Products")
+      .select("*", { count: "exact", head: true })
+      .gte("created_at", startOfPreviousMonth.toISOString())
+      .lte("created_at", endOfPreviousMonth.toISOString());
+
+    // Utilisateurs créés ce mois vs mois précédent
+    const { count: currentMonthUsers } = await supabase
+      .from("Users")
+      .select("*", { count: "exact", head: true })
+      .gte("created_at", startOfCurrentMonth.toISOString());
+
+    const { count: previousMonthUsers } = await supabase
+      .from("Users")
+      .select("*", { count: "exact", head: true })
+      .gte("created_at", startOfPreviousMonth.toISOString())
+      .lte("created_at", endOfPreviousMonth.toISOString());
+
+    // Commandes créées ce mois vs mois précédent
+    const { count: currentMonthOrders } = await supabase
+      .from("Orders")
+      .select("*", { count: "exact", head: true })
+      .gte("created_at", startOfCurrentMonth.toISOString());
+
+    const { count: previousMonthOrders } = await supabase
+      .from("Orders")
+      .select("*", { count: "exact", head: true })
+      .gte("created_at", startOfPreviousMonth.toISOString())
+      .lte("created_at", endOfPreviousMonth.toISOString());
+
+    // Revenus ce mois vs mois précédent
+    const { data: currentMonthRevenueData } = await supabase
+      .from("Orders")
+      .select("total_amount")
+      .eq("status", "completed")
+      .gte("created_at", startOfCurrentMonth.toISOString());
+
+    const currentMonthRevenue =
+      currentMonthRevenueData?.reduce((sum, order) => {
+        return sum + (parseFloat(order.total_amount) || 0);
+      }, 0) || 0;
+
+    const { data: previousMonthRevenueData } = await supabase
+      .from("Orders")
+      .select("total_amount")
+      .eq("status", "completed")
+      .gte("created_at", startOfPreviousMonth.toISOString())
+      .lte("created_at", endOfPreviousMonth.toISOString());
+
+    const previousMonthRevenue =
+      previousMonthRevenueData?.reduce((sum, order) => {
+        return sum + (parseFloat(order.total_amount) || 0);
+      }, 0) || 0;
+
+    // Calculer les pourcentages de variation
+    const calculateVariation = (current, previous) => {
+      if (previous === 0) return current > 0 ? 100 : 0;
+      const variation = ((current - previous) / previous) * 100;
+      return Math.round(variation * 100) / 100;
+    };
+
+    const productsVariation = calculateVariation(
+      currentMonthProducts || 0,
+      previousMonthProducts || 0
+    );
+    const usersVariation = calculateVariation(
+      currentMonthUsers || 0,
+      previousMonthUsers || 0
+    );
+    const ordersVariation = calculateVariation(
+      currentMonthOrders || 0,
+      previousMonthOrders || 0
+    );
+    const revenueVariation = calculateVariation(
+      currentMonthRevenue,
+      previousMonthRevenue
+    );
 
     // Générer des données de revenus pour les 6 derniers mois
     const revenueChartData = [];
