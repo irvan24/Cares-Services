@@ -1,5 +1,5 @@
 services:
-  # Backend API
+  # Backend API only
   - type: web
     name: cares-services-backend
     env: node
@@ -12,9 +12,7 @@ services:
       - key: PORT
         value: 10000
       - key: SUPABASE_URL
-        fromDatabase:
-          name: cares-services-db
-          property: connectionString
+        sync: false
       - key: SUPABASE_ANON_KEY
         sync: false
       - key: SUPABASE_SERVICE_KEY
@@ -30,26 +28,3 @@ services:
     healthCheckPath: /products
     autoDeploy: true
     branch: main
-
-  # Frontend Next.js
-  - type: web
-    name: cares-services-frontend
-    env: node
-    plan: free
-    buildCommand: cd Front/care-service && npm install && npm run build
-    startCommand: cd Front/care-service && npm start
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: PORT
-        value: 10000
-      - key: NEXT_PUBLIC_API_URL
-        value: https://cares-services-backend.onrender.com
-    autoDeploy: true
-    branch: main
-
-databases:
-  - name: cares-services-db
-    plan: free
-    databaseName: cares_services
-    user: cares_services_user
