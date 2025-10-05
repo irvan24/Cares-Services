@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import {
   CalendarIcon,
@@ -9,13 +9,86 @@ import {
   ArrowRightIcon,
 } from "@heroicons/react/24/outline";
 import Navigation from "../components/Navigation";
+import Footer from "../components/Footer";
 import Link from "next/link";
-
 
 export default function Home() {
   const [vehicle, setVehicle] = useState<"citadine" | "berline" | "suv">(
     "citadine"
   );
+  const [visibleCards, setVisibleCards] = useState<Set<number>>(new Set());
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // États pour le carousel
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+
+  // Données des images du carousel
+  const carouselImages = [
+    {
+      src: "/carsoap.jpg",
+      alt: "Service de lavage auto professionnel",
+      badge: {
+        title: "Service Premium",
+        subtitle: "Produits écologiques",
+      },
+    },
+    {
+      src: "/IMG_4453.JPG",
+      alt: "Lavage extérieur avec mousse",
+      badge: {
+        title: "Lavage Extérieur",
+        subtitle: "Nettoyage en profondeur",
+      },
+    },
+    {
+      src: "/IMG_4460.JPG",
+      alt: "Nettoyage intérieur professionnel",
+      badge: {
+        title: "Nettoyage Intérieur",
+        subtitle: "Habitacle impeccable",
+      },
+    },
+  ];
+
+  // Hook pour l'Intersection Observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = parseInt(
+              entry.target.getAttribute("data-card-index") || "0"
+            );
+            setVisibleCards((prev) => new Set([...prev, index]));
+          }
+        });
+      },
+      {
+        threshold: 0.3, // Se déclenche quand 30% de la carte est visible
+        rootMargin: "0px 0px -50px 0px", // Délai avant déclenchement
+      }
+    );
+
+    cardRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Auto-play du carousel
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+
+    const interval = setInterval(() => {
+      setCurrentImageIndex(
+        (prevIndex) => (prevIndex + 1) % carouselImages.length
+      );
+    }, 4000); // Change d'image toutes les 4 secondes
+
+    return () => clearInterval(interval);
+  }, [isAutoPlaying, carouselImages.length]);
   const plans: Record<
     string,
     {
@@ -149,9 +222,9 @@ export default function Home() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen flex items-center py-16 lg:py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
-          <div className="space-y-12">
+          <div className="space-y-12 [&>*:last-child]:mb-0">
             {/* Main Heading */}
-            <div className="space-y-6">
+            <div className="space-y-6 text-center lg:text-left">
               <h1 className="text-5xl lg:text-6xl font-bold leading-none">
                 <span className="text-gray-800">Lavage Auto</span>
                 <br />
@@ -168,7 +241,7 @@ export default function Home() {
 
             {/* Features */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 justify-center lg:justify-start">
                 <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center flex-shrink-0">
                   <CalendarIcon className="w-6 h-6 text-cyan-600" />
                 </div>
@@ -176,7 +249,7 @@ export default function Home() {
                   Réservation en 2 minutes
                 </span>
               </div>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 justify-center lg:justify-start">
                 <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center flex-shrink-0">
                   <MapPinIcon className="w-6 h-6 text-cyan-600" />
                 </div>
@@ -184,7 +257,7 @@ export default function Home() {
                   Nous venons chez vous
                 </span>
               </div>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 justify-center lg:justify-start">
                 <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center flex-shrink-0">
                   <StarIcon className="w-6 h-6 text-cyan-600" />
                 </div>
@@ -195,35 +268,40 @@ export default function Home() {
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
-  <Link
-    href="/reservation"
-    className="blob-btn blob-btn--blue inline-flex items-center justify-center border-2 border-cyan-500"
-  >
-    <span>Réserver un Lavage</span>
-    <ArrowRightIcon className="w-5 h-5 ml-2" />
-    <span className="blob-btn__inner">
-      <span className="blob-btn__blobs">
-        <span className="blob-btn__blob"></span>
-        <span className="blob-btn__blob"></span>
-        <span className="blob-btn__blob"></span>
-        <span className="blob-btn__blob"></span>
-      </span>
-    </span>
-  </Link>
+            <div className="flex flex-col sm:flex-row gap-2 justify-center lg:justify-start items-center lg:items-start">
+              <Link
+                href="/reservation"
+                className="blob-btn blob-btn--blue inline-flex items-center justify-center border-2 border-cyan-500 px-8 py-4 text-lg w-4/5"
+              >
+                <span className="flex items-center justify-center">
+                  <span>Réserver un Lavage</span>
+                  <ArrowRightIcon className="w-5 h-5 ml-2" />
+                </span>
+                <span className="blob-btn__inner">
+                  <span className="blob-btn__blobs">
+                    <span className="blob-btn__blob"></span>
+                    <span className="blob-btn__blob"></span>
+                    <span className="blob-btn__blob"></span>
+                    <span className="blob-btn__blob"></span>
+                  </span>
+                </span>
+              </Link>
 
-  <Link href="#services" className="blob-btn inline-flex items-center justify-center">
-    Voir nos Services
-    <span className="blob-btn__inner">
-      <span className="blob-btn__blobs">
-        <span className="blob-btn__blob"></span>
-        <span className="blob-btn__blob"></span>
-        <span className="blob-btn__blob"></span>
-        <span className="blob-btn__blob"></span>
-      </span>
-    </span>
-  </Link>
-</div>
+              <Link
+                href="#services"
+                className="blob-btn inline-flex items-center justify-center w-4/5"
+              >
+                Voir nos Services
+                <span className="blob-btn__inner">
+                  <span className="blob-btn__blobs">
+                    <span className="blob-btn__blob"></span>
+                    <span className="blob-btn__blob"></span>
+                    <span className="blob-btn__blob"></span>
+                    <span className="blob-btn__blob"></span>
+                  </span>
+                </span>
+              </Link>
+            </div>
 
             {/* Statistics Section - Left side with separator line */}
             <div className="pt-12 border-t border-gray-200">
@@ -254,35 +332,118 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Right Content - Image */}
+          {/* Right Content - Carousel */}
           <div className="relative">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-              {/* Image du service */}
+              {/* Carousel Container */}
               <div className="w-full h-[400px] lg:h-[600px] xl:h-[700px] relative">
-                <Image
-                  src="/carsoap.jpg"
-                  alt="Service de lavage auto professionnel"
-                  fill
-                  className="object-cover"
-                  priority
-                />
-              </div>
-
-              {/* Service Premium Badge */}
-              <div className="absolute bottom-4 left-4 bg-white rounded-lg p-4 shadow-lg">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center">
-                    <StarIcon className="w-5 h-5 text-white" />
+                {/* Images du carousel */}
+                {carouselImages.map((image, index) => (
+                  <div
+                    key={index}
+                    className={`absolute inset-0 transition-opacity duration-1000 ${
+                      index === currentImageIndex ? "opacity-100" : "opacity-0"
+                    }`}
+                  >
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      fill
+                      className="object-cover"
+                      priority={index === 0}
+                    />
                   </div>
-                  <div>
-                    <p className="font-semibold text-gray-800">
-                      Service Premium
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Produits écologiques
-                    </p>
+                ))}
+
+                {/* Badge dynamique */}
+                <div className="absolute bottom-4 left-4 bg-white rounded-lg p-4 shadow-lg transition-all duration-500">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center">
+                      <StarIcon className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-800">
+                        {carouselImages[currentImageIndex].badge.title}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {carouselImages[currentImageIndex].badge.subtitle}
+                      </p>
+                    </div>
                   </div>
                 </div>
+
+                {/* Indicateurs de navigation */}
+                <div className="absolute bottom-4 right-4 flex space-x-2">
+                  {carouselImages.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        setCurrentImageIndex(index);
+                        setIsAutoPlaying(false);
+                        setTimeout(() => setIsAutoPlaying(true), 1000);
+                      }}
+                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                        index === currentImageIndex
+                          ? "bg-white"
+                          : "bg-white/50 hover:bg-white/75"
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                {/* Boutons de navigation */}
+                <button
+                  onClick={() => {
+                    setCurrentImageIndex(
+                      currentImageIndex === 0
+                        ? carouselImages.length - 1
+                        : currentImageIndex - 1
+                    );
+                    setIsAutoPlaying(false);
+                    setTimeout(() => setIsAutoPlaying(true), 1000);
+                  }}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300"
+                >
+                  <svg
+                    className="w-5 h-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => {
+                    setCurrentImageIndex(
+                      currentImageIndex === carouselImages.length - 1
+                        ? 0
+                        : currentImageIndex + 1
+                    );
+                    setIsAutoPlaying(false);
+                    setTimeout(() => setIsAutoPlaying(true), 1000);
+                  }}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300"
+                >
+                  <svg
+                    className="w-5 h-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
@@ -307,7 +468,15 @@ export default function Home() {
           {/* Cartes de Services */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Carte 1: Lavage Extérieur */}
-            <div className="relative bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-500 group h-164">
+            <div
+              ref={(el) => {
+                cardRefs.current[0] = el;
+              }}
+              data-card-index="0"
+              className={`relative bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-500 group h-164 ${
+                visibleCards.has(0) ? "animate-card-reveal" : ""
+              }`}
+            >
               <div className="relative">
                 {/* Vraie image du service */}
                 <div className="w-full h-164 relative">
@@ -332,15 +501,23 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Partie blanche qui monte au hover */}
-              <div className="absolute bottom-0 left-0 right-0 bg-white rounded-b-2xl transition-all duration-500 group-hover:h-80 h-24 overflow-hidden">
+              {/* Partie blanche qui monte automatiquement sur mobile, hover sur desktop */}
+              <div
+                className={`absolute bottom-0 left-0 right-0 bg-white rounded-b-2xl transition-all duration-700 ${
+                  visibleCards.has(0) ? "h-80" : "h-24"
+                } overflow-hidden group-hover:h-80`}
+              >
                 <div className="p-6 h-full flex flex-col">
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
                     Lavage Extérieur
                   </h3>
 
-                  {/* Contenu détaillé qui apparaît au hover */}
-                  <div className="group-hover:opacity-100 opacity-0 transition-opacity duration-300 delay-200 flex-1">
+                  {/* Contenu détaillé qui apparaît automatiquement sur mobile, hover sur desktop */}
+                  <div
+                    className={`transition-opacity duration-500 delay-300 flex-1 ${
+                      visibleCards.has(0) ? "opacity-100" : "opacity-0"
+                    } group-hover:opacity-100`}
+                  >
                     <p className="text-gray-700 mb-4 text-sm">
                       Nettoyage extérieur complet avec savon premium et
                       protection.
@@ -426,7 +603,15 @@ export default function Home() {
             </div>
 
             {/* Carte 2: Nettoyage Intérieur */}
-            <div className="relative bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-500 group h-164">
+            <div
+              ref={(el) => {
+                cardRefs.current[1] = el;
+              }}
+              data-card-index="1"
+              className={`relative bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-500 group h-164 ${
+                visibleCards.has(1) ? "animate-card-reveal" : ""
+              }`}
+            >
               <div className="relative">
                 {/* Vraie image du service */}
                 <div className="w-full h-164 relative">
@@ -451,15 +636,23 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Partie blanche qui monte au hover */}
-              <div className="absolute bottom-0 left-0 right-0 bg-white rounded-b-2xl transition-all duration-500 group-hover:h-80 h-24 overflow-hidden">
+              {/* Partie blanche qui monte automatiquement sur mobile, hover sur desktop */}
+              <div
+                className={`absolute bottom-0 left-0 right-0 bg-white rounded-b-2xl transition-all duration-700 ${
+                  visibleCards.has(1) ? "h-80" : "h-24"
+                } overflow-hidden group-hover:h-80`}
+              >
                 <div className="p-6 h-full flex flex-col">
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
                     Nettoyage Intérieur
                   </h3>
 
-                  {/* Contenu détaillé qui apparaît au hover */}
-                  <div className="group-hover:opacity-100 opacity-0 transition-opacity duration-300 delay-200 flex-1">
+                  {/* Contenu détaillé qui apparaît automatiquement sur mobile, hover sur desktop */}
+                  <div
+                    className={`transition-opacity duration-500 delay-300 flex-1 ${
+                      visibleCards.has(1) ? "opacity-100" : "opacity-0"
+                    } group-hover:opacity-100`}
+                  >
                     <p className="text-gray-700 mb-4 text-sm">
                       Nettoyage intérieur en profondeur pour un habitacle frais
                       et confortable.
@@ -545,7 +738,15 @@ export default function Home() {
             </div>
 
             {/* Carte 3: Détailing Complet */}
-            <div className="relative bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-500 group h-164">
+            <div
+              ref={(el) => {
+                cardRefs.current[2] = el;
+              }}
+              data-card-index="2"
+              className={`relative bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-500 group h-164 ${
+                visibleCards.has(2) ? "animate-card-reveal" : ""
+              }`}
+            >
               <div className="relative">
                 {/* Vraie image du service */}
                 <div className="w-full h-164 relative">
@@ -570,15 +771,23 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Partie blanche qui monte au hover */}
-              <div className="absolute bottom-0 left-0 right-0 bg-white rounded-b-2xl transition-all duration-500 group-hover:h-80 h-24 overflow-hidden">
+              {/* Partie blanche qui monte automatiquement sur mobile, hover sur desktop */}
+              <div
+                className={`absolute bottom-0 left-0 right-0 bg-white rounded-b-2xl transition-all duration-700 ${
+                  visibleCards.has(2) ? "h-80" : "h-24"
+                } overflow-hidden group-hover:h-80`}
+              >
                 <div className="p-6 h-full flex flex-col">
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
                     Détailing Complet
                   </h3>
 
-                  {/* Contenu détaillé qui apparaît au hover */}
-                  <div className="group-hover:opacity-100 opacity-0 transition-opacity duration-300 delay-200 flex-1">
+                  {/* Contenu détaillé qui apparaît automatiquement sur mobile, hover sur desktop */}
+                  <div
+                    className={`transition-opacity duration-500 delay-300 flex-1 ${
+                      visibleCards.has(2) ? "opacity-100" : "opacity-0"
+                    } group-hover:opacity-100`}
+                  >
                     <p className="text-gray-700 mb-4 text-sm">
                       Détailing automobile complet pour un nettoyage et une
                       protection ultimes.
@@ -1571,6 +1780,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

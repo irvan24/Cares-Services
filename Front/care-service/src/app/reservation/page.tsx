@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import Navigation from "../../components/Navigation";
 
 import {
   CalendarIcon,
@@ -14,6 +15,18 @@ import {
   SparklesIcon,
   BellIcon,
   ArrowRightIcon,
+  HomeIcon,
+  UserGroupIcon,
+  SparklesIcon as SparklesIconSolid,
+  ShieldCheckIcon,
+  EyeIcon,
+  CogIcon,
+  WrenchScrewdriverIcon,
+  PaintBrushIcon,
+  BeakerIcon,
+  ShieldCheckIcon as ShieldIcon,
+  WindowIcon,
+  Cog6ToothIcon,
 } from "@heroicons/react/24/outline";
 
 export default function ReservationPage() {
@@ -21,6 +34,7 @@ export default function ReservationPage() {
     "citadine"
   );
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [appointmentBooked, setAppointmentBooked] = useState(false);
   const [bookingDetails, setBookingDetails] = useState<{
     date: string;
@@ -48,6 +62,28 @@ export default function ReservationPage() {
     { key: "citadine" as const, img: "/citadine1.png", label: "Citadine" },
     { key: "berline" as const, img: "/berline1.png", label: "Berline" },
     { key: "suv" as const, img: "/suv1.png", label: "SUV & Monospace" },
+  ];
+
+  // Options supplémentaires pour le lavage
+  const additionalOptions = [
+    {
+      id: "tapis",
+      name: "Rénovation des tapis",
+      description: "Nettoyage en profondeur des tapis de sol",
+      price: 10,
+    },
+    {
+      id: "sieges",
+      name: "Rénovation des sièges",
+      description: "Nettoyage et protection des sièges",
+      price: 15,
+    },
+    {
+      id: "shampoing",
+      name: "Shampoing sièges",
+      description: "Shampoing professionnel des sièges",
+      price: 15,
+    },
   ];
 
   // Fonction pour changer de véhicule
@@ -86,6 +122,15 @@ export default function ReservationPage() {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+  };
+
+  // Fonction pour gérer les options supplémentaires
+  const handleOptionToggle = (optionId: string) => {
+    setSelectedOptions((prev) =>
+      prev.includes(optionId)
+        ? prev.filter((id) => id !== optionId)
+        : [...prev, optionId]
+    );
   };
 
   // Générer les créneaux horaires disponibles
@@ -320,66 +365,7 @@ export default function ReservationPage() {
           </filter>
         </defs>
       </svg>
-      {/* Header */}
-      <header className="bg-gradient-to-r from-gray-800 to-gray-900 text-white shadow-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            {/* Logo */}
-            <div className="flex items-center space-x-2">
-              <span className="text-2xl font-bold">CARE</span>
-              <div className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse"></div>
-            </div>
-
-            {/* Navigation */}
-            <nav className="hidden md:flex space-x-8">
-              <Link href="/" className="hover:text-cyan-400 transition-colors">
-                Accueil
-              </Link>
-              <Link
-                href="/#services"
-                className="hover:text-cyan-400 transition-colors"
-              >
-                Services
-              </Link>
-              <Link
-                href="/#formules"
-                className="hover:text-cyan-400 transition-colors"
-              >
-                Formules
-              </Link>
-              <Link href="/reservation" className="text-cyan-400 font-semibold">
-                Réservation
-              </Link>
-              <Link
-                href="/#contact"
-                className="hover:text-cyan-400 transition-colors"
-              >
-                Contact
-              </Link>
-            </nav>
-
-            {/* Contact */}
-            <div className="flex items-center space-x-4">
-              <div className="hidden lg:flex items-center space-x-2">
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                  />
-                </svg>
-                <span>01 23 45 67 89</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Navigation />
 
       {/* Main Content */}
       <main className="w-full">
@@ -637,13 +623,142 @@ export default function ReservationPage() {
             </div>
           </div>
 
-          {/* ÉTAPE 3: Sélection de la date et heure */}
+          {/* ÉTAPE 3: Options supplémentaires */}
           <div className="relative min-h-screen bg-gradient-to-br from-white to-gray-50 shadow-xl border border-gray-100">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+              <div className="text-center mb-20">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-full mb-8 shadow-2xl">
+                  <span className="text-white font-black text-2xl">3</span>
+                </div>
+                <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-6">
+                  Options supplémentaires
+                </h2>
+                <p className="text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+                  Personnalisez votre lavage avec nos services additionnels
+                </p>
+              </div>
+
+              {/* Grille des options */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+                {additionalOptions.map((option) => (
+                  <div
+                    key={option.id}
+                    className={`relative bg-white border rounded-2xl p-6 hover:shadow-xl transition-all duration-300 cursor-pointer ${
+                      selectedOptions.includes(option.id)
+                        ? "border-cyan-500 ring-4 ring-cyan-200 shadow-xl"
+                        : "border-gray-200 hover:border-cyan-300"
+                    }`}
+                    onClick={() => handleOptionToggle(option.id)}
+                  >
+                    {selectedOptions.includes(option.id) && (
+                      <div className="absolute -top-3 -right-3 w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center shadow-lg">
+                        <span className="text-white text-sm font-bold">✓</span>
+                      </div>
+                    )}
+
+                    <div className="flex items-start space-x-4">
+                      <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center"></div>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">
+                          {option.name}
+                        </h3>
+                        <p className="text-gray-600 mb-4 text-sm">
+                          {option.description}
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-2xl font-bold text-cyan-500">
+                            +{option.price}€
+                          </span>
+                          <div
+                            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                              selectedOptions.includes(option.id)
+                                ? "border-cyan-500 bg-cyan-500"
+                                : "border-gray-300"
+                            }`}
+                          >
+                            {selectedOptions.includes(option.id) && (
+                              <svg
+                                className="w-4 h-4 text-white"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Résumé des options sélectionnées */}
+              {selectedOptions.length > 0 && (
+                <div className="bg-cyan-50 border border-cyan-200 rounded-2xl p-6 mb-8">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">
+                    Options sélectionnées :
+                  </h3>
+                  <div className="space-y-2">
+                    {selectedOptions.map((optionId) => {
+                      const option = additionalOptions.find(
+                        (opt) => opt.id === optionId
+                      );
+                      return option ? (
+                        <div
+                          key={optionId}
+                          className="flex items-center justify-between"
+                        >
+                          <span className="text-gray-700">{option.name}</span>
+                          <span className="font-bold text-cyan-600">
+                            +{option.price}€
+                          </span>
+                        </div>
+                      ) : null;
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Bouton continuer */}
+              <div className="text-center">
+                <button
+                  onClick={() => {
+                    // Scroll vers l'étape suivante
+                    const nextSection =
+                      document.querySelector('[data-step="4"]');
+                    nextSection?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                  className="blob-btn inline-block text-center blob-btn--blue"
+                >
+                  Continuer vers la réservation
+                  <span className="blob-btn__inner">
+                    <span className="blob-btn__blobs">
+                      <span className="blob-btn__blob"></span>
+                      <span className="blob-btn__blob"></span>
+                      <span className="blob-btn__blob"></span>
+                      <span className="blob-btn__blob"></span>
+                    </span>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* ÉTAPE 4: Sélection de la date et heure */}
+          <div
+            className="relative min-h-screen bg-gradient-to-br from-white to-gray-50 shadow-xl border border-gray-100"
+            data-step="4"
+          >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
               <div className="text-center mb-20">
                 <div className="flex items-center justify-center space-x-6 mb-8">
                   <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-600 text-white rounded-full flex items-center justify-center text-2xl font-bold shadow-2xl">
-                    3
+                    4
                   </div>
                   <h2 className="text-4xl lg:text-5xl font-black text-gray-900">
                     Choisissez votre créneau
@@ -823,13 +938,13 @@ export default function ReservationPage() {
 
           {/* Avantages */}
 
-          {/* ÉTAPE 4: Récapitulatif et Réservation */}
+          {/* ÉTAPE 5: Récapitulatif et Réservation */}
           <div className="relative min-h-screen bg-gradient-to-br from-white to-gray-50 shadow-xl border border-gray-100">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
               <div className="text-center mb-20">
                 <div className="flex items-center justify-center space-x-6 mb-8">
                   <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-600 text-white rounded-full flex items-center justify-center text-2xl font-bold shadow-2xl">
-                    4
+                    5
                   </div>
                   <h2 className="text-4xl lg:text-5xl font-black text-gray-900">
                     Finalisez votre réservation
@@ -917,109 +1032,140 @@ export default function ReservationPage() {
                       </div>
                     )}
 
+                    {/* Options supplémentaires sélectionnées */}
+                    {selectedOptions.length > 0 && (
+                      <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl p-6 border border-cyan-200">
+                        <h4 className="text-xl font-bold text-cyan-900 mb-3 flex items-center space-x-2">
+                          <SparklesIcon className="w-5 h-5" />
+                          <span>Options supplémentaires</span>
+                        </h4>
+                        <div className="space-y-3">
+                          {selectedOptions.map((optionId) => {
+                            const option = additionalOptions.find(
+                              (opt) => opt.id === optionId
+                            );
+                            return option ? (
+                              <div
+                                key={optionId}
+                                className="flex items-center justify-between"
+                              >
+                                <div className="flex items-center space-x-3">
+                                  <div className="w-8 h-8 bg-cyan-100 rounded-full flex items-center justify-center"></div>
+                                  <div>
+                                    <p className="text-lg font-semibold text-gray-800">
+                                      {option.name}
+                                    </p>
+                                    <p className="text-sm text-gray-600">
+                                      {option.description}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <p className="text-xl font-bold text-cyan-600">
+                                    +{option.price}€
+                                  </p>
+                                </div>
+                              </div>
+                            ) : null;
+                          })}
+                        </div>
+                      </div>
+                    )}
+
                     {/* Informations de réservation */}
                     <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl p-6 border border-cyan-200">
-                      <h4 className="text-xl font-bold text-cyan-900 mb-3 flex items-center space-x-2">
+                      <h4 className="text-xl font-bold text-cyan-900 mb-4 flex items-center space-x-2">
                         <CalendarIcon className="w-5 h-5" />
                         <span>Créneau sélectionné</span>
                       </h4>
                       {selectedDate && selectedTime ? (
-                        <div className="space-y-3">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 bg-cyan-100 rounded-full flex items-center justify-center">
-                              <svg
-                                className="w-4 h-4 text-cyan-600"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                />
-                              </svg>
-                            </div>
-                            <div>
-                              <p className="text-cyan-800 font-semibold">
+                        <div className="space-y-4">
+                          {/* Date et heure mises en évidence */}
+                          <div className="bg-white rounded-xl p-4 border-2 border-cyan-300 shadow-lg">
+                            <div className="text-center">
+                              <div className="flex items-center justify-center space-x-3 mb-2"></div>
+                              <p className="text-2xl font-black text-gray-900 mb-1">
                                 {new Date(selectedDate).toLocaleDateString(
                                   "fr-FR",
                                   {
                                     weekday: "long",
-                                    year: "numeric",
-                                    month: "long",
                                     day: "numeric",
+                                    month: "long",
                                   }
                                 )}
                               </p>
-                              <p className="text-cyan-600 text-sm">
-                                à {selectedTime}
+                              <p className="text-3xl font-black text-cyan-600">
+                                {selectedTime}
+                              </p>
+                              <p className="text-sm text-gray-600 mt-2">
+                                {new Date(selectedDate).toLocaleDateString(
+                                  "fr-FR",
+                                  {
+                                    year: "numeric",
+                                  }
+                                )}
                               </p>
                             </div>
                           </div>
-                          <div className="flex items-center space-x-2 text-cyan-600">
-                            <svg
-                              className="w-5 h-5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                              />
-                            </svg>
-                            <span className="text-sm font-medium">
-                              Créneau confirmé
-                            </span>
-                          </div>
+
+                          {/* Statut de confirmation */}
                         </div>
                       ) : (
-                        <div>
-                          <p className="text-cyan-700 mb-4">
-                            Sélectionnez votre date et heure dans le formulaire
-                            à droite.
-                          </p>
-                          <div className="flex items-center space-x-2 text-cyan-600">
-                            <svg
-                              className="w-5 h-5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                              />
-                            </svg>
-                            <span className="text-sm font-medium">
-                              En attente de sélection
-                            </span>
-                          </div>
-                        </div>
+                        <div></div>
                       )}
                     </div>
 
                     {/* Total */}
                     {selectedPlan && (
                       <div className="bg-gradient-to-r from-blue-50 to-blue-50 rounded-2xl p-6 border border-blue-900">
-                        <div className="flex items-center justify-between">
-                          <h4 className="text-xl font-bold text-blue-900">
-                            Total:
-                          </h4>
-                          <p className="text-3xl font-black text-cyan-600">
-                            {
-                              plans[vehicle]?.find(
-                                (p) => p.label === selectedPlan
-                              )?.price
-                            }
-                            €
-                          </p>
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-xl font-bold text-blue-900">
+                              Total:
+                            </h4>
+                            <p className="text-3xl font-black text-cyan-600">
+                              {(() => {
+                                const basePrice =
+                                  plans[vehicle]?.find(
+                                    (p) => p.label === selectedPlan
+                                  )?.price || 0;
+                                const optionsPrice = selectedOptions.reduce(
+                                  (total, optionId) => {
+                                    const option = additionalOptions.find(
+                                      (opt) => opt.id === optionId
+                                    );
+                                    return total + (option?.price || 0);
+                                  },
+                                  0
+                                );
+                                return basePrice + optionsPrice;
+                              })()}
+                              €
+                            </p>
+                          </div>
+                          {selectedOptions.length > 0 && (
+                            <div className="text-sm text-gray-600">
+                              <p>
+                                Formule:{" "}
+                                {
+                                  plans[vehicle]?.find(
+                                    (p) => p.label === selectedPlan
+                                  )?.price
+                                }
+                                €
+                              </p>
+                              <p>
+                                Options: +
+                                {selectedOptions.reduce((total, optionId) => {
+                                  const option = additionalOptions.find(
+                                    (opt) => opt.id === optionId
+                                  );
+                                  return total + (option?.price || 0);
+                                }, 0)}
+                                €
+                              </p>
+                            </div>
+                          )}
                         </div>
                         <p className="text-sm text-gray-600 mt-2">
                           Prix TTC - Paiement sur place

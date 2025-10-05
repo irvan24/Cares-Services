@@ -8,8 +8,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-poppins), system-ui, -apple-system, sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,7 +21,15 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-poppins), system-ui, -apple-system, sans-serif;
+}
+
+/* Line clamp utilities */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 @keyframes fadeIn {
@@ -42,7 +49,6 @@ body {
   z-index: 1;
   display: inline-block;
   padding: 12px 24px;
-  margin-bottom: 20px;
   text-align: center;
   text-transform: uppercase;
   color: black;
@@ -166,4 +172,27 @@ body {
 }
 .blob-btn--green:hover {
   color: #10b981; /* texte vert quand le blanc recouvre */
+}
+
+/* Animations pour les cartes de services */
+@keyframes card-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-card-reveal {
+  animation: card-reveal 0.8s ease-out forwards;
+}
+
+/* Désactiver l'animation automatique sur desktop (hover uniquement) */
+@media (min-width: 1024px) {
+  .animate-card-reveal {
+    animation: none;
+  }
 }
