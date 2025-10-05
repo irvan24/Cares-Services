@@ -206,7 +206,7 @@ export default function ProductForm() {
       console.error("Erreur lors de la création du produit:", error);
       alert(
         `Erreur lors de la création du produit: ${
-          error.message || "Erreur inconnue"
+          (error as Error).message || "Erreur inconnue"
         }`
       );
     } finally {

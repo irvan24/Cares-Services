@@ -98,7 +98,7 @@ export default function CheckoutPage() {
       "postalCode",
     ];
 
-    return requiredFields.every((field) => formData[field].trim() !== "");
+    return requiredFields.every((field) => formData[field]?.trim() !== "");
   };
 
   // Soumettre la commande

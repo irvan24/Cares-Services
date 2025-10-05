@@ -23,7 +23,7 @@ export default function AdminOrders() {
       try {
         setLoading(true);
         const response = await ordersService.getAll({ page: 1, limit: 50 });
-        setOrders(response.data || []);
+        setOrders(response.products || []);
       } catch (err) {
         setError("Erreur lors du chargement des commandes");
         console.error("Erreur:", err);
@@ -113,8 +113,14 @@ export default function AdminOrders() {
   const allOrders = orders.length > 0 ? orders : fallbackOrders;
   const filteredOrders = allOrders.filter((order) => {
     const orderId = typeof order.id === "string" ? order.id : `#${order.id}`;
-    const customerName = order.customer?.name || order.customer || "";
-    const customerEmail = order.customer?.email || order.email || "";
+    const customerName =
+      typeof order.customer === "object" && order.customer?.name
+        ? order.customer.name
+        : String(order.customer || "");
+    const customerEmail =
+      typeof order.customer === "object" && order.customer?.email
+        ? order.customer.email
+        : (order as any).email || "";
 
     const matchesSearch =
       orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -499,12 +505,16 @@ export default function AdminOrders() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
                           <div className="text-sm font-medium text-gray-900">
-                            {order.customer?.name ||
-                              order.customer ||
-                              "Client inconnu"}
+                            {typeof order.customer === "object" &&
+                            order.customer?.name
+                              ? order.customer.name
+                              : String(order.customer || "Client inconnu")}
                           </div>
                           <div className="text-sm text-gray-600">
-                            {order.customer?.email || order.email || "N/A"}
+                            {typeof order.customer === "object" &&
+                            order.customer?.email
+                              ? order.customer.email
+                              : (order as any).email || "N/A"}
                           </div>
                         </div>
                       </td>
@@ -513,16 +523,19 @@ export default function AdminOrders() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">
-                          €{order.total_amount || order.total || 0}
+                          €
+                          {(order as any).total_amount ||
+                            (order as any).total ||
+                            0}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-600">
-                          {order.created_at
-                            ? new Date(order.created_at).toLocaleDateString(
-                                "fr-FR"
-                              )
-                            : order.date || "N/A"}
+                          {(order as any).created_at
+                            ? new Date(
+                                (order as any).created_at
+                              ).toLocaleDateString("fr-FR")
+                            : (order as any).date || "N/A"}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">

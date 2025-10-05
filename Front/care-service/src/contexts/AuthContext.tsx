@@ -33,7 +33,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (savedUser && savedToken) {
         try {
-          const userData = JSON.parse(savedUser);
+          JSON.parse(savedUser);
 
           // Vérifier le token avec le backend
           const API_URL =

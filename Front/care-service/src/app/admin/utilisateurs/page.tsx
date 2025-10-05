@@ -24,7 +24,7 @@ export default function AdminUsers() {
       try {
         setLoading(true);
         const response = await usersService.getAll({ page: 1, limit: 50 });
-        setUsers(response.data || []);
+        setUsers(response.products || []);
       } catch (err) {
         setError("Erreur lors du chargement des utilisateurs");
         console.error("Erreur:", err);
@@ -253,13 +253,17 @@ export default function AdminUsers() {
                         <div className="flex-shrink-0 h-10 w-10">
                           <div className="h-10 w-10 rounded-full bg-cyan-100 flex items-center justify-center">
                             <span className="text-sm font-medium text-cyan-600">
-                              {user.name.charAt(0)}
+                              {(user as any).name?.charAt(0) ||
+                                (user as any).email?.charAt(0) ||
+                                "U"}
                             </span>
                           </div>
                         </div>
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900">
-                            {user.name}
+                            {(user as any).name ||
+                              (user as any).email ||
+                              "Utilisateur"}
                           </div>
                           <div className="text-sm text-gray-500">
                             {user.email}
@@ -282,25 +286,25 @@ export default function AdminUsers() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(
-                          user.status
+                          (user as any).status || "active"
                         )}`}
                       >
-                        {user.status}
+                        {(user as any).status || "Actif"}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {user.ordersCount}
+                        {(user as any).ordersCount || 0}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-semibold text-gray-900">
-                        {user.totalSpent.toFixed(2)}€
+                        {((user as any).totalSpent || 0).toFixed(2)}€
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {user.joinDate}
+                        {(user as any).joinDate || "N/A"}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

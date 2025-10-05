@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   ShoppingCartIcon,
   UserCircleIcon,
@@ -124,9 +125,11 @@ export default function Navigation() {
                             >
                               {item.image && (
                                 <div className="w-16 h-16 bg-gray-100 rounded-lg flex-shrink-0">
-                                  <img
+                                  <Image
                                     src={item.image}
                                     alt={item.name}
+                                    width={64}
+                                    height={64}
                                     className="w-full h-full object-cover rounded-lg"
                                   />
                                 </div>

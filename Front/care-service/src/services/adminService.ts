@@ -62,7 +62,7 @@ export interface Order {
   total_amount: number;
   status: string;
   payment_status: string;
-  shipping_address: any;
+  shipping_address: Record<string, unknown>;
   created_at: string;
   updated_at: string;
   customer: {
@@ -244,7 +244,9 @@ export const ordersService = {
     return response.data;
   },
 
-  async getById(id: string): Promise<Order & { items: any[] }> {
+  async getById(
+    id: string
+  ): Promise<Order & { items: Record<string, unknown>[] }> {
     const response = await authenticatedFetch(`/admin/orders/${id}`);
     return response.data;
   },
@@ -257,7 +259,7 @@ export const ordersService = {
     return response.data;
   },
 
-  async getStats(): Promise<any> {
+  async getStats(): Promise<Record<string, unknown>> {
     const response = await authenticatedFetch("/admin/orders/stats");
     return response.data;
   },
@@ -303,7 +305,7 @@ export const usersService = {
     });
   },
 
-  async getStats(): Promise<any> {
+  async getStats(): Promise<Record<string, unknown>> {
     const response = await authenticatedFetch("/admin/users/stats");
     return response.data;
   },

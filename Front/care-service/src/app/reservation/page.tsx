@@ -25,8 +25,6 @@ import {
   PaintBrushIcon,
   BeakerIcon,
   ShieldCheckIcon as ShieldIcon,
-  WindowIcon,
-  Cog6ToothIcon,
 } from "@heroicons/react/24/outline";
 
 export default function ReservationPage() {
@@ -35,11 +33,6 @@ export default function ReservationPage() {
   );
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-  const [appointmentBooked, setAppointmentBooked] = useState(false);
-  const [bookingDetails, setBookingDetails] = useState<{
-    date: string;
-    time: string;
-  } | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showCalendly, setShowCalendly] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
@@ -391,7 +384,7 @@ export default function ReservationPage() {
 
               {/* Sélection des véhicules */}
               <div className="flex flex-col lg:flex-row items-center justify-center gap-8 mb-16">
-                {vehicles.map(({ key, img, label }) => (
+                {vehicles.map(({ key, label }) => (
                   <button
                     key={key}
                     onClick={() => handleVehicleChange(key)}
