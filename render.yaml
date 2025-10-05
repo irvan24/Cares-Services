@@ -1,0 +1,55 @@
+services:
+  # Backend API
+  - type: web
+    name: cares-services-backend
+    env: node
+    plan: free
+    buildCommand: cd Back && npm install
+    startCommand: cd Back && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: SUPABASE_URL
+        fromDatabase:
+          name: cares-services-db
+          property: connectionString
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: N8N_WEBHOOK_URL
+        sync: false
+    healthCheckPath: /products
+    autoDeploy: true
+    branch: main
+
+  # Frontend Next.js
+  - type: web
+    name: cares-services-frontend
+    env: node
+    plan: free
+    buildCommand: cd Front/care-service && npm install && npm run build
+    startCommand: cd Front/care-service && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: NEXT_PUBLIC_API_URL
+        value: https://cares-services-backend.onrender.com
+    autoDeploy: true
+    branch: main
+
+databases:
+  - name: cares-services-db
+    plan: free
+    databaseName: cares_services
+    user: cares_services_user
