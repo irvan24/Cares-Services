@@ -24,3 +24,12 @@ supabase/.temp/
 # Build / dist
 dist/
 build/
+
+# Scripts de test et de vérification
+scripts/test/
+scripts/check/
+
+# Fichiers de configuration temporaires
+*.sql
+start-backend.sh
+README-CONFIGURATION.md

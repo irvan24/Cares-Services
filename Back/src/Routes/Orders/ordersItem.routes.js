@@ -1,9 +1,9 @@
-import express from 'express'
-import { getOrderItems } from '../controllers/orderItems.controller.js'
-import { authenticate } from '../middlewares/auth.middleware.js'
+import express from "express";
+import { getOrderItems } from "../../Controllers/Orders/ordersItem.controllers.js";
+import { authenticateUser as authenticate } from "../../Middleware/authenticateUser.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/:orderId/items', authenticate, getOrderItems)
+router.get("/:orderId/items", authenticate, getOrderItems);
 
-export default router
+export default router;

@@ -1,9 +1,19 @@
-import express from 'express'
-import { register, login } from '../Controllers/auth.controllers'
+import express from "express";
+import {
+  adminLogin,
+  verifyAdminToken,
+  adminLogout,
+} from "../Controllers/auth.controllers.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.post('/register', register)
-router.post('/login', login)
+// Routes utilisateur standard (à implémenter si nécessaire)
+// router.post("/register", register);
+// router.post("/login", login);
 
-export default router
+// Routes administrateur
+router.post("/admin/login", adminLogin);
+router.post("/admin/verify", verifyAdminToken);
+router.post("/admin/logout", adminLogout);
+
+export default router;
