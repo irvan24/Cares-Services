@@ -140,27 +140,12 @@ export default function ProductForm() {
       !formData.category ||
       !formData.stock
     ) {
-      alert("Veuillez remplir tous les champs obligatoires.");
+      // Validation des champs - pas de popup
       return;
     }
 
     try {
       setLoading(true);
-
-      // Trouver l'ID de la catégorie sélectionnée ou utiliser une valeur par défaut
-      const selectedCategory = categories.find(
-        (cat) => cat.name === formData.category
-      );
-
-      // Pour les catégories Intérieur/Extérieur, utiliser des IDs spécifiques
-      let categoryId = "1"; // Valeur par défaut
-      if (formData.category === "Intérieur") {
-        categoryId = "1";
-      } else if (formData.category === "Extérieur") {
-        categoryId = "2";
-      } else if (selectedCategory) {
-        categoryId = selectedCategory.id;
-      }
 
       // Créer FormData pour l'upload
       const formDataToSend = new FormData();
@@ -168,7 +153,7 @@ export default function ProductForm() {
       formDataToSend.append("description", formData.description);
       formDataToSend.append("price", formData.price);
       formDataToSend.append("stock", formData.stock);
-      formDataToSend.append("category_id", categoryId);
+      formDataToSend.append("category", formData.category);
       formDataToSend.append("is_active", "true");
 
       if (formData.image) {
@@ -189,26 +174,15 @@ export default function ProductForm() {
       const result = await response.json();
 
       if (response.ok && result.success) {
-        alert("Produit créé avec succès !");
-        // Attendre un peu avant la redirection pour éviter les conflits
-        setTimeout(() => {
-          router.push("/admin/produits");
-        }, 100);
+        // Produit créé avec succès - redirection directe
+        router.push("/admin/produits");
       } else {
         console.error("Erreur création produit:", result);
-        alert(
-          `Erreur lors de la création du produit: ${
-            result.error || result.details || "Erreur inconnue"
-          }`
-        );
+        // Erreur - pas de popup
       }
     } catch (error) {
       console.error("Erreur lors de la création du produit:", error);
-      alert(
-        `Erreur lors de la création du produit: ${
-          (error as Error).message || "Erreur inconnue"
-        }`
-      );
+      // Erreur - pas de popup
     } finally {
       setLoading(false);
     }

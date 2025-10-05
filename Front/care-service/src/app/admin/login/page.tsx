@@ -41,8 +41,14 @@ export default function AdminLogin() {
         <div className="w-full max-w-md">
           {/* Logo */}
           <div className="text-center mb-12">
-            <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center mx-auto mb-6">
-              <span className="text-3xl font-bold text-black">C</span>
+            <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center mx-auto mb-6 p-2">
+              <Image
+                src="/care.png"
+                alt="CARE Services"
+                width={48}
+                height={48}
+                className="w-full h-full object-contain"
+              />
             </div>
             <h1 className="text-4xl font-bold text-white mb-2">Welcome back</h1>
             <p className="text-gray-400 text-lg">

@@ -14,22 +14,27 @@ export default function Navigation() {
   const { cartCount, cartTotal, getCartItemsForNav } = useCart();
   const cartItems = getCartItemsForNav();
   return (
-    <header className="bg-gray-800 text-white">
+    <header className="text-white" style={{ backgroundColor: "#3f3f3f" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
+        <div className="relative flex items-center py-4">
           {/* Logo */}
           <div className="flex items-center space-x-2">
             <Link
               href="/"
               className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
             >
-              <span className="text-2xl font-bold">CARE</span>
-              <div className="w-3 h-3 bg-cyan-400 rounded-full" />
+              <Image
+                src="/care.png"
+                alt="CARE Services"
+                width={120}
+                height={40}
+                className="h-8 w-auto"
+              />
             </Link>
           </div>
 
-          {/* Navigation */}
-          <nav className="hidden md:flex space-x-8">
+          {/* Navigation - Absolument centrée */}
+          <nav className="hidden md:flex space-x-8 absolute left-1/2 transform -translate-x-1/2">
             <Link href="/" className="hover:text-cyan-400 transition-colors">
               Accueil
             </Link>
@@ -48,7 +53,7 @@ export default function Navigation() {
           </nav>
 
           {/* Contact & CTA */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 ml-auto">
             <div className="hidden lg:flex items-center space-x-2">
               <svg
                 className="w-5 h-5"
