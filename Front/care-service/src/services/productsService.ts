@@ -1,5 +1,5 @@
 // Service pour les produits - API calls
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3004";
 
 export interface Product {
   id: string;
