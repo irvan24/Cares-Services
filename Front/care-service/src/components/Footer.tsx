@@ -268,13 +268,6 @@ export default function Footer() {
           </div>
         </div>
       </div>
-
-      {/* Bouton d'aide flottant */}
-      <div className="fixed bottom-4 right-4 z-50">
-        <button className="w-12 h-12 bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center justify-center shadow-lg transition-colors">
-          <QuestionMarkCircleIcon className="w-6 h-6 text-white" />
-        </button>
-      </div>
     </footer>
   );
 }

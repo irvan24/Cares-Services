@@ -456,7 +456,48 @@ export default function ReservationPage() {
               </div>
 
               {/* Carrousel des véhicules */}
-              <div className="flex justify-center items-center relative overflow-hidden">
+              <div className="flex flex-col items-center relative overflow-hidden">
+                {/* Flèches de navigation - au-dessus sur mobile */}
+                <div className="flex justify-center items-center space-x-4 mb-4 sm:hidden">
+                  <button
+                    onClick={goToPrevious}
+                    className="w-12 h-12 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-700 transition-all duration-300 shadow-lg hover:scale-110"
+                  >
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 19l-7-7 7-7"
+                      />
+                    </svg>
+                  </button>
+
+                  <button
+                    onClick={goToNext}
+                    className="w-12 h-12 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-700 transition-all duration-300 shadow-lg hover:scale-110"
+                  >
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </button>
+                </div>
+
                 <div className="relative w-full max-w-4xl h-[500px] overflow-hidden">
                   {/* Masque de flou gauche - transparent */}
                   <div className="absolute left-0 top-0 w-16 h-full bg-gradient-to-r from-transparent via-transparent to-transparent z-10 pointer-events-none"></div>
@@ -486,10 +527,10 @@ export default function ReservationPage() {
                   </div>
                 </div>
 
-                {/* Flèches de navigation */}
+                {/* Flèches de navigation - sur les côtés sur desktop */}
                 <button
                   onClick={goToPrevious}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-700 transition-all duration-300 shadow-lg hover:scale-110 z-20"
+                  className="hidden sm:block absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-700 transition-all duration-300 shadow-lg hover:scale-110 z-20"
                 >
                   <svg
                     className="w-6 h-6"
@@ -508,7 +549,7 @@ export default function ReservationPage() {
 
                 <button
                   onClick={goToNext}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-700 transition-all duration-300 shadow-lg hover:scale-110 z-20"
+                  className="hidden sm:block absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-700 transition-all duration-300 shadow-lg hover:scale-110 z-20"
                 >
                   <svg
                     className="w-6 h-6"
@@ -527,25 +568,6 @@ export default function ReservationPage() {
               </div>
 
               {/* Indicateurs de position */}
-            </div>
-
-            {/* Chat icon en bas à droite */}
-            <div className="fixed bottom-6 right-6 z-20">
-              <button className="w-14 h-14 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center text-white shadow-2xl transition-all duration-300 hover:scale-110">
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                  />
-                </svg>
-              </button>
             </div>
           </div>
 
