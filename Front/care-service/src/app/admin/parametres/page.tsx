@@ -7,9 +7,7 @@ export default function AdminSettings() {
   const tabs = [
     { id: "general", name: "Général" },
     { id: "shop", name: "Boutique" },
-    { id: "payment", name: "Paiement" },
     { id: "shipping", name: "Livraison" },
-    { id: "notifications", name: "Notifications" },
   ];
 
   const [settings, setSettings] = useState({
@@ -26,21 +24,10 @@ export default function AdminSettings() {
     enableReviews: true,
     enableInventory: true,
 
-    // Paiement
-    stripeEnabled: false,
-    paypalEnabled: false,
-    bankTransferEnabled: true,
-
     // Livraison
     freeShippingThreshold: 50,
     standardShippingCost: 5.99,
     expressShippingCost: 12.99,
-
-    // Notifications
-    emailNotifications: true,
-    smsNotifications: false,
-    orderNotifications: true,
-    userNotifications: true,
   });
 
   const handleSettingChange = (key: string, value: any) => {
@@ -56,7 +43,7 @@ export default function AdminSettings() {
   };
 
   const renderGeneralSettings = () => (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-2">
           Nom du site
@@ -65,7 +52,7 @@ export default function AdminSettings() {
           type="text"
           value={settings.siteName}
           onChange={(e) => handleSettingChange("siteName", e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm sm:text-base text-black"
         />
       </div>
 
@@ -79,7 +66,7 @@ export default function AdminSettings() {
             handleSettingChange("siteDescription", e.target.value)
           }
           rows={3}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm sm:text-base text-black"
         />
       </div>
 
@@ -91,11 +78,11 @@ export default function AdminSettings() {
           type="email"
           value={settings.adminEmail}
           onChange={(e) => handleSettingChange("adminEmail", e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm sm:text-base text-black"
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             Fuseau horaire
@@ -103,7 +90,7 @@ export default function AdminSettings() {
           <select
             value={settings.timezone}
             onChange={(e) => handleSettingChange("timezone", e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm sm:text-base text-black"
           >
             <option value="Europe/Paris">Europe/Paris</option>
             <option value="Europe/London">Europe/London</option>
@@ -118,7 +105,7 @@ export default function AdminSettings() {
           <select
             value={settings.language}
             onChange={(e) => handleSettingChange("language", e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm sm:text-base text-black"
           >
             <option value="fr">Français</option>
             <option value="en">English</option>
@@ -130,7 +117,7 @@ export default function AdminSettings() {
   );
 
   const renderShopSettings = () => (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-2">
           Devise
@@ -138,7 +125,7 @@ export default function AdminSettings() {
         <select
           value={settings.currency}
           onChange={(e) => handleSettingChange("currency", e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm sm:text-base text-black"
         >
           <option value="EUR">Euro (€)</option>
           <option value="USD">Dollar ($)</option>
@@ -156,11 +143,11 @@ export default function AdminSettings() {
           onChange={(e) =>
             handleSettingChange("taxRate", parseInt(e.target.value))
           }
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm sm:text-base text-black"
         />
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         <div className="flex items-center">
           <input
             type="checkbox"
@@ -200,68 +187,8 @@ export default function AdminSettings() {
     </div>
   );
 
-  const renderPaymentSettings = () => (
-    <div className="space-y-6">
-      <div className="space-y-4">
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="stripeEnabled"
-            checked={settings.stripeEnabled}
-            onChange={(e) =>
-              handleSettingChange("stripeEnabled", e.target.checked)
-            }
-            className="h-4 w-4 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded"
-          />
-          <label
-            htmlFor="stripeEnabled"
-            className="ml-2 block text-sm text-gray-900"
-          >
-            Stripe
-          </label>
-        </div>
-
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="paypalEnabled"
-            checked={settings.paypalEnabled}
-            onChange={(e) =>
-              handleSettingChange("paypalEnabled", e.target.checked)
-            }
-            className="h-4 w-4 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded"
-          />
-          <label
-            htmlFor="paypalEnabled"
-            className="ml-2 block text-sm text-gray-900"
-          >
-            PayPal
-          </label>
-        </div>
-
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="bankTransferEnabled"
-            checked={settings.bankTransferEnabled}
-            onChange={(e) =>
-              handleSettingChange("bankTransferEnabled", e.target.checked)
-            }
-            className="h-4 w-4 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded"
-          />
-          <label
-            htmlFor="bankTransferEnabled"
-            className="ml-2 block text-sm text-gray-900"
-          >
-            Virement bancaire
-          </label>
-        </div>
-      </div>
-    </div>
-  );
-
   const renderShippingSettings = () => (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-2">
           Seuil livraison gratuite (€)
@@ -275,11 +202,11 @@ export default function AdminSettings() {
               parseFloat(e.target.value)
             )
           }
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm sm:text-base text-black"
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             Coût livraison standard (€)
@@ -294,7 +221,7 @@ export default function AdminSettings() {
                 parseFloat(e.target.value)
               )
             }
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm sm:text-base text-black"
           />
         </div>
 
@@ -312,86 +239,8 @@ export default function AdminSettings() {
                 parseFloat(e.target.value)
               )
             }
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+            className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm sm:text-base text-black"
           />
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderNotificationSettings = () => (
-    <div className="space-y-6">
-      <div className="space-y-4">
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="emailNotifications"
-            checked={settings.emailNotifications}
-            onChange={(e) =>
-              handleSettingChange("emailNotifications", e.target.checked)
-            }
-            className="h-4 w-4 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded"
-          />
-          <label
-            htmlFor="emailNotifications"
-            className="ml-2 block text-sm text-gray-900"
-          >
-            Notifications par email
-          </label>
-        </div>
-
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="smsNotifications"
-            checked={settings.smsNotifications}
-            onChange={(e) =>
-              handleSettingChange("smsNotifications", e.target.checked)
-            }
-            className="h-4 w-4 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded"
-          />
-          <label
-            htmlFor="smsNotifications"
-            className="ml-2 block text-sm text-gray-900"
-          >
-            Notifications par SMS
-          </label>
-        </div>
-
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="orderNotifications"
-            checked={settings.orderNotifications}
-            onChange={(e) =>
-              handleSettingChange("orderNotifications", e.target.checked)
-            }
-            className="h-4 w-4 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded"
-          />
-          <label
-            htmlFor="orderNotifications"
-            className="ml-2 block text-sm text-gray-900"
-          >
-            Notifications de commandes
-          </label>
-        </div>
-
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="userNotifications"
-            checked={settings.userNotifications}
-            onChange={(e) =>
-              handleSettingChange("userNotifications", e.target.checked)
-            }
-            className="h-4 w-4 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded"
-          />
-          <label
-            htmlFor="userNotifications"
-            className="ml-2 block text-sm text-gray-900"
-          >
-            Notifications d'utilisateurs
-          </label>
         </div>
       </div>
     </div>
@@ -403,12 +252,8 @@ export default function AdminSettings() {
         return renderGeneralSettings();
       case "shop":
         return renderShopSettings();
-      case "payment":
-        return renderPaymentSettings();
       case "shipping":
         return renderShippingSettings();
-      case "notifications":
-        return renderNotificationSettings();
       default:
         return renderGeneralSettings();
     }
@@ -417,11 +262,13 @@ export default function AdminSettings() {
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="pt-14 lg:pl-64">
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Paramètres</h1>
-            <p className="text-gray-600 mt-2">
+          <div className="mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+              Paramètres
+            </h1>
+            <p className="text-sm sm:text-base text-gray-600 mt-2">
               Configurez les paramètres de votre boutique
             </p>
           </div>
@@ -429,32 +276,34 @@ export default function AdminSettings() {
           <div className="bg-white rounded-lg shadow">
             {/* Tabs */}
             <div className="border-b border-gray-200">
-              <nav className="flex space-x-8 px-6">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                      activeTab === tab.id
-                        ? "border-cyan-500 text-cyan-600"
-                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                    }`}
-                  >
-                    {tab.name}
-                  </button>
-                ))}
+              <nav className="flex overflow-x-auto px-3 sm:px-6">
+                <div className="flex space-x-4 sm:space-x-8 min-w-max">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap ${
+                        activeTab === tab.id
+                          ? "border-cyan-500 text-cyan-600"
+                          : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      }`}
+                    >
+                      {tab.name}
+                    </button>
+                  ))}
+                </div>
               </nav>
             </div>
 
             {/* Content */}
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
               {renderTabContent()}
 
               {/* Save button */}
-              <div className="mt-8 pt-6 border-t border-gray-200">
+              <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-200">
                 <button
                   onClick={handleSave}
-                  className="bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
+                  className="w-full sm:w-auto bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
                 >
                   Sauvegarder les paramètres
                 </button>

@@ -164,8 +164,6 @@ export default function AdminOrders() {
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="pt-14 lg:pl-64">
-       
-
         <div className="p-6 bg-gray-100">
           {/* Header */}
           <div className="mb-8">
@@ -280,53 +278,51 @@ export default function AdminOrders() {
           </div>
 
           {/* Filtres et recherche */}
-          <div className="bg-white rounded-2xl p-6 mb-6 shadow-lg">
-            <div className="flex items-center justify-between mb-4">
-              <div className="relative">
+          <div className="bg-white rounded-2xl p-4 sm:p-6 mb-6 shadow-lg">
+            {/* Barre de recherche et compteur */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
+              <div className="relative flex-1 max-w-sm">
                 <input
                   type="text"
-                  placeholder="Search"
-                  className="bg-white text-gray-900 placeholder-gray-500 rounded-xl px-4 py-2 pl-10 w-64 focus:outline-none focus:ring-2 focus:ring-cyan-500 border border-gray-300"
+                  placeholder="Rechercher..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="bg-white text-gray-900 placeholder-gray-500 rounded-xl px-4 py-2 pl-10 w-full focus:outline-none focus:ring-2 focus:ring-cyan-500 border border-gray-300"
                 />
-                <svg
-                  className="absolute left-3 top-2.5 h-4 w-4 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
+                <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
               </div>
-              <div className="text-gray-600 text-sm">
+              <div className="text-gray-600 text-sm font-medium">
                 {filteredOrders.length} commandes
               </div>
             </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
+
+            {/* Filtres et actions */}
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              {/* Filtres actifs */}
+              <div className="flex flex-wrap items-center gap-2">
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                   Lavage
                 </span>
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                   PayPal
                 </span>
-                <span className="text-xs text-gray-600">Effacer tout (2)</span>
+                <button className="text-xs text-gray-600 hover:text-gray-800 underline">
+                  Effacer tout (2)
+                </button>
               </div>
-              <div className="flex items-center space-x-3">
-                <button className="bg-gray-100 text-gray-900 px-4 py-2 rounded-xl hover:bg-gray-200 transition-colors">
+
+              {/* Actions */}
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                <button className="bg-gray-100 text-gray-900 px-3 sm:px-4 py-2 rounded-xl hover:bg-gray-200 transition-colors text-sm">
                   Export
                 </button>
-                <select className="bg-white text-gray-900 px-3 py-2 rounded-xl border border-gray-300">
+                <select className="bg-white text-gray-900 px-3 py-2 rounded-xl border border-gray-300 text-sm min-w-[140px]">
                   <option>Trier: par défaut</option>
                   <option>Date</option>
                   <option>Montant</option>
                 </select>
-                <button className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors">
-                  + Ajouter commande
+                <button className="bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors text-sm whitespace-nowrap">
+                  + Ajouter
                 </button>
               </div>
             </div>
@@ -384,34 +380,37 @@ export default function AdminOrders() {
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                      <th className="px-3 sm:px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
                         <input
                           type="checkbox"
                           className="rounded border-gray-300 bg-white"
                         />
                       </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                        NUMÉRO DE COMMANDE
+                      <th className="px-3 sm:px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                        <span className="hidden sm:inline">
+                          NUMÉRO DE COMMANDE
+                        </span>
+                        <span className="sm:hidden">N°</span>
                       </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                      <th className="px-3 sm:px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
                         CLIENT
                       </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                      <th className="hidden md:table-cell px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
                         CATÉGORIE
                       </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                      <th className="px-3 sm:px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
                         PRIX
                       </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                      <th className="hidden sm:table-cell px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
                         DATE
                       </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                      <th className="hidden lg:table-cell px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
                         PAIEMENT
                       </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                      <th className="px-3 sm:px-6 py-4 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
                         STATUT
                       </th>
-                      <th className="px-6 py-4 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      <th className="px-3 sm:px-6 py-4 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
                         Actions
                       </th>
                     </tr>
@@ -419,13 +418,13 @@ export default function AdminOrders() {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {filteredOrders.map((order) => (
                       <tr key={order.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                           <input
                             type="checkbox"
                             className="rounded border-gray-300 bg-white"
                           />
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                           <div className="text-sm font-medium text-gray-900">
                             {typeof order.id === "string" &&
                             order.id.includes("#")
@@ -433,7 +432,7 @@ export default function AdminOrders() {
                               : `#${order.id}`}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                           <div>
                             <div className="text-sm font-medium text-gray-900">
                               {typeof order.customer === "object" &&
@@ -441,7 +440,7 @@ export default function AdminOrders() {
                                 ? order.customer.name
                                 : String(order.customer || "Client inconnu")}
                             </div>
-                            <div className="text-sm text-gray-600">
+                            <div className="text-xs sm:text-sm text-gray-600">
                               {typeof order.customer === "object" &&
                               order.customer?.email
                                 ? order.customer.email
@@ -449,10 +448,10 @@ export default function AdminOrders() {
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-600">Lavage</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                           <div className="text-sm font-medium text-gray-900">
                             €
                             {(order as any).total_amount ||
@@ -460,7 +459,7 @@ export default function AdminOrders() {
                               0}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-600">
                             {(order as any).created_at
                               ? new Date(
@@ -469,10 +468,10 @@ export default function AdminOrders() {
                               : (order as any).date || "N/A"}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="hidden lg:table-cell px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-600">PayPal</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                           <span
                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                               order.status === "completed"
@@ -487,10 +486,10 @@ export default function AdminOrders() {
                             {getStatusLabel(order.status)}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <button className="text-gray-600 hover:text-gray-900">
                             <svg
-                              className="w-5 h-5"
+                              className="w-4 h-4 sm:w-5 sm:h-5"
                               fill="currentColor"
                               viewBox="0 0 20 20"
                             >

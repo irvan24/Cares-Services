@@ -37,6 +37,7 @@ export default function ReservationPage() {
   const [showCalendly, setShowCalendly] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
+  const [currentWeek, setCurrentWeek] = useState<Date>(new Date());
   const [clientInfo, setClientInfo] = useState({
     nom: "",
     prenom: "",
@@ -115,6 +116,44 @@ export default function ReservationPage() {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+  };
+
+  // Fonctions pour le calendrier réel
+  const getWeekDays = (weekStart: Date) => {
+    const days = [];
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(weekStart);
+      day.setDate(weekStart.getDate() + i);
+      days.push(day);
+    }
+    return days;
+  };
+
+  const getWeekStart = (date: Date) => {
+    const start = new Date(date);
+    start.setDate(date.getDate() - date.getDay() + 1); // Lundi comme premier jour
+    return start;
+  };
+
+  const navigateWeek = (direction: "prev" | "next") => {
+    const newWeek = new Date(currentWeek);
+    newWeek.setDate(currentWeek.getDate() + (direction === "next" ? 7 : -7));
+    setCurrentWeek(newWeek);
+  };
+
+  const formatDateForAPI = (date: Date) => {
+    return date.toISOString().split("T")[0];
+  };
+
+  const isToday = (date: Date) => {
+    const today = new Date();
+    return date.toDateString() === today.toDateString();
+  };
+
+  const isPast = (date: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date < today;
   };
 
   // Fonction pour gérer les options supplémentaires
@@ -366,17 +405,25 @@ export default function ReservationPage() {
           {/* Titre et Description */}
 
           {/* ÉTAPE 1: Sélection du type de véhicule */}
-          <div className="relative min-h-screen bg-gradient-to-br from-white to-gray-50 shadow-xl border border-gray-100 overflow-hidden">
+          <div className="relative min-h-screen shadow-xl border border-gray-100 overflow-hidden">
+            {/* Image de fond avec opacité réduite */}
+            <div
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40"
+              style={{
+                backgroundImage: 'url("/garage3.jpg")',
+              }}
+            />
+            {/* Pas d'overlay pour voir l'image clairement */}
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
               {/* En-tête de l'étape */}
               <div className="text-center mb-20">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-full mb-8 shadow-2xl">
                   <span className="text-white font-black text-2xl">1</span>
                 </div>
-                <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-6">
+                <h2 className="text-4xl lg:text-5xl font-black text-black mb-6 drop-shadow-lg">
                   Choisissez votre type de véhicule :
                 </h2>
-                <p className="text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+                <p className="text-lg text-gray-800 max-w-4xl mx-auto leading-relaxed drop-shadow-md">
                   Sélectionnez le type de véhicule pour voir les tarifs
                   correspondants
                 </p>
@@ -391,7 +438,7 @@ export default function ReservationPage() {
                     className={`group relative px-10 py-6 rounded-3xl transition-all duration-300 transform hover:scale-105 ${
                       vehicle === key
                         ? "bg-cyan-600 text-white shadow-2xl ring-4 ring-cyan-400"
-                        : "bg-transparent text-gray-800 hover:bg-gray-100 border-2 border-gray-300"
+                        : "bg-white text-gray-800 hover:bg-gray-50 border-2 border-gray-300 shadow-lg"
                     }`}
                   >
                     <span className="font-black text-xl tracking-wide">
@@ -411,11 +458,11 @@ export default function ReservationPage() {
               {/* Carrousel des véhicules */}
               <div className="flex justify-center items-center relative overflow-hidden">
                 <div className="relative w-full max-w-4xl h-[500px] overflow-hidden">
-                  {/* Masque de flou gauche */}
-                  <div className="absolute left-0 top-0 w-16 h-full bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+                  {/* Masque de flou gauche - transparent */}
+                  <div className="absolute left-0 top-0 w-16 h-full bg-gradient-to-r from-transparent via-transparent to-transparent z-10 pointer-events-none"></div>
 
-                  {/* Masque de flou droit */}
-                  <div className="absolute right-0 top-0 w-16 h-full bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+                  {/* Masque de flou droit - transparent */}
+                  <div className="absolute right-0 top-0 w-16 h-full bg-gradient-to-l from-transparent via-transparent to-transparent z-10 pointer-events-none"></div>
 
                   <div
                     className="flex transition-transform duration-500 ease-in-out h-full"
@@ -506,15 +553,13 @@ export default function ReservationPage() {
           <div className="relative min-h-screen bg-gradient-to-br from-white to-gray-50 shadow-xl border border-gray-100">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
               <div className="text-center mb-20">
-                <div className="flex items-center justify-center space-x-6 mb-8">
-                  <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-600 text-white rounded-full flex items-center justify-center text-2xl font-bold shadow-2xl">
-                    2
-                  </div>
-                  <h2 className="text-4xl lg:text-5xl font-black text-gray-900">
-                    Choisissez votre formule
-                  </h2>
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-full mb-8 shadow-2xl">
+                  <span className="text-white font-black text-2xl">2</span>
                 </div>
-                <p className="text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+                <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-6">
+                  Choisissez votre formule
+                </h2>
+                <p className="text-lg text-gray-600 max-w-4xl mx-auto leading-relaxed">
                   Sélectionnez la formule qui correspond le mieux à vos besoins
                 </p>
               </div>
@@ -626,7 +671,7 @@ export default function ReservationPage() {
                 <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-6">
                   Options supplémentaires
                 </h2>
-                <p className="text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+                <p className="text-lg text-gray-600 max-w-4xl mx-auto leading-relaxed">
                   Personnalisez votre lavage avec nos services additionnels
                 </p>
               </div>
@@ -749,27 +794,28 @@ export default function ReservationPage() {
           >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
               <div className="text-center mb-20">
-                <div className="flex items-center justify-center space-x-6 mb-8">
-                  <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-600 text-white rounded-full flex items-center justify-center text-2xl font-bold shadow-2xl">
-                    4
-                  </div>
-                  <h2 className="text-4xl lg:text-5xl font-black text-gray-900">
-                    Choisissez votre créneau
-                  </h2>
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-full mb-8 shadow-2xl">
+                  <span className="text-white font-black text-2xl">4</span>
                 </div>
-                <p className="text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+                <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-6">
+                  Choisissez votre créneau
+                </h2>
+                <p className="text-lg text-gray-600 max-w-4xl mx-auto leading-relaxed">
                   Sélectionnez la date et l'heure qui vous conviennent le mieux
                 </p>
               </div>
 
               <div className="max-w-6xl mx-auto">
-                <div className="bg-white rounded-3xl p-8 shadow-2xl border border-gray-200">
+                <div className="bg-white rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl border border-gray-200">
                   {/* En-tête du calendrier */}
-                  <div className="bg-cyan-600 rounded-t-xl p-4 mb-0">
+                  <div className="bg-cyan-600 rounded-t-xl p-3 sm:p-4 mb-0">
                     <div className="flex items-center justify-between">
-                      <button className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors">
+                      <button
+                        onClick={() => navigateWeek("prev")}
+                        className="w-6 h-6 sm:w-8 sm:h-8 bg-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+                      >
                         <svg
-                          className="w-4 h-4"
+                          className="w-3 h-3 sm:w-4 sm:h-4"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -782,12 +828,18 @@ export default function ReservationPage() {
                           />
                         </svg>
                       </button>
-                      <h3 className="text-xl font-bold text-white">
-                        Septembre 2025
+                      <h3 className="text-lg sm:text-xl font-bold text-white">
+                        {currentWeek.toLocaleDateString("fr-FR", {
+                          month: "long",
+                          year: "numeric",
+                        })}
                       </h3>
-                      <button className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors">
+                      <button
+                        onClick={() => navigateWeek("next")}
+                        className="w-6 h-6 sm:w-8 sm:h-8 bg-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+                      >
                         <svg
-                          className="w-4 h-4"
+                          className="w-3 h-3 sm:w-4 sm:h-4"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -804,105 +856,120 @@ export default function ReservationPage() {
                   </div>
 
                   {/* Calendrier hebdomadaire */}
-                  <div className="grid grid-cols-7 gap-4 p-6 bg-gray-50 rounded-b-xl">
+                  <div className="grid grid-cols-3 sm:grid-cols-7 gap-2 sm:gap-4 p-4 sm:p-6 lg:p-8 bg-gray-50 rounded-b-xl min-h-[500px]">
                     {/* Jours de la semaine */}
-                    {[
-                      { day: 17, name: "MERCREDI", available: true },
-                      { day: 18, name: "JEUDI", available: true },
-                      { day: 19, name: "VENDREDI", available: true },
-                      { day: 20, name: "SAMEDI", available: true },
-                      { day: 21, name: "DIMANCHE", available: false },
-                      { day: 22, name: "LUNDI", available: true },
-                      { day: 23, name: "MARDI", available: true },
-                    ].map((dayInfo, index) => (
-                      <div key={index} className="text-center">
-                        {/* En-tête du jour */}
-                        <div
-                          className={`mb-4 ${
-                            dayInfo.day === 17
-                              ? "bg-cyan-600 text-white rounded-full w-12 h-12 mx-auto flex items-center justify-center text-lg font-bold"
-                              : "text-gray-700"
-                          }`}
-                        >
-                          <div>
+                    {getWeekDays(getWeekStart(currentWeek)).map(
+                      (day, index) => {
+                        const dayInfo = {
+                          day: day.getDate(),
+                          name: day
+                            .toLocaleDateString("fr-FR", { weekday: "long" })
+                            .toUpperCase(),
+                          available: !isPast(day) && day.getDay() !== 0, // Pas disponible le dimanche et les jours passés
+                          date: day,
+                          isToday: isToday(day),
+                        };
+                        return (
+                          <div
+                            key={index}
+                            className={`text-center ${
+                              index >= 3 ? "hidden sm:block" : ""
+                            }`}
+                          >
+                            {/* En-tête du jour */}
                             <div
-                              className={`text-2xl font-bold ${
-                                dayInfo.day === 17
-                                  ? "text-white"
-                                  : "text-gray-900"
+                              className={`mb-2 sm:mb-4 ${
+                                selectedDate === formatDateForAPI(dayInfo.date)
+                                  ? "bg-cyan-600 text-white rounded-full w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 mx-auto flex items-center justify-center text-sm sm:text-base lg:text-lg font-bold"
+                                  : dayInfo.isToday
+                                  ? "bg-yellow-100 text-yellow-800 rounded-full w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 mx-auto flex items-center justify-center text-sm sm:text-base lg:text-lg font-bold"
+                                  : "text-gray-700"
                               }`}
                             >
-                              {dayInfo.day}
-                            </div>
-                            <div
-                              className={`text-xs font-medium ${
-                                dayInfo.day === 17
-                                  ? "text-white"
-                                  : "text-gray-600"
-                              }`}
-                            >
-                              {dayInfo.name}
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Créneaux horaires */}
-                        <div className="space-y-2">
-                          {!dayInfo.available ? (
-                            <div className="text-gray-400 text-lg font-medium py-8">
-                              Fermé
-                            </div>
-                          ) : (
-                            timeSlots.map((time) => {
-                              // Simuler quelques créneaux indisponibles pour le mardi
-                              const isUnavailable =
-                                dayInfo.day === 23 &&
-                                ["09:00", "10:00", "11:00", "12:00"].includes(
-                                  time
-                                );
-
-                              return (
-                                <button
-                                  key={time}
-                                  onClick={() => {
-                                    if (!isUnavailable) {
-                                      setSelectedDate(
-                                        `2025-09-${dayInfo.day
-                                          .toString()
-                                          .padStart(2, "0")}`
-                                      );
-                                      setSelectedTime(time);
-                                    }
-                                  }}
-                                  disabled={isUnavailable}
-                                  className={`w-full py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                              <div>
+                                <div
+                                  className={`text-lg sm:text-xl lg:text-2xl font-bold ${
                                     selectedDate ===
-                                      `2025-09-${dayInfo.day
-                                        .toString()
-                                        .padStart(2, "0")}` &&
-                                    selectedTime === time
-                                      ? "bg-cyan-600 text-white shadow-lg"
-                                      : isUnavailable
-                                      ? "bg-gray-100 text-gray-300 cursor-not-allowed"
-                                      : "bg-white text-gray-700 hover:bg-cyan-50 hover:text-cyan-700 border border-gray-200"
+                                    formatDateForAPI(dayInfo.date)
+                                      ? "text-white"
+                                      : dayInfo.isToday
+                                      ? "text-yellow-800"
+                                      : "text-gray-900"
                                   }`}
                                 >
-                                  {time}
-                                </button>
-                              );
-                            })
-                          )}
-                        </div>
-                      </div>
-                    ))}
+                                  {dayInfo.day}
+                                </div>
+                                <div
+                                  className={`text-xs font-medium ${
+                                    selectedDate ===
+                                    formatDateForAPI(dayInfo.date)
+                                      ? "text-white"
+                                      : dayInfo.isToday
+                                      ? "text-yellow-700"
+                                      : "text-gray-600"
+                                  }`}
+                                >
+                                  {dayInfo.name}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Créneaux horaires */}
+                            <div className="space-y-2 sm:space-y-3">
+                              {!dayInfo.available ? (
+                                <div className="text-gray-400 text-sm sm:text-base lg:text-lg font-medium py-4 sm:py-6 lg:py-8">
+                                  Fermé
+                                </div>
+                              ) : (
+                                timeSlots.map((time) => {
+                                  // Simuler quelques créneaux indisponibles pour certains jours
+                                  const isUnavailable = false; // Vous pouvez ajouter votre logique ici
+
+                                  return (
+                                    <button
+                                      key={time}
+                                      onClick={() => {
+                                        if (
+                                          !isUnavailable &&
+                                          dayInfo.available
+                                        ) {
+                                          setSelectedDate(
+                                            formatDateForAPI(dayInfo.date)
+                                          );
+                                          setSelectedTime(time);
+                                        }
+                                      }}
+                                      disabled={
+                                        isUnavailable || !dayInfo.available
+                                      }
+                                      className={`w-full py-2 sm:py-3 px-3 sm:px-4 rounded-lg text-sm sm:text-base font-medium transition-all duration-200 ${
+                                        selectedDate ===
+                                          formatDateForAPI(dayInfo.date) &&
+                                        selectedTime === time
+                                          ? "bg-cyan-600 text-white shadow-lg"
+                                          : isUnavailable || !dayInfo.available
+                                          ? "bg-gray-100 text-gray-300 cursor-not-allowed"
+                                          : "bg-white text-gray-700 hover:bg-cyan-50 hover:text-cyan-700 border border-gray-200"
+                                      }`}
+                                    >
+                                      {time}
+                                    </button>
+                                  );
+                                })
+                              )}
+                            </div>
+                          </div>
+                        );
+                      }
+                    )}
                   </div>
 
                   {/* Sélection actuelle */}
                   {selectedDate && selectedTime && (
-                    <div className="bg-cyan-50 rounded-xl p-4 border border-cyan-200 mt-6">
+                    <div className="bg-cyan-50 rounded-xl p-3 sm:p-4 border border-cyan-200 mt-4 sm:mt-6">
                       <div className="flex items-center justify-center space-x-2 text-cyan-800">
                         <svg
-                          className="w-5 h-5"
+                          className="w-4 h-4 sm:w-5 sm:h-5"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
@@ -912,7 +979,7 @@ export default function ReservationPage() {
                             clipRule="evenodd"
                           />
                         </svg>
-                        <span className="font-semibold">
+                        <span className="text-sm sm:text-base font-semibold">
                           Créneau sélectionné :{" "}
                           {new Date(selectedDate).toLocaleDateString("fr-FR", {
                             weekday: "long",
@@ -935,15 +1002,13 @@ export default function ReservationPage() {
           <div className="relative min-h-screen bg-gradient-to-br from-white to-gray-50 shadow-xl border border-gray-100">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
               <div className="text-center mb-20">
-                <div className="flex items-center justify-center space-x-6 mb-8">
-                  <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-600 text-white rounded-full flex items-center justify-center text-2xl font-bold shadow-2xl">
-                    5
-                  </div>
-                  <h2 className="text-4xl lg:text-5xl font-black text-gray-900">
-                    Finalisez votre réservation
-                  </h2>
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-full mb-8 shadow-2xl">
+                  <span className="text-white font-black text-2xl">5</span>
                 </div>
-                <p className="text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+                <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-6">
+                  Finalisez votre réservation
+                </h2>
+                <p className="text-lg text-gray-600 max-w-4xl mx-auto leading-relaxed">
                   Vérifiez vos choix et réservez votre créneau
                 </p>
               </div>

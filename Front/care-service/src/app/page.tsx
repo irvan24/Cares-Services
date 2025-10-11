@@ -911,13 +911,13 @@ export default function Home() {
                 <button
                   key={key}
                   onClick={() => setVehicle(key)}
-                  className={`group relative flex flex-col items-center gap-4 border rounded-2xl px-6 py-6 md:px-8 md:py-8 bg-white transition-all shadow-sm hover:shadow-md ${
+                  className={`group relative flex flex-col items-center gap-4 border rounded-2xl px-8 py-8 md:px-12 md:py-10 w-full max-w-xs md:max-w-sm bg-white transition-all shadow-sm hover:shadow-md ${
                     vehicle === key
                       ? "border-cyan-500 ring-2 ring-cyan-200 bg-cyan-50"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
-                  <div className="relative w-36 h-20 md:w-56 md:h-28">
+                  <div className="relative w-56 h-28 md:w-80 md:h-40">
                     <Image
                       src={img}
                       alt={label}
