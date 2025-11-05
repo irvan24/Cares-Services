@@ -8,10 +8,8 @@ import {
   UserCircleIcon,
   XMarkIcon,
   Bars3Icon,
-  ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import { useCart } from "../contexts/CartContext";
-import { useAuth } from "../contexts/AuthContext";
 
 export default function Navigation() {
   const [showCartDropdown, setShowCartDropdown] = useState(false);
@@ -19,7 +17,6 @@ export default function Navigation() {
   const [isClosing, setIsClosing] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
   const { cartCount, cartTotal, getCartItemsForNav } = useCart();
-  const { isAuthenticated, logout } = useAuth();
   const cartItems = getCartItemsForNav();
   const router = useRouter();
 
