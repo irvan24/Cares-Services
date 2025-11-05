@@ -1,13 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-09-30.clover",
-  typescript: true,
-});
-
 export async function POST(request: NextRequest) {
   try {
+    // Vérifier les variables d'environnement avant d'initialiser Stripe
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json(
+        { error: "Stripe secret key is not configured" },
+        { status: 500 }
+      );
+    }
+
+    // Initialiser Stripe uniquement si la clé est disponible
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: "2025-09-30.clover",
+      typescript: true,
+    });
+
     const body = await request.json();
     const {
       items,
@@ -35,14 +44,6 @@ export async function POST(request: NextRequest) {
       totalAmount: number;
       deliveryFee: number;
     } = body;
-
-    // Vérifier les variables d'environnement
-    if (!process.env.STRIPE_SECRET_KEY) {
-      return NextResponse.json(
-        { error: "Stripe secret key is not configured" },
-        { status: 500 }
-      );
-    }
 
     // Créer les line items pour Stripe
     const lineItems = [
