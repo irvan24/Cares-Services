@@ -1,13 +1,42 @@
 "use client";
-import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { dashboardService, DashboardStats } from "../../services/adminService";
 import AdminProtectedRoute from "../../components/AdminProtectedRoute";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Users,
+  TrendingUp,
+  ArrowUpRight,
+  ArrowDownRight,
+  BarChart3,
+  PieChart,
+  Activity,
+  DollarSign,
+} from "lucide-react";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 export default function AdminDashboard() {
+  const router = useRouter();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [timeRange, setTimeRange] = useState("3months");
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -29,571 +58,361 @@ export default function AdminDashboard() {
   if (error) {
     return (
       <div className="p-6">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-red-600">{error}</p>
-        </div>
+        <Card className="border-red-200 bg-red-50">
+          <CardContent className="p-4">
+            <p className="text-red-600">{error}</p>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
+  // Données réelles du backend pour le graphique de tendance
+  const visitorData = stats?.revenueChart?.map((item) => ({
+    date: item.label,
+    visitors: Math.round(item.revenue / 10), // Conversion approximative revenus -> visiteurs
+  })) || [{ date: "Aucune donnée", visitors: 0 }];
+
+  const kpiCards = [
+    {
+      title: "Total Revenue",
+      value: `€${Math.round((stats?.stats.revenue || 0) * 0.6)}`,
+      change: stats?.stats.variations?.revenue || 0,
+      changeText: "Trending up this month",
+      subtitle: "Revenue for the last 6 months",
+      icon: DollarSign,
+      trend: "up",
+    },
+    {
+      title: "New Customers",
+      value: stats?.stats.users || 0,
+      change: stats?.stats.variations?.users || 0,
+      changeText: "Down 20% this period",
+      subtitle: "Acquisition needs attention",
+      icon: Users,
+      trend: "down",
+    },
+    {
+      title: "Commandes Traitées",
+      value: stats?.stats.orders || 0,
+      change: stats?.stats.variations?.orders || 0,
+      changeText: "Commandes ce mois",
+      subtitle: "Performance des ventes",
+      icon: Activity,
+      trend: "up",
+    },
+    {
+      title: "Nouveaux Bookings",
+      value: stats?.stats.orders || 0,
+      change: stats?.stats.variations?.orders || 0,
+      changeText: "Réservations ce mois",
+      subtitle: "Demande de services",
+      icon: TrendingUp,
+      trend: "up",
+    },
+  ];
+
   return (
     <AdminProtectedRoute>
-      <div className="min-h-screen bg-gray-100">
-        {/* Espace pour la navbar fixe */}
-        <div className="pt-14 lg:pl-64">
-          <div className="p-3 sm:p-4 lg:p-6 bg-gray-100">
-            {/* Welcome Section */}
-
-            {/* Statistiques principales */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6 lg:mb-8">
-              {/* 1. Nombre de produits */}
-              <Link
-                href="/admin/produits"
-                className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 hover:bg-gray-50 transition-all duration-200 shadow-lg"
+      <div className="min-h-screen bg-white">
+        <div className="px-6 py-4 space-y-8">
+          {/* KPI Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {kpiCards.map((kpi, index) => (
+              <Card
+                key={index}
+                className={`border border-gray-200 shadow-sm ${
+                  kpi.title === "New Customers" ||
+                  kpi.title === "Commandes Traitées" ||
+                  kpi.title === "Nouveaux Bookings"
+                    ? "cursor-pointer hover:shadow-md transition-shadow"
+                    : ""
+                }`}
+                onClick={
+                  kpi.title === "New Customers"
+                    ? () => router.push("/admin/utilisateurs")
+                    : kpi.title === "Commandes Traitées"
+                    ? () => router.push("/admin/commandes")
+                    : kpi.title === "Nouveaux Bookings"
+                    ? () => router.push("/admin/bookings")
+                    : undefined
+                }
               >
-                <div className="flex items-center justify-between mb-3 sm:mb-4">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">
-                      Nombre de produits
-                    </p>
-                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
+                <CardContent className="p-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium text-gray-600">
+                          {kpi.title}
+                        </p>
+                        <p className="text-2xl font-bold text-gray-900">
+                          {loading ? "..." : kpi.value}
+                        </p>
+                      </div>
+                      <div className="p-2 bg-gray-100 rounded-lg">
+                        <kpi.icon className="h-5 w-5 text-gray-600" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        {kpi.trend === "up" ? (
+                          <ArrowUpRight className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <ArrowDownRight className="h-4 w-4 text-red-600" />
+                        )}
+                        <span
+                          className={`text-sm font-medium ${
+                            kpi.trend === "up"
+                              ? "text-green-600"
+                              : "text-red-600"
+                          }`}
+                        >
+                          {kpi.change >= 0 ? "+" : ""}
+                          {kpi.change}%
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600">{kpi.changeText}</p>
+                      <p className="text-xs text-gray-500">{kpi.subtitle}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Chart Section */}
+          <Card className="border border-gray-200 shadow-sm">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-xl font-semibold text-gray-900">
+                    Évolution des Revenus
+                  </CardTitle>
+                  <CardDescription className="text-gray-600">
+                    Tendances des revenus sur les derniers mois
+                  </CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant={timeRange === "3months" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setTimeRange("3months")}
+                    className={
+                      timeRange === "3months"
+                        ? "bg-gray-900 text-white hover:bg-gray-800"
+                        : "border-gray-300 text-gray-700 hover:bg-gray-50"
+                    }
+                  >
+                    3 derniers mois
+                  </Button>
+                  <Button
+                    variant={timeRange === "30days" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setTimeRange("30days")}
+                    className={
+                      timeRange === "30days"
+                        ? "bg-gray-900 text-white hover:bg-gray-800"
+                        : "border-gray-300 text-gray-700 hover:bg-gray-50"
+                    }
+                  >
+                    30 derniers jours
+                  </Button>
+                  <Button
+                    variant={timeRange === "7days" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setTimeRange("7days")}
+                    className={
+                      timeRange === "7days"
+                        ? "bg-gray-900 text-white hover:bg-gray-800"
+                        : "border-gray-300 text-gray-700 hover:bg-gray-50"
+                    }
+                  >
+                    7 derniers jours
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={visitorData}>
+                    <defs>
+                      <linearGradient
+                        id="colorVisitors"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="5%"
+                          stopColor="#3b82f6"
+                          stopOpacity={0.8}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor="#3b82f6"
+                          stopOpacity={0.1}
+                        />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      className="opacity-30"
+                    />
+                    <XAxis
+                      dataKey="date"
+                      className="text-xs text-gray-500"
+                      tick={{ fontSize: 12 }}
+                    />
+                    <YAxis
+                      className="text-xs text-gray-500"
+                      tick={{ fontSize: 12 }}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#f9fafb",
+                        border: "1px solid #e5e7eb",
+                        borderRadius: "8px",
+                        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                      }}
+                      labelStyle={{ color: "#374151", fontSize: "14px" }}
+                      formatter={(value: number) => [
+                        value.toLocaleString(),
+                        "Revenus",
+                      ]}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="visitors"
+                      stroke="#3b82f6"
+                      strokeWidth={2}
+                      fill="url(#colorVisitors)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Quick Actions */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card className="border border-gray-200 shadow-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5" />
+                  Performance
+                </CardTitle>
+                <CardDescription>
+                  Indicateurs clés de performance
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-900">
+                        Commandes Traitées
+                      </p>
+                      <p className="text-sm text-gray-600">Ce mois</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-gray-900">
+                        {loading ? "..." : stats?.stats.orders || 0}
+                      </p>
+                      <p
+                        className={`text-sm ${
+                          (stats?.stats.variations?.orders || 0) >= 0
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }`}
+                      >
+                        {(stats?.stats.variations?.orders || 0) >= 0 ? "+" : ""}
+                        {stats?.stats.variations?.orders || 0}%
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-900">
+                        Nouveaux Clients
+                      </p>
+                      <p className="text-sm text-gray-600">Ce mois</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-gray-900">
+                        {loading ? "..." : stats?.stats.users || 0}
+                      </p>
+                      <p
+                        className={`text-sm ${
+                          (stats?.stats.variations?.users || 0) >= 0
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }`}
+                      >
+                        {(stats?.stats.variations?.users || 0) >= 0 ? "+" : ""}
+                        {stats?.stats.variations?.users || 0}%
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border border-gray-200 shadow-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <PieChart className="h-5 w-5" />
+                  Vue d'ensemble
+                </CardTitle>
+                <CardDescription>
+                  Statistiques principales de l'activité
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                      <span className="text-sm text-gray-700">
+                        Produits Actifs
+                      </span>
+                    </div>
+                    <span className="text-sm font-medium text-gray-900">
                       {loading ? "..." : stats?.stats.products || 0}
-                    </p>
+                    </span>
                   </div>
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-cyan-500 rounded-full flex items-center justify-center flex-shrink-0 ml-2">
-                    <svg
-                      className="w-4 h-4 sm:w-5 sm:h-5 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                      />
-                    </svg>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      <span className="text-sm text-gray-700">
+                        Commandes En Cours
+                      </span>
+                    </div>
+                    <span className="text-sm font-medium text-gray-900">
+                      {loading
+                        ? "..."
+                        : (stats?.ordersByStatus?.processing || 0) +
+                          (stats?.ordersByStatus?.pending || 0)}
+                    </span>
                   </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span
-                    className={`inline-flex items-center px-2 py-0.5 sm:px-2.5 rounded-full text-xs font-medium ${
-                      (stats?.stats.variations?.products || 0) >= 0
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {(stats?.stats.variations?.products || 0) >= 0 ? "+" : ""}
-                    {stats?.stats.variations?.products || 0}%
-                  </span>
-                  <span className="text-xs text-gray-500 hidden sm:inline">
-                    Ce mois vs dernier
-                  </span>
-                </div>
-              </Link>
-
-              {/* 2. Nombre de comptes créés */}
-              <Link
-                href="/admin/utilisateurs"
-                className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 hover:bg-gray-50 transition-all duration-200 shadow-lg"
-              >
-                <div className="flex items-center justify-between mb-3 sm:mb-4">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">
-                      Nombre de comptes créés
-                    </p>
-                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
-                      {loading ? "..." : stats?.stats.users || 0}
-                    </p>
-                  </div>
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0 ml-2">
-                    <svg
-                      className="w-4 h-4 sm:w-5 sm:h-5 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                      />
-                    </svg>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span
-                    className={`inline-flex items-center px-2 py-0.5 sm:px-2.5 rounded-full text-xs font-medium ${
-                      (stats?.stats.variations?.users || 0) >= 0
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {(stats?.stats.variations?.users || 0) >= 0 ? "+" : ""}
-                    {stats?.stats.variations?.users || 0}%
-                  </span>
-                  <span className="text-xs text-gray-500 hidden sm:inline">
-                    Ce mois vs dernier
-                  </span>
-                </div>
-              </Link>
-
-              {/* 3. Nombre de commandes totales */}
-              <Link
-                href="/admin/commandes"
-                className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 hover:bg-gray-50 transition-all duration-200 shadow-lg"
-              >
-                <div className="flex items-center justify-between mb-3 sm:mb-4">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">
-                      Nombre de commandes totales
-                    </p>
-                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
-                      {loading ? "..." : stats?.stats.orders || 0}
-                    </p>
-                  </div>
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 ml-2">
-                    <svg
-                      className="w-4 h-4 sm:w-5 sm:h-5 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                      />
-                    </svg>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span
-                    className={`inline-flex items-center px-2 py-0.5 sm:px-2.5 rounded-full text-xs font-medium ${
-                      (stats?.stats.variations?.orders || 0) >= 0
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {(stats?.stats.variations?.orders || 0) >= 0 ? "+" : ""}
-                    {stats?.stats.variations?.orders || 0}%
-                  </span>
-                  <span className="text-xs text-gray-500 hidden sm:inline">
-                    Ce mois vs dernier
-                  </span>
-                </div>
-              </Link>
-
-              {/* 4. Bénéfice net */}
-              <Link
-                href="/admin/statistiques"
-                className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 hover:bg-gray-50 transition-all duration-200 shadow-lg"
-              >
-                <div className="flex items-center justify-between mb-3 sm:mb-4">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">
-                      Bénéfice net
-                    </p>
-                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                      <span className="text-sm text-gray-700">
+                        Revenus Ce Mois
+                      </span>
+                    </div>
+                    <span className="text-sm font-medium text-gray-900">
                       {loading
                         ? "..."
                         : `€${Math.round((stats?.stats.revenue || 0) * 0.6)}`}
-                    </p>
-                  </div>
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 ml-2">
-                    <svg
-                      className="w-4 h-4 sm:w-5 sm:h-5 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                      />
-                    </svg>
+                    </span>
                   </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span
-                    className={`inline-flex items-center px-2 py-0.5 sm:px-2.5 rounded-full text-xs font-medium ${
-                      (stats?.stats.variations?.revenue || 0) >= 0
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {(stats?.stats.variations?.revenue || 0) >= 0 ? "+" : ""}
-                    {stats?.stats.variations?.revenue || 0}%
-                  </span>
-                  <span className="text-xs text-gray-500 hidden sm:inline">
-                    Ce mois vs dernier
-                  </span>
-                </div>
-              </Link>
-            </div>
-
-            {/* Section Graphiques et Commandes */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6 lg:mb-8">
-              {/* Graphique des revenus */}
-              <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 shadow-lg">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-2 sm:gap-0">
-                  <div>
-                    <h3 className="text-base sm:text-lg font-semibold text-gray-900">
-                      Revenues
-                    </h3>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <select className="bg-white text-gray-900 text-xs sm:text-sm rounded-lg sm:rounded-xl px-2 sm:px-3 py-1 border border-gray-300 w-full sm:w-auto">
-                      <option>Ce mois</option>
-                      <option>Ce trimestre</option>
-                      <option>Cette année</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Graphique en courbe */}
-                <div className="h-48 sm:h-56 lg:h-64 relative">
-                  {stats?.revenueChart && stats.revenueChart.length > 0 ? (
-                    <svg
-                      className="w-full h-full"
-                      viewBox="0 0 800 200"
-                      preserveAspectRatio="none"
-                    >
-                      {/* Grille horizontale */}
-                      <defs>
-                        <pattern
-                          id="grid"
-                          width="80"
-                          height="40"
-                          patternUnits="userSpaceOnUse"
-                        >
-                          <path
-                            d="M 80 0 L 0 0 0 40"
-                            fill="none"
-                            stroke="#e5e7eb"
-                            strokeWidth="1"
-                            strokeDasharray="2,2"
-                            opacity="0.5"
-                          />
-                        </pattern>
-                      </defs>
-                      <rect width="100%" height="100%" fill="url(#grid)" />
-
-                      {/* Courbe des revenus */}
-                      <path
-                        d={(() => {
-                          const maxRevenue = Math.max(
-                            ...stats.revenueChart.map((d) => d.revenue)
-                          );
-                          const minRevenue = Math.min(
-                            ...stats.revenueChart.map((d) => d.revenue)
-                          );
-                          const range = maxRevenue - minRevenue || 1;
-
-                          const points = stats.revenueChart
-                            .map((data, index) => {
-                              const x =
-                                (index / (stats.revenueChart.length - 1)) * 800;
-                              const y =
-                                180 -
-                                ((data.revenue - minRevenue) / range) * 160;
-                              return `${x},${y}`;
-                            })
-                            .join(" ");
-
-                          return `M ${points.split(" ").join(" L ")}`;
-                        })()}
-                        fill="none"
-                        stroke="#10b981"
-                        strokeWidth="3"
-                        className="drop-shadow-lg"
-                      />
-
-                      {/* Points de données */}
-                      {stats.revenueChart.map((data, index) => {
-                        const maxRevenue = Math.max(
-                          ...stats.revenueChart.map((d) => d.revenue)
-                        );
-                        const minRevenue = Math.min(
-                          ...stats.revenueChart.map((d) => d.revenue)
-                        );
-                        const range = maxRevenue - minRevenue || 1;
-                        const x =
-                          (index / (stats.revenueChart.length - 1)) * 800;
-                        const y =
-                          180 - ((data.revenue - minRevenue) / range) * 160;
-
-                        return (
-                          <g key={index}>
-                            {/* Ligne pointillée verticale */}
-                            <line
-                              x1={x}
-                              y1={y}
-                              x2={x}
-                              y2={20}
-                              stroke="#10b981"
-                              strokeWidth="1"
-                              strokeDasharray="3,3"
-                              opacity="0.3"
-                            />
-                            {/* Point de données */}
-                            <circle
-                              cx={x}
-                              cy={y}
-                              r="4"
-                              fill="#10b981"
-                              className="hover:r-6 transition-all duration-200 cursor-pointer"
-                            />
-                            {/* Label avec valeur */}
-                            <g
-                              transform={`translate(${x}, ${Math.max(
-                                y - 30,
-                                10
-                              )})`}
-                            >
-                              <rect
-                                x="-30"
-                                y="-20"
-                                width="60"
-                                height="16"
-                                rx="8"
-                                fill="#f3f4f6"
-                                opacity="0.95"
-                                stroke="#e5e7eb"
-                                strokeWidth="1"
-                              />
-                              <text
-                                x="0"
-                                y="-5"
-                                textAnchor="middle"
-                                className="text-xs fill-gray-900 font-medium"
-                              >
-                                €{data.revenue.toFixed(2)}
-                              </text>
-                            </g>
-                          </g>
-                        );
-                      })}
-                    </svg>
-                  ) : (
-                    <div className="flex items-center justify-center h-full">
-                      <div className="text-gray-400 text-sm">
-                        Aucune donnée disponible
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Labels des axes */}
-                  <div className="absolute bottom-0 left-0 right-0 flex justify-between text-xs text-gray-500 px-2">
-                    {stats?.revenueChart?.map((data, index) => (
-                      <span key={index} className="text-center">
-                        {data.label}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Graphique en donut */}
-              <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 shadow-lg">
-                <div className="flex items-center justify-between mb-4 sm:mb-6">
-                  <div>
-                    <h3 className="text-base sm:text-lg font-semibold text-gray-900">
-                      Ventes par catégorie
-                    </h3>
-                    <p className="text-xs sm:text-sm text-gray-600">
-                      Ce mois vs dernier
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center justify-center mb-4">
-                  <div className="relative w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48">
-                    <svg
-                      className="w-full h-full transform -rotate-90"
-                      viewBox="0 0 100 100"
-                    >
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        fill="none"
-                        stroke="#374151"
-                        strokeWidth="8"
-                      />
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        fill="none"
-                        stroke="#06b6d4"
-                        strokeWidth="8"
-                        strokeDasharray="25 75"
-                        strokeDashoffset="0"
-                      />
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        fill="none"
-                        stroke="#eab308"
-                        strokeWidth="8"
-                        strokeDasharray="25 75"
-                        strokeDashoffset="-25"
-                      />
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        fill="none"
-                        stroke="#22c55e"
-                        strokeWidth="8"
-                        strokeDasharray="17 83"
-                        strokeDashoffset="-50"
-                      />
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        fill="none"
-                        stroke="#f97316"
-                        strokeWidth="8"
-                        strokeDasharray="19 81"
-                        strokeDashoffset="-67"
-                      />
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        fill="none"
-                        stroke="#84cc16"
-                        strokeWidth="8"
-                        strokeDasharray="14 86"
-                        strokeDashoffset="-86"
-                      />
-                    </svg>
-                  </div>
-                </div>
-                <div className="space-y-1 sm:space-y-2">
-                  {[
-                    {
-                      color: "bg-cyan-500",
-                      label: "Lavage Extérieur",
-                      value: "25%",
-                    },
-                    {
-                      color: "bg-yellow-500",
-                      label: "Nettoyage Intérieur",
-                      value: "25%",
-                    },
-                    {
-                      color: "bg-green-500",
-                      label: "Detailing Complet",
-                      value: "17%",
-                    },
-                    {
-                      color: "bg-orange-500",
-                      label: "Service Premium",
-                      value: "19%",
-                    },
-                    { color: "bg-lime-500", label: "Entretien", value: "14%" },
-                  ].map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between text-xs sm:text-sm"
-                    >
-                      <div className="flex items-center min-w-0 flex-1">
-                        <div
-                          className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${item.color} mr-1 sm:mr-2 flex-shrink-0`}
-                        ></div>
-                        <span className="text-gray-700 truncate">
-                          {item.label}
-                        </span>
-                      </div>
-                      <span className="text-gray-900 font-medium flex-shrink-0 ml-2">
-                        {item.value}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Section Commandes et Clients */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6 lg:mb-8">
-              <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 shadow-lg relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-red-500/10"></div>
-                <div className="relative">
-                  <div className="flex items-center justify-between mb-3 sm:mb-4">
-                    <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                      {loading
-                        ? "..."
-                        : (stats?.ordersByStatus?.pending || 0) +
-                          (stats?.ordersByStatus?.processing || 0)}
-                    </h3>
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-orange-500 rounded-full flex items-center justify-center">
-                      <svg
-                        className="w-4 h-4 sm:w-5 sm:h-5 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                  <p className="text-gray-900 text-base sm:text-lg mb-1 sm:mb-2">
-                    commandes à traiter
-                  </p>
-                  <p className="text-gray-600 text-xs sm:text-sm">
-                    {stats?.ordersByStatus?.pending || 0} en attente,{" "}
-                    {stats?.ordersByStatus?.processing || 0} en cours.
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 shadow-lg relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10"></div>
-                <div className="relative">
-                  <div className="flex items-center justify-between mb-3 sm:mb-4">
-                    <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                      {loading ? "..." : stats?.stats.users || 0}
-                    </h3>
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-purple-500 rounded-full flex items-center justify-center">
-                      <svg
-                        className="w-4 h-4 sm:w-5 sm:h-5 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                  <p className="text-gray-900 text-base sm:text-lg mb-1 sm:mb-2">
-                    clients
-                  </p>
-                  <p className="text-gray-600 text-xs sm:text-sm">
-                    {loading ? "..." : stats?.stats.users || 0} clients en
-                    attente de réponse.
-                  </p>
-                </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

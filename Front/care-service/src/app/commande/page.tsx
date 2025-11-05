@@ -2,10 +2,10 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Navigation from "../../components/Navigation";
 import Footer from "../../components/Footer";
-import { useCart } from "../../contexts/CartContext";
-import { products } from "../../data/products";
+import { useCart, CartItem } from "../../contexts/CartContext";
 import {
   TruckIcon,
   CreditCardIcon,
@@ -33,8 +33,10 @@ interface DeliveryForm {
 }
 
 export default function CheckoutPage() {
+  const router = useRouter();
   const { cart, cartTotal, clearCart } = useCart();
   const [currentStep, setCurrentStep] = useState(1);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState<DeliveryForm>({
     firstName: "",
     lastName: "",
@@ -49,17 +51,8 @@ export default function CheckoutPage() {
     notes: "",
   });
 
-  // Obtenir les détails des articles du panier
-  const cartItems = cart
-    .map((item) => {
-      const product = products.find((p) => p.id === item.id);
-      if (!product) return null;
-      return {
-        ...product,
-        quantity: item.quantity,
-      };
-    })
-    .filter((item) => item !== null);
+  // Utiliser directement les items du panier
+  const cartItems: CartItem[] = cart;
 
   // Calculer les frais de livraison
   const getDeliveryFee = () => {
@@ -101,24 +94,74 @@ export default function CheckoutPage() {
     return requiredFields.every((field) => formData[field]?.trim() !== "");
   };
 
-  // Soumettre la commande
-  const handleSubmitOrder = () => {
+  // Soumettre la commande avec Stripe
+  const handleSubmitOrder = async () => {
     if (!validateForm()) {
       alert("Veuillez remplir tous les champs obligatoires.");
       return;
     }
 
-    // Ici, vous pourriez envoyer la commande à votre backend
-    console.log("Commande soumise:", {
-      ...formData,
-      items: cartItems,
-      total: totalWithDelivery,
-    });
+    setIsProcessing(true);
 
-    // Simuler le succès
-    alert("Commande confirmée ! Vous recevrez un email de confirmation.");
-    clearCart();
-    // Rediriger vers la page de confirmation
+    try {
+      // Préparer les données pour Stripe
+      const itemsForStripe = cartItems.map((item) => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image,
+      }));
+
+      const customerInfo = {
+        email: formData.email,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phone: formData.phone,
+        address: formData.address,
+        city: formData.city,
+        postalCode: formData.postalCode,
+        country: formData.country,
+      };
+
+      // Appeler l'API pour créer la session Stripe
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          items: itemsForStripe,
+          customerInfo,
+          totalAmount: cartTotal,
+          deliveryFee,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(
+          error.error || "Erreur lors de la création de la session de paiement"
+        );
+      }
+
+      const { url } = await response.json();
+
+      if (url) {
+        // Rediriger vers Stripe Checkout
+        window.location.href = url;
+      } else {
+        throw new Error("URL de paiement non reçue");
+      }
+    } catch (error) {
+      console.error("Erreur lors du paiement:", error);
+      alert(
+        error instanceof Error
+          ? `Erreur: ${error.message}`
+          : "Une erreur est survenue lors du traitement de votre paiement. Veuillez réessayer."
+      );
+      setIsProcessing(false);
+    }
   };
 
   if (cartItems.length === 0) {
@@ -440,15 +483,41 @@ export default function CheckoutPage() {
 
                 <div className="flex justify-end mt-8">
                   <button
-                    onClick={() => setCurrentStep(2)}
-                    disabled={!validateForm()}
-                    className={`px-8 py-3 rounded-lg font-semibold transition-colors ${
-                      validateForm()
+                    onClick={handleSubmitOrder}
+                    disabled={!validateForm() || isProcessing}
+                    className={`px-8 py-3 rounded-lg font-semibold transition-colors flex items-center space-x-2 ${
+                      validateForm() && !isProcessing
                         ? "bg-cyan-500 hover:bg-cyan-600 text-white"
                         : "bg-gray-300 text-gray-500 cursor-not-allowed"
                     }`}
                   >
-                    Continuer vers le paiement
+                    {isProcessing ? (
+                      <>
+                        <svg
+                          className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        <span>Redirection vers le paiement...</span>
+                      </>
+                    ) : (
+                      <span>Continuer vers le paiement</span>
+                    )}
                   </button>
                 </div>
               </div>
@@ -632,9 +701,36 @@ export default function CheckoutPage() {
                   </button>
                   <button
                     onClick={handleSubmitOrder}
-                    className="px-8 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold transition-colors"
+                    disabled={isProcessing}
+                    className="px-8 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                   >
-                    Confirmer la commande
+                    {isProcessing ? (
+                      <>
+                        <svg
+                          className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        <span>Redirection vers le paiement...</span>
+                      </>
+                    ) : (
+                      <span>Confirmer la commande et payer</span>
+                    )}
                   </button>
                 </div>
               </div>

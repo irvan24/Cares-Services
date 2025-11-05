@@ -8,8 +8,10 @@ import {
   UserCircleIcon,
   XMarkIcon,
   Bars3Icon,
+  ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import { useCart } from "../contexts/CartContext";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Navigation() {
   const [showCartDropdown, setShowCartDropdown] = useState(false);
@@ -17,6 +19,7 @@ export default function Navigation() {
   const [isClosing, setIsClosing] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
   const { cartCount, cartTotal, getCartItemsForNav } = useCart();
+  const { isAuthenticated, logout } = useAuth();
   const cartItems = getCartItemsForNav();
   const router = useRouter();
 
@@ -55,9 +58,9 @@ export default function Navigation() {
   return (
     <>
       <style jsx>{`
-        @keyframes slideInFromRight {
+        @keyframes slideInFromLeft {
           from {
-            transform: translateX(100%);
+            transform: translateX(-100%);
           }
           to {
             transform: translateX(0);
@@ -67,6 +70,14 @@ export default function Navigation() {
       <header className="text-white" style={{ backgroundColor: "#3f3f3f" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative flex items-center py-4">
+            {/* Menu burger sur mobile - À gauche */}
+            <button
+              onClick={() => setShowMobileMenu(true)}
+              className="md:hidden hover:text-cyan-400 transition-colors mr-4"
+            >
+              <Bars3Icon className="w-8 h-8" />
+            </button>
+
             {/* Logo */}
             <div className="flex items-center space-x-2">
               <Link
@@ -76,9 +87,9 @@ export default function Navigation() {
                 <Image
                   src="/care.png"
                   alt="CARE Services"
-                  width={120}
-                  height={40}
-                  className="h-8 w-auto"
+                  width={180}
+                  height={60}
+                  className="h-12 w-auto"
                 />
               </Link>
             </div>
@@ -231,14 +242,7 @@ export default function Navigation() {
                 )}
               </div>
 
-              {/* Menu burger sur mobile, icône utilisateur sur desktop */}
-              <button
-                onClick={() => setShowMobileMenu(true)}
-                className="md:hidden hover:text-cyan-400 transition-colors"
-              >
-                <Bars3Icon className="w-8 h-8" />
-              </button>
-
+              {/* Icône utilisateur sur desktop */}
               <Link
                 href="/reservation"
                 className="hidden md:block hover:text-cyan-400 transition-colors"
@@ -261,13 +265,13 @@ export default function Navigation() {
 
             {/* Sidebar */}
             <div
-              className={`fixed top-0 right-0 h-full w-full bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
-                isClosing ? "translate-x-full" : "translate-x-0"
+              className={`fixed top-0 left-0 h-full w-full bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
+                isClosing ? "-translate-x-full" : "translate-x-0"
               }`}
               style={{
-                transform: isClosing ? "translateX(100%)" : "translateX(0)",
+                transform: isClosing ? "translateX(-100%)" : "translateX(0)",
                 animation: !isClosing
-                  ? "slideInFromRight 0.3s ease-out"
+                  ? "slideInFromLeft 0.3s ease-out"
                   : "none",
               }}
             >
@@ -309,9 +313,9 @@ export default function Navigation() {
 
               {/* Contact info et déconnexion */}
               <div className="p-6 border-t border-gray-200 mt-auto space-y-4">
-                <div className="flex items-center space-x-3 text-gray-600">
+                <div className="flex items-center space-x-3 w-full py-3 px-4">
                   <svg
-                    className="w-5 h-5"
+                    className="w-5 h-5 text-gray-600 flex-shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -326,37 +330,51 @@ export default function Navigation() {
                   </svg>
                   <a
                     href="tel:0123456789"
-                    className="hover:text-cyan-600 transition-colors"
+                    className="text-blue-600 hover:text-blue-700 hover:underline transition-colors font-medium"
                   >
                     +33 6 75 32 98 76
                   </a>
                 </div>
 
-                {/* Bouton de déconnexion */}
-                <button
-                  onClick={() => {
-                    // Logique de déconnexion ici
-                    console.log("Déconnexion");
-                    closeMobileMenu();
-                  }}
-                  className="flex items-center space-x-3 w-full py-3 px-4 text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
+                {/* Bouton de connexion/déconnexion
+                {isAuthenticated ? (
+                  <button
+                    onClick={() => {
+                      logout();
+                      closeMobileMenu();
+                      router.push("/");
+                    }}
+                    className="flex items-center space-x-3 w-full py-3 px-4 text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                    />
-                  </svg>
-                  <span className="font-medium">Se déconnecter</span>
-                </button>
+                    <svg
+                      className="w-5 h-5 flex-shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                      />
+                    </svg>
+                    <span className="font-medium">Se déconnecter</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      closeMobileMenu();
+                      router.push("/admin/login");
+                    }}
+                    className="flex items-center space-x-3 w-full py-3 px-4 text-blue-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg transition-colors"
+                  >
+                    <ArrowRightOnRectangleIcon className="w-5 h-5 flex-shrink-0" />
+                    <span className="font-medium">Se connecter</span>
+                  </button>
+                )}
+                */}
               </div>
             </div>
           </>

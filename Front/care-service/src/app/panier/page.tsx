@@ -3,8 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Navigation from "../../components/Navigation";
 import Footer from "../../components/Footer";
-import { useCart } from "../../contexts/CartContext";
-import { products } from "../../data/products";
+import { useCart, CartItem } from "../../contexts/CartContext";
 import {
   TrashIcon,
   PlusIcon,
@@ -17,17 +16,8 @@ export default function PanierPage() {
   const { cart, updateQuantity, removeFromCart, clearCart, cartTotal } =
     useCart();
 
-  // Obtenir les détails complets des items du panier
-  const cartItems = cart
-    .map((item) => {
-      const product = products.find((p) => p.id === item.id);
-      if (!product) return null;
-      return {
-        ...product,
-        quantity: item.quantity,
-      };
-    })
-    .filter((item) => item !== null);
+  // Utiliser directement les items du panier (ils contiennent déjà toutes les infos nécessaires)
+  const cartItems: CartItem[] = cart;
 
   // Calculer les frais de livraison
   const deliveryFee = cartTotal > 50 ? 0 : 4.99;
@@ -89,12 +79,18 @@ export default function PanierPage() {
                       <div className="flex items-center space-x-4">
                         {/* Image */}
                         <div className="relative w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            fill
-                            className="object-cover"
-                          />
+                          {item.image ? (
+                            <Image
+                              src={item.image}
+                              alt={item.name}
+                              fill
+                              className="object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <span className="text-xs text-gray-600">IMG</span>
+                            </div>
+                          )}
                         </div>
 
                         {/* Détails */}

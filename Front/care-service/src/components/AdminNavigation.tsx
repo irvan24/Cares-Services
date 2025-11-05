@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "../contexts/AuthContext";
 import {
@@ -9,28 +8,18 @@ import {
   ShoppingBagIcon,
   ClipboardDocumentListIcon,
   UserGroupIcon,
-  Cog6ToothIcon,
   ArrowRightOnRectangleIcon,
   Bars3Icon,
   XMarkIcon,
+  ChartBarIcon,
+  FolderIcon,
+  EllipsisHorizontalIcon,
 } from "@heroicons/react/24/outline";
 
 export default function AdminNavigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const pathname = usePathname();
-
-  const navigation = [
-    { name: "Dashboard", href: "/admin", icon: HomeIcon },
-    { name: "Produits", href: "/admin/produits", icon: ShoppingBagIcon },
-    {
-      name: "Commandes",
-      href: "/admin/commandes",
-      icon: ClipboardDocumentListIcon,
-    },
-    { name: "Utilisateurs", href: "/admin/utilisateurs", icon: UserGroupIcon },
-    { name: "Paramètres", href: "/admin/parametres", icon: Cog6ToothIcon },
-  ];
 
   const isActive = (href: string) => {
     if (href === "/admin") {
@@ -41,34 +30,142 @@ export default function AdminNavigation() {
 
   return (
     <>
-      {/* Top Navbar */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-gray-800 border-b border-gray-700">
-        <div className="flex items-center justify-between px-4 py-3">
+      {/* Sidebar Desktop */}
+      <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col bg-gray-900">
+        <div className="flex flex-col flex-grow pt-6 pb-4 overflow-y-auto">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <Image
-              src="/care.png"
-              alt="CARE Services"
-              width={32}
-              height={32}
-              className="w-8 h-8 object-contain"
-            />
-            <span className="text-white font-bold text-lg">Admin</span>
+          <div className="flex items-center px-6 mb-8">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                <div className="w-4 h-4 bg-gray-900 rounded-full"></div>
+              </div>
+              <span className="text-white font-semibold text-lg">
+                Cares Services
+              </span>
+            </div>
+          </div>
+
+          {/* Navigation */}
+          <div className="flex-grow flex flex-col">
+            <nav className="flex-1 px-4 space-y-2">
+              {/* Home Section */}
+              <div className="mb-6">
+                <p className="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                  Home
+                </p>
+                <div className="space-y-1">
+                  <Link
+                    href="/admin"
+                    className={`group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                      isActive("/admin")
+                        ? "bg-gray-800 text-white"
+                        : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                    }`}
+                  >
+                    <HomeIcon className="mr-3 h-5 w-5" />
+                    Dashboard
+                  </Link>
+                  <Link
+                    href="/admin/analytics"
+                    className="group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors text-gray-300 hover:bg-gray-800 hover:text-white"
+                  >
+                    <ChartBarIcon className="mr-3 h-5 w-5" />
+                    Analytics
+                  </Link>
+                  <Link
+                    href="/admin/projects"
+                    className="group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors text-gray-300 hover:bg-gray-800 hover:text-white"
+                  >
+                    <FolderIcon className="mr-3 h-5 w-5" />
+                    Projects
+                  </Link>
+                </div>
+              </div>
+
+              {/* Documents Section */}
+              <div className="mb-6">
+                <p className="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                  Documents
+                </p>
+                <div className="space-y-1">
+                  <Link
+                    href="/admin/produits"
+                    className={`group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                      isActive("/admin/produits")
+                        ? "bg-gray-800 text-white"
+                        : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                    }`}
+                  >
+                    <ShoppingBagIcon className="mr-3 h-5 w-5" />
+                    Products
+                  </Link>
+                  <Link
+                    href="/admin/commandes"
+                    className={`group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                      isActive("/admin/commandes")
+                        ? "bg-gray-800 text-white"
+                        : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                    }`}
+                  >
+                    <ClipboardDocumentListIcon className="mr-3 h-5 w-5" />
+                    Orders
+                  </Link>
+                  <Link
+                    href="/admin/utilisateurs"
+                    className={`group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                      isActive("/admin/utilisateurs")
+                        ? "bg-gray-800 text-white"
+                        : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                    }`}
+                  >
+                    <UserGroupIcon className="mr-3 h-5 w-5" />
+                    Users
+                  </Link>
+                </div>
+              </div>
+
+              {/* More Section */}
+              <div className="mt-auto">
+                <Link
+                  href="/admin/parametres"
+                  className={`group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    isActive("/admin/parametres")
+                      ? "bg-gray-800 text-white"
+                      : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                  }`}
+                >
+                  <EllipsisHorizontalIcon className="mr-3 h-5 w-5" />
+                  More
+                </Link>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+
+      {/* Top Navbar */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 lg:ml-64">
+        <div className="flex items-center justify-between px-6 py-3">
+          {/* Page Title */}
+          <div>
+            <h1 className="text-xl font-semibold text-gray-900">Dashboard</h1>
           </div>
 
           {/* User info and logout */}
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-3">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">
+                <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                  <span className="text-gray-700 font-bold text-sm">
                     {user?.name?.charAt(0) || "A"}
                   </span>
                 </div>
               </div>
               <div className="hidden sm:block">
-                <p className="text-sm font-medium text-white">{user?.name}</p>
-                <p className="text-xs text-gray-400">{user?.email}</p>
+                <p className="text-sm font-medium text-gray-900">
+                  {user?.name}
+                </p>
+                <p className="text-xs text-gray-500">{user?.email}</p>
               </div>
             </div>
             <button
@@ -83,54 +180,19 @@ export default function AdminNavigation() {
         </div>
       </div>
 
-      {/* Sidebar Desktop */}
-      <div
-        className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col"
-        style={{ top: "56px" }}
-      >
-        <div className="flex flex-col flex-grow bg-gray-800 pt-5 pb-4 overflow-y-auto border-r border-gray-700">
-          {/* Navigation */}
-          <div className="mt-5 flex-grow flex flex-col">
-            <nav className="flex-1 px-2 space-y-1">
-              {navigation.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors ${
-                      isActive(item.href)
-                        ? "bg-gray-900 text-white border-l-4 border-cyan-400"
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white border-l-4 border-transparent"
-                    }`}
-                  >
-                    <Icon className="mr-3 h-5 w-5" />
-                    {item.name}
-                  </Link>
-                );
-              })}
-            </nav>
-          </div>
-        </div>
-      </div>
-
       {/* Mobile menu button */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-gray-800 px-4 py-3 flex items-center justify-between">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white px-4 py-3 flex items-center justify-between border-b border-gray-200">
         <div className="flex items-center space-x-2">
-          <Image
-            src="/care.png"
-            alt="CARE Services"
-            width={24}
-            height={24}
-            className="w-6 h-6 object-contain"
-          />
-          <span className="text-white font-bold">Admin</span>
+          <div className="w-6 h-6 bg-gray-900 rounded-full flex items-center justify-center">
+            <div className="w-3 h-3 bg-white rounded-full"></div>
+          </div>
+          <span className="text-gray-900 font-semibold">Cares Services</span>
         </div>
         <div className="flex items-center space-x-3">
           {/* User info mobile */}
           <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 bg-gray-700 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-xs">
+            <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
+              <span className="text-gray-700 font-bold text-xs">
                 {user?.name?.charAt(0) || "A"}
               </span>
             </div>
@@ -145,7 +207,7 @@ export default function AdminNavigation() {
 
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="text-gray-300 hover:text-white"
+            className="text-gray-600 hover:text-gray-900"
           >
             {isMobileMenuOpen ? (
               <XMarkIcon className="h-6 w-6" />
@@ -158,27 +220,82 @@ export default function AdminNavigation() {
 
       {/* Mobile menu */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-40 bg-gray-800">
+        <div className="lg:hidden fixed inset-0 z-40 bg-gray-900">
           <div className="pt-16 pb-4 overflow-y-auto">
-            <nav className="px-2 space-y-1">
-              {navigation.map((item) => {
-                const Icon = item.icon;
-                return (
+            <nav className="px-4 space-y-2">
+              {/* Home Section */}
+              <div className="mb-6">
+                <p className="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                  Home
+                </p>
+                <div className="space-y-1">
                   <Link
-                    key={item.name}
-                    href={item.href}
+                    href="/admin"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`group flex items-center px-2 py-2 text-base font-medium rounded-md transition-colors ${
-                      isActive(item.href)
-                        ? "bg-gray-900 text-white"
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                    className={`group flex items-center px-3 py-2 text-base font-medium rounded-lg transition-colors ${
+                      isActive("/admin")
+                        ? "bg-gray-800 text-white"
+                        : "text-gray-300 hover:bg-gray-800 hover:text-white"
                     }`}
                   >
-                    <Icon className="mr-4 h-6 w-6" />
-                    {item.name}
+                    <HomeIcon className="mr-4 h-6 w-6" />
+                    Dashboard
                   </Link>
-                );
-              })}
+                  <Link
+                    href="/admin/analytics"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="group flex items-center px-3 py-2 text-base font-medium rounded-lg transition-colors text-gray-300 hover:bg-gray-800 hover:text-white"
+                  >
+                    <ChartBarIcon className="mr-4 h-6 w-6" />
+                    Analytics
+                  </Link>
+                </div>
+              </div>
+
+              {/* Documents Section */}
+              <div className="mb-6">
+                <p className="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                  Documents
+                </p>
+                <div className="space-y-1">
+                  <Link
+                    href="/admin/produits"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`group flex items-center px-3 py-2 text-base font-medium rounded-lg transition-colors ${
+                      isActive("/admin/produits")
+                        ? "bg-gray-800 text-white"
+                        : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                    }`}
+                  >
+                    <ShoppingBagIcon className="mr-4 h-6 w-6" />
+                    Products
+                  </Link>
+                  <Link
+                    href="/admin/commandes"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`group flex items-center px-3 py-2 text-base font-medium rounded-lg transition-colors ${
+                      isActive("/admin/commandes")
+                        ? "bg-gray-800 text-white"
+                        : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                    }`}
+                  >
+                    <ClipboardDocumentListIcon className="mr-4 h-6 w-6" />
+                    Orders
+                  </Link>
+                  <Link
+                    href="/admin/utilisateurs"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`group flex items-center px-3 py-2 text-base font-medium rounded-lg transition-colors ${
+                      isActive("/admin/utilisateurs")
+                        ? "bg-gray-800 text-white"
+                        : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                    }`}
+                  >
+                    <UserGroupIcon className="mr-4 h-6 w-6" />
+                    Users
+                  </Link>
+                </div>
+              </div>
             </nav>
           </div>
         </div>

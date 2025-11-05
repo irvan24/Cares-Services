@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Navigation from "../../components/Navigation";
@@ -34,10 +34,13 @@ export default function ReservationPage() {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [optionsIndex, setOptionsIndex] = useState(0);
   const [showCalendly, setShowCalendly] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [currentWeek, setCurrentWeek] = useState<Date>(new Date());
+  const vehicleScrollRef = useRef<HTMLDivElement>(null);
+  const optionsScrollRef = useRef<HTMLDivElement>(null);
   const [clientInfo, setClientInfo] = useState({
     nom: "",
     prenom: "",
@@ -153,7 +156,47 @@ export default function ReservationPage() {
   const isPast = (date: Date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    return date < today;
+    const dateToCheck = new Date(date);
+    dateToCheck.setHours(0, 0, 0, 0);
+    return dateToCheck < today;
+  };
+
+  // Fonction pour obtenir les créneaux disponibles selon la date
+  const getAvailableTimeSlots = (date: Date) => {
+    const allSlots = generateTimeSlots();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const dateToCheck = new Date(date);
+    dateToCheck.setHours(0, 0, 0, 0);
+
+    // Si c'est aujourd'hui, ne montrer que les créneaux jusqu'à 16h
+    if (dateToCheck.getTime() === today.getTime()) {
+      const now = new Date();
+      const currentHour = now.getHours();
+      const currentMinute = now.getMinutes();
+
+      // Si on est déjà après 16h, ne pas afficher de créneaux
+      if (currentHour >= 16) {
+        return [];
+      }
+
+      // Filtrer les créneaux : seulement ceux jusqu'à 16h et qui ne sont pas déjà passés
+      return allSlots.filter((slot) => {
+        const slotHour = parseInt(slot.split(":")[0]);
+        // Maximum 16h
+        if (slotHour > 16) return false;
+        // Si le créneau est à la même heure, vérifier les minutes
+        if (slotHour === currentHour) {
+          // Si on est déjà à cette heure ou plus tard, ne pas afficher
+          return false;
+        }
+        // Si le créneau est dans le futur, l'afficher
+        return slotHour > currentHour;
+      });
+    }
+
+    // Pour les jours futurs, retourner tous les créneaux
+    return allSlots;
   };
 
   // Fonction pour gérer les options supplémentaires
@@ -168,8 +211,8 @@ export default function ReservationPage() {
   // Générer les créneaux horaires disponibles
   const generateTimeSlots = () => {
     const slots = [];
-    const startHour = 9; // 9h
-    const endHour = 17; // 17h
+    const startHour = 8; // 8h
+    const endHour = 20; // 20h
     const lunchBreak = { start: 12, end: 14 }; // Pause déjeuner
 
     for (let hour = startHour; hour < endHour; hour++) {
@@ -263,13 +306,13 @@ export default function ReservationPage() {
   > = {
     citadine: [
       {
-        label: "Lavage Basic",
+        label: "Nettoyage Basic",
         price: 25,
         duration: "30 min",
         features: [
-          "Lavage extérieur à la main",
+          "Nettoyage extérieur à la main",
           "Nettoyage jantes",
-          "Lavage vitres",
+          "Nettoyage vitres",
           "Brillant pneus basic",
           "Séchage serviette",
         ],
@@ -279,7 +322,7 @@ export default function ReservationPage() {
         price: 45,
         duration: "60 min",
         features: [
-          "Lavage extérieur complet",
+          "Nettoyage extérieur complet",
           "Aspiration habitacle",
           "Dépoussiérage tableau de bord",
           "Nettoyage vitres intérieur/extérieur",
@@ -291,7 +334,7 @@ export default function ReservationPage() {
         price: 85,
         duration: "120 min",
         features: [
-          "Lavage + cire protectrice",
+          "Nettoyage + cire protectrice",
           "Shampoing sièges/tapis",
           "Rénovation plastiques",
           "Désinfection vapeur",
@@ -301,13 +344,13 @@ export default function ReservationPage() {
     ],
     berline: [
       {
-        label: "Lavage Basic",
+        label: "Nettoyage Basic",
         price: 30,
         duration: "35 min",
         features: [
-          "Lavage extérieur à la main",
+          "Nettoyage extérieur à la main",
           "Nettoyage jantes",
-          "Lavage vitres",
+          "Nettoyage vitres",
           "Brillant pneus basic",
           "Séchage serviette",
         ],
@@ -317,7 +360,7 @@ export default function ReservationPage() {
         price: 55,
         duration: "75 min",
         features: [
-          "Lavage extérieur complet",
+          "Nettoyage extérieur complet",
           "Aspiration habitacle",
           "Dépoussiérage tableau de bord",
           "Nettoyage vitres intérieur/extérieur",
@@ -339,13 +382,13 @@ export default function ReservationPage() {
     ],
     suv: [
       {
-        label: "Lavage Basic",
+        label: "Nettoyage Basic",
         price: 35,
         duration: "40 min",
         features: [
-          "Lavage extérieur à la main",
+          "Nettoyage extérieur à la main",
           "Nettoyage jantes",
-          "Lavage vitres",
+          "Nettoyage vitres",
           "Brillant pneus basic",
           "Séchage serviette",
         ],
@@ -355,7 +398,7 @@ export default function ReservationPage() {
         price: 65,
         duration: "90 min",
         features: [
-          "Lavage extérieur complet",
+          "Nettoyage extérieur complet",
           "Aspiration habitacle",
           "Dépoussiérage tableau de bord",
           "Nettoyage vitres intérieur/extérieur",
@@ -406,9 +449,9 @@ export default function ReservationPage() {
 
           {/* ÉTAPE 1: Sélection du type de véhicule */}
           <div className="relative min-h-screen shadow-xl border border-gray-100 overflow-hidden">
-            {/* Image de fond avec opacité réduite */}
+            {/* Image de fond avec opacité réduite - Desktop uniquement */}
             <div
-              className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40"
+              className="hidden lg:block absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40"
               style={{
                 backgroundImage: 'url("/garage3.jpg")',
               }}
@@ -430,41 +473,35 @@ export default function ReservationPage() {
               </div>
 
               {/* Sélection des véhicules */}
-              <div className="flex flex-col lg:flex-row items-center justify-center gap-8 mb-16">
-                {vehicles.map(({ key, label }) => (
+              <div className="relative mb-16 pt-8 pb-8 px-4">
+                {/* Mobile: Carousel avec carte et image */}
+                <div className="lg:hidden relative flex items-center justify-center">
+                  {/* Bouton navigation gauche */}
                   <button
-                    key={key}
-                    onClick={() => handleVehicleChange(key)}
-                    className={`group relative px-10 py-6 rounded-3xl transition-all duration-300 transform hover:scale-105 ${
-                      vehicle === key
-                        ? "bg-cyan-600 text-white shadow-2xl ring-4 ring-cyan-400"
-                        : "bg-white text-gray-800 hover:bg-gray-50 border-2 border-gray-300 shadow-lg"
-                    }`}
-                  >
-                    <span className="font-black text-xl tracking-wide">
-                      {label}
-                    </span>
-                    {vehicle === key && (
-                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center">
-                        <span className="text-cyan-600 text-sm font-black">
-                          ✓
-                        </span>
-                      </div>
-                    )}
-                  </button>
-                ))}
-              </div>
-
-              {/* Carrousel des véhicules */}
-              <div className="flex flex-col items-center relative overflow-hidden">
-                {/* Flèches de navigation - au-dessus sur mobile */}
-                <div className="flex justify-center items-center space-x-4 mb-4 sm:hidden">
-                  <button
-                    onClick={goToPrevious}
-                    className="w-12 h-12 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-700 transition-all duration-300 shadow-lg hover:scale-110"
+                    onClick={() => {
+                      const newIndex =
+                        currentIndex === 0
+                          ? vehicles.length - 1
+                          : currentIndex - 1;
+                      setCurrentIndex(newIndex);
+                      handleVehicleChange(vehicles[newIndex].key);
+                    }}
+                    className="absolute left-0 z-10 w-14 h-14 rounded-full shadow-xl flex items-center justify-center text-gray-700 transition-all duration-300 hover:scale-110"
+                    style={{
+                      backgroundColor: "rgba(255, 255, 255, 0.7)",
+                      backdropFilter: "blur(8px)",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor =
+                        "rgba(255, 255, 255, 0.9)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor =
+                        "rgba(255, 255, 255, 0.7)";
+                    }}
                   >
                     <svg
-                      className="w-6 h-6"
+                      className="w-7 h-7"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -478,12 +515,45 @@ export default function ReservationPage() {
                     </svg>
                   </button>
 
+                  {/* Carte avec bordure cyan */}
+                  <div
+                    className="mx-16 w-full max-w-md bg-white rounded-3xl border-4 border-cyan-500 p-8 transition-all duration-300"
+                    onClick={() =>
+                      handleVehicleChange(vehicles[currentIndex].key)
+                    }
+                  >
+                    {/* Nom du véhicule */}
+                    <h3 className="text-center text-2xl font-bold text-cyan-600">
+                      {vehicles[currentIndex].label}
+                    </h3>
+                  </div>
+
+                  {/* Bouton navigation droite */}
                   <button
-                    onClick={goToNext}
-                    className="w-12 h-12 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-700 transition-all duration-300 shadow-lg hover:scale-110"
+                    onClick={() => {
+                      const newIndex =
+                        currentIndex === vehicles.length - 1
+                          ? 0
+                          : currentIndex + 1;
+                      setCurrentIndex(newIndex);
+                      handleVehicleChange(vehicles[newIndex].key);
+                    }}
+                    className="absolute right-0 z-10 w-14 h-14 rounded-full shadow-xl flex items-center justify-center text-gray-700 transition-all duration-300 hover:scale-110"
+                    style={{
+                      backgroundColor: "rgba(255, 255, 255, 0.7)",
+                      backdropFilter: "blur(8px)",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor =
+                        "rgba(255, 255, 255, 0.9)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor =
+                        "rgba(255, 255, 255, 0.7)";
+                    }}
                   >
                     <svg
-                      className="w-6 h-6"
+                      className="w-7 h-7"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -498,6 +568,36 @@ export default function ReservationPage() {
                   </button>
                 </div>
 
+                {/* Desktop: Layout horizontal */}
+                <div className="hidden lg:flex lg:flex-row items-center justify-center gap-8">
+                  {vehicles.map(({ key, label }) => (
+                    <button
+                      key={key}
+                      onClick={() => handleVehicleChange(key)}
+                      className={`group relative px-10 py-6 rounded-3xl transition-all duration-300 transform hover:scale-105 ${
+                        vehicle === key
+                          ? "bg-cyan-600 text-white shadow-2xl ring-4 ring-cyan-400"
+                          : "bg-white text-gray-800 hover:bg-gray-50 border-2 border-gray-300 shadow-lg"
+                      }`}
+                    >
+                      <span className="font-black text-xl tracking-wide">
+                        {label}
+                      </span>
+                      {vehicle === key && (
+                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center">
+                          <span className="text-cyan-600 text-sm font-black">
+                            ✓
+                          </span>
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Carrousel des véhicules - Desktop uniquement */}
+              <div className="hidden lg:flex lg:flex-col items-center relative overflow-hidden">
+                {/* Flèches de navigation - sur les côtés sur desktop */}
                 <div className="relative w-full max-w-4xl h-[500px] overflow-hidden">
                   {/* Masque de flou gauche - transparent */}
                   <div className="absolute left-0 top-0 w-16 h-full bg-gradient-to-r from-transparent via-transparent to-transparent z-10 pointer-events-none"></div>
@@ -530,7 +630,7 @@ export default function ReservationPage() {
                 {/* Flèches de navigation - sur les côtés sur desktop */}
                 <button
                   onClick={goToPrevious}
-                  className="hidden sm:block absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-700 transition-all duration-300 shadow-lg hover:scale-110 z-20"
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-700 transition-all duration-300 shadow-lg hover:scale-110 z-20"
                 >
                   <svg
                     className="w-6 h-6"
@@ -549,7 +649,7 @@ export default function ReservationPage() {
 
                 <button
                   onClick={goToNext}
-                  className="hidden sm:block absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-700 transition-all duration-300 shadow-lg hover:scale-110 z-20"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-700 transition-all duration-300 shadow-lg hover:scale-110 z-20"
                 >
                   <svg
                     className="w-6 h-6"
@@ -567,14 +667,34 @@ export default function ReservationPage() {
                 </button>
               </div>
 
-              {/* Indicateurs de position */}
+              {/* Bouton Continuer vers les formules */}
+              <div className="flex justify-center mt-8 lg:mt-12 mb-8">
+                <button
+                  onClick={() => {
+                    const section2 =
+                      document.getElementById("section-formules");
+                    if (section2) {
+                      section2.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                      });
+                    }
+                  }}
+                  className="px-8 py-4 bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                >
+                  Continuer vers les formules
+                </button>
+              </div>
             </div>
           </div>
 
           {/* ÉTAPE 2: Choix de la formule détaillée */}
-          <div className="relative min-h-screen bg-gradient-to-br from-white to-gray-50 shadow-xl border border-gray-100">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-              <div className="text-center mb-20">
+          <div
+            id="section-formules"
+            className="relative min-h-screen bg-gradient-to-br from-white to-gray-50 shadow-xl border border-gray-100"
+          >
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-16">
+              <div className="text-center mb-12 lg:mb-20">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-full mb-8 shadow-2xl">
                   <span className="text-white font-black text-2xl">2</span>
                 </div>
@@ -587,104 +707,239 @@ export default function ReservationPage() {
               </div>
 
               {/* Cartes détaillées des formules */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {plans[vehicle].map((plan, idx) => (
+              <div className="relative -mt-4 overflow-visible">
+                {/* Mobile: Carousel horizontal style Apple */}
+                <div
+                  className="lg:hidden overflow-x-auto scrollbar-hide pb-4 pt-6"
+                  style={{
+                    scrollSnapType: "x mandatory",
+                    WebkitOverflowScrolling: "touch",
+                    marginLeft: "-1rem",
+                    marginRight: "-1rem",
+                    overflowY: "visible",
+                  }}
+                >
                   <div
-                    key={plan.label}
-                    className={`relative bg-white border rounded-3xl p-8 hover:shadow-2xl transition-all duration-500 transform hover:scale-105 ${
-                      selectedPlan === plan.label
-                        ? "border-green-300 ring-4 ring-green-200 lg:scale-105 shadow-xl"
-                        : idx === 1
-                        ? "border-cyan-300 ring-4 ring-cyan-200 lg:scale-105 shadow-xl"
-                        : "border-gray-200 hover:border-cyan-300 shadow-lg"
-                    }`}
+                    className="flex gap-6 pl-6 pr-4"
+                    style={{
+                      width: "max-content",
+                    }}
                   >
-                    {selectedPlan === plan.label && (
-                      <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                        <span className="px-3 py-1 text-xs font-semibold text-white bg-cyan-500 rounded-full shadow">
-                          ✓ Sélectionné
-                        </span>
-                      </div>
-                    )}
-                    {idx === 1 && selectedPlan !== plan.label && (
-                      <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                        <span className="px-3 py-1 text-xs font-semibold text-white bg-cyan-500 rounded-full shadow">
-                          Le Plus Populaire
-                        </span>
-                      </div>
-                    )}
-                    <h3 className="text-3xl font-black text-gray-900 mb-6">
-                      {plan.label}
-                    </h3>
-                    <div className="mb-8">
-                      <div className="flex items-baseline space-x-2 mb-4">
-                        <span className="text-5xl font-black text-cyan-500">
-                          {plan.price}€
-                        </span>
-                        <span className="text-xl text-gray-500">/ lavage</span>
-                      </div>
-                      <div className="flex items-center space-x-3 text-gray-500">
-                        <ClockIcon className="w-6 h-6" />
-                        <span className="text-lg font-medium">
-                          {plan.duration}
-                        </span>
-                      </div>
-                    </div>
-                    <ul className="space-y-4 mb-10">
-                      {plan.features.map((feature) => (
-                        <li
-                          key={feature}
-                          className="flex items-center space-x-3"
-                        >
-                          <div className="w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center">
-                            <svg
-                              className="w-4 h-4 text-white"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
+                    {plans[vehicle].map((plan, idx) => (
+                      <div
+                        key={plan.label}
+                        className={`relative bg-white border-4 rounded-3xl p-8 hover:shadow-2xl transition-all duration-500 flex-shrink-0 ${
+                          selectedPlan === plan.label
+                            ? "border-green-300 shadow-xl"
+                            : idx === 1
+                            ? "border-cyan-300 shadow-xl"
+                            : "border-gray-200 shadow-lg"
+                        }`}
+                        style={{
+                          width: "calc(100vw - 4rem)",
+                          maxWidth: "400px",
+                          scrollSnapAlign: "start",
+                          scrollMarginLeft: "1.5rem",
+                          boxSizing: "border-box",
+                        }}
+                      >
+                        {idx === 1 && (
+                          <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
+                            <span className="px-3 py-1 text-xs font-semibold text-white bg-cyan-500 rounded-full shadow-lg">
+                              Le Plus Populaire
+                            </span>
                           </div>
-                          <span className="text-lg text-gray-700 font-medium">
-                            {feature}
+                        )}
+                        <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                          {plan.label}
+                        </h3>
+                        <div className="mb-6">
+                          <div className="flex items-baseline space-x-1 mb-2">
+                            <span className="text-4xl font-bold text-cyan-500">
+                              {plan.price}€
+                            </span>
+                            <span className="text-gray-500">/ lavage</span>
+                          </div>
+                          <div className="flex items-center space-x-2 text-gray-500">
+                            <ClockIcon className="w-5 h-5" />
+                            <span className="text-sm">{plan.duration}</span>
+                          </div>
+                        </div>
+                        <ul className="space-y-3 mb-8">
+                          {plan.features.map((feature) => (
+                            <li
+                              key={feature}
+                              className="flex items-center space-x-3"
+                            >
+                              <div className="w-5 h-5 bg-cyan-500 rounded-full flex items-center justify-center">
+                                <svg
+                                  className="w-3 h-3 text-white"
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              </div>
+                              <span className="text-gray-700">{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        <button
+                          onClick={() => {
+                            if (selectedPlan === plan.label) {
+                              setSelectedPlan(null);
+                            } else {
+                              setSelectedPlan(plan.label);
+                            }
+                          }}
+                          className={`blob-btn w-full inline-block text-center ${
+                            selectedPlan === plan.label
+                              ? "blob-btn--green"
+                              : idx === 1
+                              ? "blob-btn--blue"
+                              : ""
+                          }`}
+                        >
+                          {selectedPlan === plan.label
+                            ? "✓ Formule Sélectionnée"
+                            : "Choisir cette Formule"}
+                          <span className="blob-btn__inner">
+                            <span className="blob-btn__blobs">
+                              <span className="blob-btn__blob"></span>
+                              <span className="blob-btn__blob"></span>
+                              <span className="blob-btn__blob"></span>
+                              <span className="blob-btn__blob"></span>
+                            </span>
                           </span>
-                        </li>
-                      ))}
-                    </ul>
-                    <button
-                      onClick={() => setSelectedPlan(plan.label)}
-                      className={`blob-btn w-full inline-block text-center ${
-                        selectedPlan === plan.label
-                          ? "blob-btn--green"
-                          : idx === 1
-                          ? "blob-btn--blue"
-                          : ""
-                      }`}
-                    >
-                      {selectedPlan === plan.label
-                        ? "✓ Formule Sélectionnée"
-                        : "Choisir cette Formule"}
-                      <span className="blob-btn__inner">
-                        <span className="blob-btn__blobs">
-                          <span className="blob-btn__blob"></span>
-                          <span className="blob-btn__blob"></span>
-                          <span className="blob-btn__blob"></span>
-                          <span className="blob-btn__blob"></span>
-                        </span>
-                      </span>
-                    </button>
+                        </button>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
+
+                {/* Desktop: Grid layout */}
+                <div className="hidden lg:grid lg:grid-cols-3 gap-8">
+                  {plans[vehicle].map((plan, idx) => (
+                    <div
+                      key={plan.label}
+                      className={`relative bg-white border-4 rounded-3xl p-8 hover:shadow-2xl transition-all duration-500 transform hover:scale-105 ${
+                        selectedPlan === plan.label
+                          ? "border-green-300 lg:scale-105 shadow-xl"
+                          : idx === 1
+                          ? "border-cyan-300 lg:scale-105 shadow-xl"
+                          : "border-gray-200 hover:border-cyan-300 shadow-lg"
+                      }`}
+                      style={{
+                        boxSizing: "border-box",
+                      }}
+                    >
+                      {idx === 1 && (
+                        <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                          <span className="px-3 py-1 text-xs font-semibold text-white bg-cyan-500 rounded-full shadow">
+                            Le Plus Populaire
+                          </span>
+                        </div>
+                      )}
+                      <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                        {plan.label}
+                      </h3>
+                      <div className="mb-6">
+                        <div className="flex items-baseline space-x-1 mb-2">
+                          <span className="text-4xl font-bold text-cyan-500">
+                            {plan.price}€
+                          </span>
+                          <span className="text-gray-500">/ lavage</span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-gray-500">
+                          <ClockIcon className="w-5 h-5" />
+                          <span className="text-sm">{plan.duration}</span>
+                        </div>
+                      </div>
+                      <ul className="space-y-3 mb-8">
+                        {plan.features.map((feature) => (
+                          <li
+                            key={feature}
+                            className="flex items-center space-x-3"
+                          >
+                            <div className="w-5 h-5 bg-cyan-500 rounded-full flex items-center justify-center">
+                              <svg
+                                className="w-3 h-3 text-white"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                            <span className="text-gray-700">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <button
+                        onClick={() => {
+                          if (selectedPlan === plan.label) {
+                            setSelectedPlan(null);
+                          } else {
+                            setSelectedPlan(plan.label);
+                          }
+                        }}
+                        className={`blob-btn w-full inline-block text-center ${
+                          selectedPlan === plan.label
+                            ? "blob-btn--green"
+                            : idx === 1
+                            ? "blob-btn--blue"
+                            : ""
+                        }`}
+                      >
+                        {selectedPlan === plan.label
+                          ? "✓ Formule Sélectionnée"
+                          : "Choisir cette Formule"}
+                        <span className="blob-btn__inner">
+                          <span className="blob-btn__blobs">
+                            <span className="blob-btn__blob"></span>
+                            <span className="blob-btn__blob"></span>
+                            <span className="blob-btn__blob"></span>
+                            <span className="blob-btn__blob"></span>
+                          </span>
+                        </span>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Bouton Continuer vers les options */}
+              <div className="flex justify-center mt-8 lg:mt-12 mb-8">
+                <button
+                  onClick={() => {
+                    const section3 = document.getElementById("section-options");
+                    if (section3) {
+                      section3.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                      });
+                    }
+                  }}
+                  className="px-8 py-4 bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                >
+                  Continuer vers les options
+                </button>
               </div>
             </div>
           </div>
 
           {/* ÉTAPE 3: Options supplémentaires */}
-          <div className="relative min-h-screen bg-gradient-to-br from-white to-gray-50 shadow-xl border border-gray-100">
+          <div
+            id="section-options"
+            className="relative min-h-screen bg-gradient-to-br from-white to-gray-50 shadow-xl border border-gray-100"
+          >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
               <div className="text-center mb-20">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-full mb-8 shadow-2xl">
@@ -699,26 +954,229 @@ export default function ReservationPage() {
               </div>
 
               {/* Grille des options */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-                {additionalOptions.map((option) => (
+              <div className="relative overflow-visible">
+                {/* Mobile: Carousel horizontal */}
+                <div
+                  ref={optionsScrollRef}
+                  className="lg:hidden overflow-x-auto scrollbar-hide pb-4 pt-6"
+                  style={{
+                    scrollSnapType: "x mandatory",
+                    WebkitOverflowScrolling: "touch",
+                    overflowY: "visible",
+                  }}
+                >
                   <div
-                    key={option.id}
-                    className={`relative bg-white border rounded-2xl p-6 hover:shadow-xl transition-all duration-300 cursor-pointer ${
-                      selectedOptions.includes(option.id)
-                        ? "border-cyan-500 ring-4 ring-cyan-200 shadow-xl"
-                        : "border-gray-200 hover:border-cyan-300"
-                    }`}
-                    onClick={() => handleOptionToggle(option.id)}
+                    className="flex gap-6"
+                    style={{
+                      width: "max-content",
+                      paddingLeft:
+                        "calc((100vw - min(calc(100vw - 8rem), 300px)) / 2)",
+                      paddingRight:
+                        "calc((100vw - min(calc(100vw - 8rem), 300px)) / 2)",
+                    }}
                   >
-                    {selectedOptions.includes(option.id) && (
-                      <div className="absolute -top-3 -right-3 w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center shadow-lg">
-                        <span className="text-white text-sm font-bold">✓</span>
-                      </div>
-                    )}
+                    {additionalOptions.map((option) => (
+                      <div
+                        key={option.id}
+                        className={`relative bg-white border-4 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 cursor-pointer flex-shrink-0 ${
+                          selectedOptions.includes(option.id)
+                            ? "border-cyan-500 shadow-xl"
+                            : "border-gray-200 hover:border-cyan-300"
+                        }`}
+                        style={{
+                          width: "calc(100vw - 8rem)",
+                          maxWidth: "300px",
+                          scrollSnapAlign: "center",
+                          boxSizing: "border-box",
+                        }}
+                        onClick={() => handleOptionToggle(option.id)}
+                      >
+                        {selectedOptions.includes(option.id) && (
+                          <div className="absolute -top-3 -right-3 w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center shadow-lg z-20">
+                            <span className="text-white text-sm font-bold">
+                              ✓
+                            </span>
+                          </div>
+                        )}
 
-                    <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center"></div>
-                      <div className="flex-1">
+                        <div>
+                          <h3 className="text-xl font-bold text-gray-900 mb-2">
+                            {option.name}
+                          </h3>
+                          <p className="text-gray-600 mb-4 text-sm">
+                            {option.description}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <span className="text-2xl font-bold text-cyan-500">
+                              +{option.price}€
+                            </span>
+                            <div
+                              className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 flex-shrink-0 ${
+                                selectedOptions.includes(option.id)
+                                  ? "border-cyan-500 bg-cyan-500"
+                                  : "border-gray-300"
+                              }`}
+                            >
+                              {selectedOptions.includes(option.id) && (
+                                <svg
+                                  className="w-4 h-4 text-white"
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Boutons de navigation mobile pour les options */}
+                <button
+                  onClick={() => {
+                    const newIndex =
+                      optionsIndex === 0
+                        ? additionalOptions.length - 1
+                        : optionsIndex - 1;
+                    setOptionsIndex(newIndex);
+                    if (optionsScrollRef.current) {
+                      const scrollContainer = optionsScrollRef.current;
+                      const flexContainer = scrollContainer.querySelector(
+                        "div"
+                      ) as HTMLElement;
+                      if (flexContainer) {
+                        const cardElement = flexContainer.children[
+                          newIndex
+                        ] as HTMLElement;
+                        if (cardElement) {
+                          cardElement.scrollIntoView({
+                            behavior: "smooth",
+                            block: "nearest",
+                            inline: "center",
+                          });
+                        }
+                      }
+                    }
+                  }}
+                  className="lg:hidden absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-gray-700 transition-all duration-300 hover:scale-110 z-10"
+                  style={{
+                    marginTop: "0.5rem",
+                    backgroundColor: "rgba(255, 255, 255, 0.7)",
+                    backdropFilter: "blur(8px)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "rgba(255, 255, 255, 0.9)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "rgba(255, 255, 255, 0.7)";
+                  }}
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                </button>
+
+                <button
+                  onClick={() => {
+                    const newIndex =
+                      optionsIndex === additionalOptions.length - 1
+                        ? 0
+                        : optionsIndex + 1;
+                    setOptionsIndex(newIndex);
+                    if (optionsScrollRef.current) {
+                      const scrollContainer = optionsScrollRef.current;
+                      const flexContainer = scrollContainer.querySelector(
+                        "div"
+                      ) as HTMLElement;
+                      if (flexContainer) {
+                        const cardElement = flexContainer.children[
+                          newIndex
+                        ] as HTMLElement;
+                        if (cardElement) {
+                          cardElement.scrollIntoView({
+                            behavior: "smooth",
+                            block: "nearest",
+                            inline: "center",
+                          });
+                        }
+                      }
+                    }
+                  }}
+                  className="lg:hidden absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-gray-700 transition-all duration-300 hover:scale-110 z-10"
+                  style={{
+                    marginTop: "0.5rem",
+                    backgroundColor: "rgba(255, 255, 255, 0.7)",
+                    backdropFilter: "blur(8px)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "rgba(255, 255, 255, 0.9)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "rgba(255, 255, 255, 0.7)";
+                  }}
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </button>
+
+                {/* Desktop: Grid layout */}
+                <div className="hidden lg:flex lg:flex-wrap lg:justify-center gap-6">
+                  {additionalOptions.map((option) => (
+                    <div
+                      key={option.id}
+                      className={`relative bg-white border-4 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 cursor-pointer ${
+                        selectedOptions.includes(option.id)
+                          ? "border-cyan-500 shadow-xl"
+                          : "border-gray-200 hover:border-cyan-300"
+                      }`}
+                      style={{
+                        boxSizing: "border-box",
+                        width: "280px",
+                        maxWidth: "300px",
+                      }}
+                      onClick={() => handleOptionToggle(option.id)}
+                    >
+                      {selectedOptions.includes(option.id) && (
+                        <div className="absolute -top-3 -right-3 w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center shadow-lg z-20">
+                          <span className="text-white text-sm font-bold">
+                            ✓
+                          </span>
+                        </div>
+                      )}
+
+                      <div>
                         <h3 className="text-xl font-bold text-gray-900 mb-2">
                           {option.name}
                         </h3>
@@ -730,7 +1188,7 @@ export default function ReservationPage() {
                             +{option.price}€
                           </span>
                           <div
-                            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 flex-shrink-0 ${
                               selectedOptions.includes(option.id)
                                 ? "border-cyan-500 bg-cyan-500"
                                 : "border-gray-300"
@@ -753,8 +1211,8 @@ export default function ReservationPage() {
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
 
               {/* Résumé des options sélectionnées */}
@@ -784,26 +1242,20 @@ export default function ReservationPage() {
                 </div>
               )}
 
-              {/* Bouton continuer */}
-              <div className="text-center">
+              {/* Bouton Continuer vers la réservation */}
+              <div className="flex justify-center mt-8 lg:mt-12 mb-8">
                 <button
                   onClick={() => {
-                    // Scroll vers l'étape suivante
                     const nextSection =
                       document.querySelector('[data-step="4"]');
-                    nextSection?.scrollIntoView({ behavior: "smooth" });
+                    nextSection?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                    });
                   }}
-                  className="blob-btn inline-block text-center blob-btn--blue"
+                  className="px-8 py-4 bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
                 >
                   Continuer vers la réservation
-                  <span className="blob-btn__inner">
-                    <span className="blob-btn__blobs">
-                      <span className="blob-btn__blob"></span>
-                      <span className="blob-btn__blob"></span>
-                      <span className="blob-btn__blob"></span>
-                      <span className="blob-btn__blob"></span>
-                    </span>
-                  </span>
                 </button>
               </div>
             </div>
@@ -878,26 +1330,28 @@ export default function ReservationPage() {
                   </div>
 
                   {/* Calendrier hebdomadaire */}
-                  <div className="grid grid-cols-3 sm:grid-cols-7 gap-2 sm:gap-4 p-4 sm:p-6 lg:p-8 bg-gray-50 rounded-b-xl min-h-[500px]">
-                    {/* Jours de la semaine */}
-                    {getWeekDays(getWeekStart(currentWeek)).map(
-                      (day, index) => {
+                  <div className="grid grid-cols-3 gap-2 sm:gap-4 p-4 sm:p-6 lg:p-8 bg-gray-50 rounded-b-xl min-h-[500px]">
+                    {/* Jours de la semaine - Filtrer pour afficher seulement dimanche, lundi et mardi */}
+                    {getWeekDays(getWeekStart(currentWeek))
+                      .filter((day) => {
+                        const dayOfWeek = day.getDay();
+                        return (
+                          dayOfWeek === 0 || dayOfWeek === 1 || dayOfWeek === 2
+                        );
+                      })
+                      .map((day, index) => {
                         const dayInfo = {
                           day: day.getDate(),
                           name: day
                             .toLocaleDateString("fr-FR", { weekday: "long" })
                             .toUpperCase(),
-                          available: !isPast(day) && day.getDay() !== 0, // Pas disponible le dimanche et les jours passés
+                          available: !isPast(day), // Disponible si pas dans le passé (inclut aujourd'hui)
                           date: day,
                           isToday: isToday(day),
                         };
+                        const availableSlots = getAvailableTimeSlots(day);
                         return (
-                          <div
-                            key={index}
-                            className={`text-center ${
-                              index >= 3 ? "hidden sm:block" : ""
-                            }`}
-                          >
+                          <div key={index} className="text-center">
                             {/* En-tête du jour */}
                             <div
                               className={`mb-2 sm:mb-4 ${
@@ -938,38 +1392,26 @@ export default function ReservationPage() {
 
                             {/* Créneaux horaires */}
                             <div className="space-y-2 sm:space-y-3">
-                              {!dayInfo.available ? (
-                                <div className="text-gray-400 text-sm sm:text-base lg:text-lg font-medium py-4 sm:py-6 lg:py-8">
-                                  Fermé
-                                </div>
-                              ) : (
-                                timeSlots.map((time) => {
-                                  // Simuler quelques créneaux indisponibles pour certains jours
-                                  const isUnavailable = false; // Vous pouvez ajouter votre logique ici
-
+                              {availableSlots.length > 0 ? (
+                                availableSlots.map((time) => {
                                   return (
                                     <button
                                       key={time}
                                       onClick={() => {
-                                        if (
-                                          !isUnavailable &&
-                                          dayInfo.available
-                                        ) {
+                                        if (dayInfo.available) {
                                           setSelectedDate(
                                             formatDateForAPI(dayInfo.date)
                                           );
                                           setSelectedTime(time);
                                         }
                                       }}
-                                      disabled={
-                                        isUnavailable || !dayInfo.available
-                                      }
+                                      disabled={!dayInfo.available}
                                       className={`w-full py-2 sm:py-3 px-3 sm:px-4 rounded-lg text-sm sm:text-base font-medium transition-all duration-200 ${
                                         selectedDate ===
                                           formatDateForAPI(dayInfo.date) &&
                                         selectedTime === time
                                           ? "bg-cyan-600 text-white shadow-lg"
-                                          : isUnavailable || !dayInfo.available
+                                          : !dayInfo.available
                                           ? "bg-gray-100 text-gray-300 cursor-not-allowed"
                                           : "bg-white text-gray-700 hover:bg-cyan-50 hover:text-cyan-700 border border-gray-200"
                                       }`}
@@ -978,12 +1420,15 @@ export default function ReservationPage() {
                                     </button>
                                   );
                                 })
+                              ) : (
+                                <div className="text-sm sm:text-base text-gray-400 text-center py-2">
+                                  Fermé
+                                </div>
                               )}
                             </div>
                           </div>
                         );
-                      }
-                    )}
+                      })}
                   </div>
 
                   {/* Sélection actuelle */}
@@ -1013,6 +1458,32 @@ export default function ReservationPage() {
                       </div>
                     </div>
                   )}
+
+                  {/* Information sur la réservation le jour même */}
+                  <div className="text-center mt-4 sm:mt-6">
+                    <p className="text-sm sm:text-base text-gray-600">
+                      Réservation le jour même possible jusqu'à 11h
+                    </p>
+                  </div>
+                </div>
+
+                {/* Bouton Continuer vers le récapitulatif */}
+                <div className="flex justify-center mt-8 lg:mt-12 mb-8">
+                  <button
+                    onClick={() => {
+                      const section5 =
+                        document.querySelector('[data-step="5"]');
+                      if (section5) {
+                        section5.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start",
+                        });
+                      }
+                    }}
+                    className="px-8 py-4 bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                  >
+                    Continuer vers le récapitulatif
+                  </button>
                 </div>
               </div>
             </div>
@@ -1021,7 +1492,10 @@ export default function ReservationPage() {
           {/* Avantages */}
 
           {/* ÉTAPE 5: Récapitulatif et Réservation */}
-          <div className="relative min-h-screen bg-gradient-to-br from-white to-gray-50 shadow-xl border border-gray-100">
+          <div
+            className="relative min-h-screen bg-gradient-to-br from-white to-gray-50 shadow-xl border border-gray-100"
+            data-step="5"
+          >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
               <div className="text-center mb-20">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-full mb-8 shadow-2xl">

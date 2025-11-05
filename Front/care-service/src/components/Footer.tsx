@@ -10,7 +10,7 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="text-white" style={{ backgroundColor: "#3f3f3f" }}>
       {/* Section principale */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Première section - Logo et navigation */}
@@ -78,7 +78,7 @@ export default function Footer() {
                   href="/reservation"
                   className="text-gray-300 hover:text-cyan-400 transition-colors"
                 >
-                  Lavage Basic
+                  Nettoyage Basic
                 </Link>
               </li>
               <li>

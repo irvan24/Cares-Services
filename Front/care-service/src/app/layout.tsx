@@ -13,7 +13,7 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Care Service - Lavage Auto Professionnel à Domicile",
   description:
-    "Service de lavage automobile professionnel à domicile. Lavage extérieur, nettoyage intérieur et detailing complet avec produits écologiques.",
+    "Service de lavage automobile professionnel à domicile. Nettoyage extérieur, nettoyage intérieur et detailing complet avec produits écologiques.",
 };
 
 export default function RootLayout({
