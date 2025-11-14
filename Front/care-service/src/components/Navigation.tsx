@@ -262,7 +262,7 @@ export default function Navigation() {
 
             {/* Sidebar */}
             <div
-              className={`fixed top-0 left-0 h-full w-full bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
+              className={`fixed top-0 left-0 h-screen w-full bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${
                 isClosing ? "-translate-x-full" : "translate-x-0"
               }`}
               style={{
@@ -273,7 +273,7 @@ export default function Navigation() {
               }}
             >
               {/* Header */}
-              <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <div className="flex items-center justify-between p-6 border-b border-gray-200 flex-shrink-0">
                 <h2 className="text-xl font-bold text-gray-900">Menu</h2>
                 <button
                   onClick={closeMobileMenu}
@@ -283,25 +283,25 @@ export default function Navigation() {
                 </button>
               </div>
 
-              {/* Navigation links */}
-              <nav className="p-6 space-y-4">
+              {/* Navigation links - prend tout l'espace disponible */}
+              <nav className="flex-1 flex flex-col justify-center p-6 space-y-4">
                 <button
                   onClick={() => handleNavigation("/")}
-                  className="block w-full text-left py-3 px-4 text-gray-700 hover:bg-gray-100 hover:text-cyan-600 rounded-lg transition-colors"
+                  className="block w-full text-left py-4 px-4 text-gray-700 hover:bg-gray-100 hover:text-cyan-600 rounded-lg transition-colors text-lg"
                   disabled={isNavigating}
                 >
                   Accueil
                 </button>
                 <button
                   onClick={() => handleNavigation("/reservation")}
-                  className="block w-full text-left py-3 px-4 text-gray-700 hover:bg-gray-100 hover:text-cyan-600 rounded-lg transition-colors"
+                  className="block w-full text-left py-4 px-4 text-gray-700 hover:bg-gray-100 hover:text-cyan-600 rounded-lg transition-colors text-lg"
                   disabled={isNavigating}
                 >
                   Réservation
                 </button>
                 <button
                   onClick={() => handleNavigation("/boutique")}
-                  className="block w-full text-left py-3 px-4 text-gray-700 hover:bg-gray-100 hover:text-cyan-600 rounded-lg transition-colors"
+                  className="block w-full text-left py-4 px-4 text-gray-700 hover:bg-gray-100 hover:text-cyan-600 rounded-lg transition-colors text-lg"
                   disabled={isNavigating}
                 >
                   Boutique
@@ -309,7 +309,7 @@ export default function Navigation() {
               </nav>
 
               {/* Contact info et déconnexion */}
-              <div className="p-6 border-t border-gray-200 mt-auto space-y-4">
+              <div className="p-6 border-t border-gray-200 flex-shrink-0 space-y-4">
                 <div className="flex items-center space-x-3 w-full py-3 px-4">
                   <svg
                     className="w-5 h-5 text-gray-600 flex-shrink-0"
