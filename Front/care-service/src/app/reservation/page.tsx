@@ -420,7 +420,7 @@ export default function ReservationPage() {
     ],
   };
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-white to-gray-50">
       {/* SVG Filter pour l'animation blob */}
       <svg className="hidden">
         <defs>
@@ -448,7 +448,7 @@ export default function ReservationPage() {
           {/* Titre et Description */}
 
           {/* ÉTAPE 1: Sélection du type de véhicule */}
-          <div className="relative min-h-screen shadow-xl border border-gray-100 overflow-hidden">
+          <div className="relative min-h-screen shadow-xl overflow-hidden bg-gradient-to-br from-white to-gray-50">
             {/* Image de fond avec opacité réduite - Desktop uniquement */}
             <div
               className="hidden lg:block absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40"
@@ -691,7 +691,7 @@ export default function ReservationPage() {
           {/* ÉTAPE 2: Choix de la formule détaillée */}
           <div
             id="section-formules"
-            className="relative min-h-screen bg-gradient-to-br from-white to-gray-50 shadow-xl border border-gray-100"
+            className="relative min-h-screen bg-gradient-to-br from-white to-gray-50 shadow-xl"
           >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-16">
               <div className="text-center mb-12 lg:mb-20">
@@ -938,7 +938,7 @@ export default function ReservationPage() {
           {/* ÉTAPE 3: Options supplémentaires */}
           <div
             id="section-options"
-            className="relative min-h-screen bg-gradient-to-br from-white to-gray-50 shadow-xl border border-gray-100"
+            className="relative min-h-screen bg-gradient-to-br from-white to-gray-50 shadow-xl"
           >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
               <div className="text-center mb-20">
@@ -1263,7 +1263,7 @@ export default function ReservationPage() {
 
           {/* ÉTAPE 4: Sélection de la date et heure */}
           <div
-            className="relative min-h-screen bg-gradient-to-br from-white to-gray-50 shadow-xl border border-gray-100"
+            className="relative min-h-screen bg-gradient-to-br from-white to-gray-50 shadow-xl"
             data-step="4"
           >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -1350,23 +1350,24 @@ export default function ReservationPage() {
                           isToday: isToday(day),
                         };
                         const availableSlots = getAvailableTimeSlots(day);
+                        const formattedDate = formatDateForAPI(dayInfo.date);
+                        const isSelectedDay = selectedDate === formattedDate;
                         return (
                           <div key={index} className="text-center">
                             {/* En-tête du jour */}
                             <div
-                              className={`mb-2 sm:mb-4 ${
-                                selectedDate === formatDateForAPI(dayInfo.date)
-                                  ? "bg-cyan-600 text-white rounded-full w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 mx-auto flex items-center justify-center text-sm sm:text-base lg:text-lg font-bold"
+                              className={`mb-2 sm:mb-4 min-h-[72px] sm:min-h-[84px] px-2 py-1 rounded-2xl flex flex-col items-center justify-center ${
+                                isSelectedDay
+                                  ? "bg-cyan-600 text-white"
                                   : dayInfo.isToday
-                                  ? "bg-yellow-100 text-yellow-800 rounded-full w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 mx-auto flex items-center justify-center text-sm sm:text-base lg:text-lg font-bold"
-                                  : "text-gray-700"
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : "bg-transparent text-gray-700"
                               }`}
                             >
                               <div>
                                 <div
                                   className={`text-lg sm:text-xl lg:text-2xl font-bold ${
-                                    selectedDate ===
-                                    formatDateForAPI(dayInfo.date)
+                                    isSelectedDay
                                       ? "text-white"
                                       : dayInfo.isToday
                                       ? "text-yellow-800"
@@ -1377,8 +1378,7 @@ export default function ReservationPage() {
                                 </div>
                                 <div
                                   className={`text-xs font-medium ${
-                                    selectedDate ===
-                                    formatDateForAPI(dayInfo.date)
+                                    isSelectedDay
                                       ? "text-white"
                                       : dayInfo.isToday
                                       ? "text-yellow-700"
@@ -1399,21 +1399,17 @@ export default function ReservationPage() {
                                       key={time}
                                       onClick={() => {
                                         if (dayInfo.available) {
-                                          setSelectedDate(
-                                            formatDateForAPI(dayInfo.date)
-                                          );
+                                          setSelectedDate(formattedDate);
                                           setSelectedTime(time);
                                         }
                                       }}
                                       disabled={!dayInfo.available}
-                                      className={`w-full py-2 sm:py-3 px-3 sm:px-4 rounded-lg text-sm sm:text-base font-medium transition-all duration-200 ${
-                                        selectedDate ===
-                                          formatDateForAPI(dayInfo.date) &&
-                                        selectedTime === time
-                                          ? "bg-cyan-600 text-white shadow-lg"
+                                      className={`w-full py-2 sm:py-3 px-3 sm:px-4 rounded-lg text-sm sm:text-base font-medium transition-all duration-200 border ${
+                                        isSelectedDay && selectedTime === time
+                                          ? "bg-cyan-600 text-white shadow-lg border-cyan-600"
                                           : !dayInfo.available
-                                          ? "bg-gray-100 text-gray-300 cursor-not-allowed"
-                                          : "bg-white text-gray-700 hover:bg-cyan-50 hover:text-cyan-700 border border-gray-200"
+                                          ? "bg-gray-100 text-gray-300 cursor-not-allowed border-gray-200"
+                                          : "bg-white text-gray-700 hover:bg-cyan-50 hover:text-cyan-700 border-gray-200"
                                       }`}
                                     >
                                       {time}
@@ -1493,7 +1489,7 @@ export default function ReservationPage() {
 
           {/* ÉTAPE 5: Récapitulatif et Réservation */}
           <div
-            className="relative min-h-screen bg-gradient-to-br from-white to-gray-50 shadow-xl border border-gray-100"
+            className="relative min-h-screen bg-gradient-to-br from-white to-gray-50 shadow-xl"
             data-step="5"
           >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -1511,7 +1507,7 @@ export default function ReservationPage() {
 
               <div className="grid lg:grid-cols-2 gap-12">
                 {/* Récapitulatif des choix */}
-                <div className="bg-white rounded-3xl p-8 shadow-2xl border border-gray-100">
+                <div className="bg-white rounded-3xl p-8 shadow-2xl">
                   <h3 className="text-3xl font-black text-gray-900 mb-8 text-center">
                     <div className="flex items-center justify-center space-x-3">
                       <span>Récapitulatif de votre réservation</span>
