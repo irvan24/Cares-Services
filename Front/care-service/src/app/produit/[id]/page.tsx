@@ -95,9 +95,10 @@ async function fetchProduct(productId: number): Promise<{
 export default async function ProductPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const productId = parseInt(params.id);
+  const { id } = await params;
+  const productId = parseInt(id);
 
   if (isNaN(productId)) {
     return (
