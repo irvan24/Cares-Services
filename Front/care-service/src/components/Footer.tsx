@@ -96,14 +96,7 @@ export default function Footer() {
                   Détailing Complet
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/reservation"
-                  className="text-gray-300 hover:text-cyan-400 transition-colors"
-                >
-                  Abonnements
-                </Link>
-              </li>
+             
             </ul>
           </div>
 
@@ -121,14 +114,7 @@ export default function Footer() {
                   À propos
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/team"
-                  className="text-gray-300 hover:text-cyan-400 transition-colors"
-                >
-                  Notre Équipe
-                </Link>
-              </li>
+             
               <li>
                 <Link
                   href="/zones"
@@ -137,14 +123,7 @@ export default function Footer() {
                   Zones de Service
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/careers"
-                  className="text-gray-300 hover:text-cyan-400 transition-colors"
-                >
-                  Carrières
-                </Link>
-              </li>
+              
             </ul>
           </div>
 
@@ -176,14 +155,7 @@ export default function Footer() {
                   FAQ
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/help"
-                  className="text-gray-300 hover:text-cyan-400 transition-colors"
-                >
-                  Centre d'aide
-                </Link>
-              </li>
+             
             </ul>
           </div>
         </div>
@@ -193,17 +165,7 @@ export default function Footer() {
 
         {/* Deuxième section - Horaires, zones et réservation */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          {/* Horaires de service */}
-          <div>
-            <h3 className="text-lg font-semibold text-white mb-4">
-              Horaires de service
-            </h3>
-            <ul className="space-y-2 text-gray-300">
-              <li>Lun-Ven: 7h00 - 19h00</li>
-              <li>Samedi: 8h00 - 18h00</li>
-              <li>Dimanche: 9h00 - 17h00</li>
-            </ul>
-          </div>
+       
 
           {/* Zones de service */}
           <div>
@@ -211,10 +173,7 @@ export default function Footer() {
               Zones de service
             </h3>
             <ul className="space-y-2 text-gray-300">
-              <li>Paris et petite couronne</li>
-              <li>Banlieue Nord</li>
-              <li>Banlieue Sud</li>
-              <li>Dans un rayon de 25 km</li>
+              <li>Ile de France</li>
             </ul>
           </div>
 
