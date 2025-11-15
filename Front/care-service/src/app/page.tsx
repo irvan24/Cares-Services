@@ -1495,18 +1495,13 @@ export default function Home() {
             <div className="relative mb-20">
               <div
                 ref={vehicleScrollRef}
-                className="overflow-x-auto scrollbar-hide pb-4"
+                className="overflow-x-auto scrollbar-hide pb-4 lg:overflow-visible"
                 style={{
                   scrollSnapType: "x mandatory",
                   WebkitOverflowScrolling: "touch",
                 }}
               >
-                <div
-                  className="flex gap-6 px-4"
-                  style={{
-                    width: "max-content",
-                  }}
-                >
+                <div className="flex gap-6 px-4 w-max lg:w-full lg:max-w-5xl lg:mx-auto lg:justify-center lg:px-0">
                   {(
                     [
                       {
@@ -1528,14 +1523,12 @@ export default function Home() {
                         setVehicle(key);
                         setVehicleIndex(index);
                       }}
-                      className={`group relative flex flex-col items-center gap-4 border rounded-2xl px-8 py-8 md:px-12 md:py-10 bg-white transition-all shadow-sm hover:shadow-md flex-shrink-0 ${
+                      className={`group relative flex flex-col items-center gap-4 border rounded-2xl px-8 py-8 md:px-12 md:py-10 bg-white transition-all shadow-sm hover:shadow-md flex-shrink-0 w-[calc(100vw-4rem)] max-w-[380px] lg:w-[320px] lg:max-w-none ${
                         vehicle === key
                           ? "border-cyan-500 ring-2 ring-cyan-200 bg-cyan-50"
                           : "border-gray-200 hover:border-gray-300"
                       }`}
                       style={{
-                        width: "calc(100vw - 4rem)",
-                        maxWidth: "400px",
                         scrollSnapAlign: "start",
                         scrollMarginLeft: "1rem",
                       }}
@@ -1588,7 +1581,7 @@ export default function Home() {
                     }
                   }
                 }}
-                className="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 transition-all duration-300 hover:scale-110 z-10"
+                className="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 transition-all duration-300 hover:scale-110 z-10 lg:hidden"
               >
                 <svg
                   className="w-6 h-6"
@@ -1632,7 +1625,7 @@ export default function Home() {
                     }
                   }
                 }}
-                className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 transition-all duration-300 hover:scale-110 z-10"
+                className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 transition-all duration-300 hover:scale-110 z-10 lg:hidden"
               >
                 <svg
                   className="w-6 h-6"
