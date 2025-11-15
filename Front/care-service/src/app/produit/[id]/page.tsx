@@ -2,9 +2,7 @@ import Navigation from "../../../components/Navigation";
 import Footer from "../../../components/Footer";
 import ProductClient, { Product } from "../../../components/ProductClient";
 
-async function fetchProduct(
-  productId: number
-): Promise<{
+async function fetchProduct(productId: number): Promise<{
   product: Product | null;
   relatedProducts: Product[];
   error: string | null;

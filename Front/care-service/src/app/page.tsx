@@ -22,6 +22,10 @@ export default function Home() {
   const vehicleScrollRef = useRef<HTMLDivElement>(null);
   const [valueIndex, setValueIndex] = useState(0);
   const valueScrollRef = useRef<HTMLDivElement>(null);
+  const [servicesIndex, setServicesIndex] = useState(0);
+  const servicesScrollRef = useRef<HTMLDivElement>(null);
+  const [formulaIndex, setFormulaIndex] = useState(0);
+  const formulaScrollRef = useRef<HTMLDivElement>(null);
 
   // États pour le carousel
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -80,6 +84,11 @@ export default function Home() {
 
     return () => observer.disconnect();
   }, []);
+
+  // Réinitialiser l'index des formules quand le véhicule change
+  useEffect(() => {
+    setFormulaIndex(0);
+  }, [vehicle]);
 
   // Auto-play du carousel
   useEffect(() => {
@@ -519,6 +528,7 @@ export default function Home() {
           <div className="relative">
             {/* Mobile: Carousel horizontal style Apple */}
             <div
+              ref={servicesScrollRef}
               className="lg:hidden overflow-x-auto scrollbar-hide pb-4"
               style={{
                 scrollSnapType: "x mandatory",
@@ -1011,6 +1021,113 @@ export default function Home() {
                   </div>
                 </div>
               </div>
+
+              {/* Boutons de navigation mobile pour les services */}
+              <button
+                onClick={() => {
+                  const newIndex = servicesIndex === 0 ? 2 : servicesIndex - 1;
+                  setServicesIndex(newIndex);
+                  if (servicesScrollRef.current) {
+                    const scrollContainer = servicesScrollRef.current;
+                    const flexContainer = scrollContainer.querySelector(
+                      "div"
+                    ) as HTMLElement;
+                    if (flexContainer) {
+                      const cardElement = flexContainer.children[
+                        newIndex
+                      ] as HTMLElement;
+                      if (cardElement) {
+                        cardElement.scrollIntoView({
+                          behavior: "smooth",
+                          block: "nearest",
+                          inline: "center",
+                        });
+                      }
+                    }
+                  }
+                }}
+                className="lg:hidden absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-gray-700 transition-all duration-300 hover:scale-110 z-10"
+                style={{
+                  marginTop: "0.5rem",
+                  backgroundColor: "rgba(255, 255, 255, 0.7)",
+                  backdropFilter: "blur(8px)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    "rgba(255, 255, 255, 0.9)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    "rgba(255, 255, 255, 0.7)";
+                }}
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </button>
+
+              <button
+                onClick={() => {
+                  const newIndex = servicesIndex === 2 ? 0 : servicesIndex + 1;
+                  setServicesIndex(newIndex);
+                  if (servicesScrollRef.current) {
+                    const scrollContainer = servicesScrollRef.current;
+                    const flexContainer = scrollContainer.querySelector(
+                      "div"
+                    ) as HTMLElement;
+                    if (flexContainer) {
+                      const cardElement = flexContainer.children[
+                        newIndex
+                      ] as HTMLElement;
+                      if (cardElement) {
+                        cardElement.scrollIntoView({
+                          behavior: "smooth",
+                          block: "nearest",
+                          inline: "center",
+                        });
+                      }
+                    }
+                  }
+                }}
+                className="lg:hidden absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-gray-700 transition-all duration-300 hover:scale-110 z-10"
+                style={{
+                  marginTop: "0.5rem",
+                  backgroundColor: "rgba(255, 255, 255, 0.7)",
+                  backdropFilter: "blur(8px)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    "rgba(255, 255, 255, 0.9)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    "rgba(255, 255, 255, 0.7)";
+                }}
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
             </div>
 
             {/* Desktop: Grid layout */}
@@ -1581,7 +1698,20 @@ export default function Home() {
                     }
                   }
                 }}
-                className="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 transition-all duration-300 hover:scale-110 z-10 lg:hidden"
+                className="lg:hidden absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-gray-700 transition-all duration-300 hover:scale-110 z-10"
+                style={{
+                  marginTop: "0.5rem",
+                  backgroundColor: "rgba(255, 255, 255, 0.7)",
+                  backdropFilter: "blur(8px)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    "rgba(255, 255, 255, 0.9)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    "rgba(255, 255, 255, 0.7)";
+                }}
               >
                 <svg
                   className="w-6 h-6"
@@ -1625,7 +1755,20 @@ export default function Home() {
                     }
                   }
                 }}
-                className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 transition-all duration-300 hover:scale-110 z-10 lg:hidden"
+                className="lg:hidden absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-gray-700 transition-all duration-300 hover:scale-110 z-10"
+                style={{
+                  marginTop: "0.5rem",
+                  backgroundColor: "rgba(255, 255, 255, 0.7)",
+                  backdropFilter: "blur(8px)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    "rgba(255, 255, 255, 0.9)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    "rgba(255, 255, 255, 0.7)";
+                }}
               >
                 <svg
                   className="w-6 h-6"
@@ -1647,6 +1790,7 @@ export default function Home() {
             <div className="relative">
               {/* Mobile: Carousel horizontal style Apple */}
               <div
+                ref={formulaScrollRef}
                 className="lg:hidden overflow-x-auto scrollbar-hide pb-4 pt-4"
                 style={{
                   scrollSnapType: "x mandatory",
@@ -1752,6 +1896,113 @@ export default function Home() {
                   ))}
                 </div>
               </div>
+
+              {/* Boutons de navigation mobile pour les formules */}
+              <button
+                onClick={() => {
+                  const newIndex = formulaIndex === 0 ? 2 : formulaIndex - 1;
+                  setFormulaIndex(newIndex);
+                  if (formulaScrollRef.current) {
+                    const scrollContainer = formulaScrollRef.current;
+                    const flexContainer = scrollContainer.querySelector(
+                      "div"
+                    ) as HTMLElement;
+                    if (flexContainer) {
+                      const cardElement = flexContainer.children[
+                        newIndex
+                      ] as HTMLElement;
+                      if (cardElement) {
+                        cardElement.scrollIntoView({
+                          behavior: "smooth",
+                          block: "nearest",
+                          inline: "center",
+                        });
+                      }
+                    }
+                  }
+                }}
+                className="lg:hidden absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-gray-700 transition-all duration-300 hover:scale-110 z-10"
+                style={{
+                  marginTop: "0.5rem",
+                  backgroundColor: "rgba(255, 255, 255, 0.7)",
+                  backdropFilter: "blur(8px)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    "rgba(255, 255, 255, 0.9)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    "rgba(255, 255, 255, 0.7)";
+                }}
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </button>
+
+              <button
+                onClick={() => {
+                  const newIndex = formulaIndex === 2 ? 0 : formulaIndex + 1;
+                  setFormulaIndex(newIndex);
+                  if (formulaScrollRef.current) {
+                    const scrollContainer = formulaScrollRef.current;
+                    const flexContainer = scrollContainer.querySelector(
+                      "div"
+                    ) as HTMLElement;
+                    if (flexContainer) {
+                      const cardElement = flexContainer.children[
+                        newIndex
+                      ] as HTMLElement;
+                      if (cardElement) {
+                        cardElement.scrollIntoView({
+                          behavior: "smooth",
+                          block: "nearest",
+                          inline: "center",
+                        });
+                      }
+                    }
+                  }
+                }}
+                className="lg:hidden absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-gray-700 transition-all duration-300 hover:scale-110 z-10"
+                style={{
+                  marginTop: "0.5rem",
+                  backgroundColor: "rgba(255, 255, 255, 0.7)",
+                  backdropFilter: "blur(8px)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    "rgba(255, 255, 255, 0.9)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    "rgba(255, 255, 255, 0.7)";
+                }}
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
 
               {/* Desktop: Grid layout */}
               <div
@@ -2018,7 +2269,20 @@ export default function Home() {
                   }
                 }
               }}
-              className="lg:hidden absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 transition-all duration-300 hover:scale-110 z-10"
+              className="lg:hidden absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-gray-700 transition-all duration-300 hover:scale-110 z-10"
+              style={{
+                marginTop: "0.5rem",
+                backgroundColor: "rgba(255, 255, 255, 0.7)",
+                backdropFilter: "blur(8px)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor =
+                  "rgba(255, 255, 255, 0.9)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor =
+                  "rgba(255, 255, 255, 0.7)";
+              }}
             >
               <svg
                 className="w-6 h-6"
@@ -2058,7 +2322,20 @@ export default function Home() {
                   }
                 }
               }}
-              className="lg:hidden absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 transition-all duration-300 hover:scale-110 z-10"
+              className="lg:hidden absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-gray-700 transition-all duration-300 hover:scale-110 z-10"
+              style={{
+                marginTop: "0.5rem",
+                backgroundColor: "rgba(255, 255, 255, 0.7)",
+                backdropFilter: "blur(8px)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor =
+                  "rgba(255, 255, 255, 0.9)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor =
+                  "rgba(255, 255, 255, 0.7)";
+              }}
             >
               <svg
                 className="w-6 h-6"
@@ -2185,7 +2462,7 @@ export default function Home() {
       <section id="about" className="py-12 lg:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Titre et Description Centrés */}
-          <div className="text-center mb-8 lg:mb-16">
+          <div className="text-left mb-8 lg:mb-16">
             <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-4 lg:mb-6 flex items-center justify-center gap-3">
               À Propos de nous
             </h2>
@@ -2196,10 +2473,9 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Notre Histoire et Image en 2 colonnes */}
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start mb-8 lg:mb-16">
-            {/* Colonne Gauche - Notre Histoire */}
-            <div className="space-y-4 lg:space-y-6">
+          {/* Notre Histoire */}
+          <div className="mb-8 lg:mb-16">
+            <div className="space-y-4 lg:space-y-6 mb-8 lg:mb-12">
               <h3 className="text-xl lg:text-2xl font-bold text-gray-900">
                 Notre Histoire
               </h3>
@@ -2241,22 +2517,17 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Colonne Droite - Image */}
-            <div className="relative">
-              <div className=" rounded-2xl p-1">
-                <div className="bg-white rounded-2xl p-4 lg:p-6">
-                  {/* Placeholder pour l'image - Remplacez par votre vraie image */}
-                  <div className="relative w-full h-64 lg:h-96 rounded-xl overflow-hidden">
-                    <Image
-                      src="/IMG_4453.JPG"
-                      alt="Care Service - équipe en action"
-                      fill
-                      className="object-cover"
-                      priority
-                    />
-                  </div>
-
-                  {/* Légende de l'image */}
+            {/* Image en pleine largeur */}
+            <div className="relative w-full">
+              <div className="rounded-2xl overflow-hidden">
+                <div className="relative w-full h-64 lg:h-96">
+                  <Image
+                    src="/IMG_4453.JPG"
+                    alt="Care Service - équipe en action"
+                    fill
+                    className="object-cover"
+                    priority
+                  />
                 </div>
               </div>
             </div>

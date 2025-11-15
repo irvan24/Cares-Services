@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Navigation from "../../components/Navigation";
@@ -35,12 +35,14 @@ export default function ReservationPage() {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [optionsIndex, setOptionsIndex] = useState(0);
+  const [formulaIndex, setFormulaIndex] = useState(0);
   const [showCalendly, setShowCalendly] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [currentWeek, setCurrentWeek] = useState<Date>(new Date());
   const vehicleScrollRef = useRef<HTMLDivElement>(null);
   const optionsScrollRef = useRef<HTMLDivElement>(null);
+  const formulaScrollRef = useRef<HTMLDivElement>(null);
   const [clientInfo, setClientInfo] = useState({
     nom: "",
     prenom: "",
@@ -90,6 +92,11 @@ export default function ReservationPage() {
     setCurrentIndex(newIndex);
     setVehicle(newVehicle);
   };
+
+  // Réinitialiser l'index des formules quand le véhicule change
+  useEffect(() => {
+    setFormulaIndex(0);
+  }, [vehicle]);
 
   // Fonction pour navigation avec flèches
   const goToPrevious = () => {
@@ -671,6 +678,7 @@ export default function ReservationPage() {
               <div className="relative -mt-4 overflow-visible">
                 {/* Mobile: Carousel horizontal style Apple */}
                 <div
+                  ref={formulaScrollRef}
                   className="lg:hidden overflow-x-auto scrollbar-hide pb-4 pt-6"
                   style={{
                     scrollSnapType: "x mandatory",
@@ -781,6 +789,113 @@ export default function ReservationPage() {
                     ))}
                   </div>
                 </div>
+
+                {/* Boutons de navigation mobile pour les formules */}
+                <button
+                  onClick={() => {
+                    const newIndex = formulaIndex === 0 ? 2 : formulaIndex - 1;
+                    setFormulaIndex(newIndex);
+                    if (formulaScrollRef.current) {
+                      const scrollContainer = formulaScrollRef.current;
+                      const flexContainer = scrollContainer.querySelector(
+                        "div"
+                      ) as HTMLElement;
+                      if (flexContainer) {
+                        const cardElement = flexContainer.children[
+                          newIndex
+                        ] as HTMLElement;
+                        if (cardElement) {
+                          cardElement.scrollIntoView({
+                            behavior: "smooth",
+                            block: "nearest",
+                            inline: "center",
+                          });
+                        }
+                      }
+                    }
+                  }}
+                  className="lg:hidden absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-gray-700 transition-all duration-300 hover:scale-110 z-10"
+                  style={{
+                    marginTop: "0.5rem",
+                    backgroundColor: "rgba(255, 255, 255, 0.7)",
+                    backdropFilter: "blur(8px)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "rgba(255, 255, 255, 0.9)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "rgba(255, 255, 255, 0.7)";
+                  }}
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                </button>
+
+                <button
+                  onClick={() => {
+                    const newIndex = formulaIndex === 2 ? 0 : formulaIndex + 1;
+                    setFormulaIndex(newIndex);
+                    if (formulaScrollRef.current) {
+                      const scrollContainer = formulaScrollRef.current;
+                      const flexContainer = scrollContainer.querySelector(
+                        "div"
+                      ) as HTMLElement;
+                      if (flexContainer) {
+                        const cardElement = flexContainer.children[
+                          newIndex
+                        ] as HTMLElement;
+                        if (cardElement) {
+                          cardElement.scrollIntoView({
+                            behavior: "smooth",
+                            block: "nearest",
+                            inline: "center",
+                          });
+                        }
+                      }
+                    }
+                  }}
+                  className="lg:hidden absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-gray-700 transition-all duration-300 hover:scale-110 z-10"
+                  style={{
+                    marginTop: "0.5rem",
+                    backgroundColor: "rgba(255, 255, 255, 0.7)",
+                    backdropFilter: "blur(8px)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "rgba(255, 255, 255, 0.9)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "rgba(255, 255, 255, 0.7)";
+                  }}
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </button>
 
                 {/* Desktop: Grid layout */}
                 <div className="hidden lg:grid lg:grid-cols-3 gap-8">
