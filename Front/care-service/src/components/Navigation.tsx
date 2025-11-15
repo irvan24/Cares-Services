@@ -64,7 +64,10 @@ export default function Navigation() {
           }
         }
       `}</style>
-      <header className="text-white" style={{ backgroundColor: "#3f3f3f" }}>
+      <header
+        className="text-white sticky top-0 z-50"
+        style={{ backgroundColor: "#3f3f3f" }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative flex items-center py-4">
             {/* Menu burger sur mobile - À gauche */}
@@ -283,8 +286,8 @@ export default function Navigation() {
                 </button>
               </div>
 
-              {/* Navigation links - prend tout l'espace disponible */}
-              <nav className="flex-1 flex flex-col justify-center p-6 space-y-4">
+              {/* Navigation links */}
+              <nav className="p-6 space-y-4">
                 <button
                   onClick={() => handleNavigation("/")}
                   className="block w-full text-left py-4 px-4 text-gray-700 hover:bg-gray-100 hover:text-cyan-600 rounded-lg transition-colors text-lg"
