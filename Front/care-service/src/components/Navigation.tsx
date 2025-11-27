@@ -69,52 +69,58 @@ export default function Navigation() {
         style={{ backgroundColor: "#3f3f3f" }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative flex items-center py-4">
-            {/* Menu burger sur mobile - À gauche */}
-            <button
-              onClick={() => setShowMobileMenu(true)}
-              className="md:hidden hover:text-cyan-400 transition-colors mr-4"
-            >
-              <Bars3Icon className="w-8 h-8" />
-            </button>
+          <div className="relative flex items-end md:items-center justify-between py-4">
+            {/* Partie gauche : Menu burger (mobile) + Logo */}
+            <div className="flex items-end md:items-center">
+              {/* Menu burger sur mobile - À gauche */}
+              <button
+                onClick={() => setShowMobileMenu(true)}
+                className="md:hidden hover:text-cyan-400 transition-colors mr-4 flex items-end"
+              >
+                <Bars3Icon className="w-8 h-8" />
+              </button>
 
-            {/* Logo */}
-            <div className="flex items-center space-x-2">
+              {/* Logo - Ratio 1.75:1 (3500x2000) */}
               <Link
                 href="/"
-                className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+                className="inline-flex items-end md:items-center hover:opacity-80 transition-opacity"
               >
-                <Image
-                  src="/care.png"
-                  alt="CARE Services"
-                  width={180}
-                  height={60}
-                  className="h-12 w-auto"
-                />
+                <div className="relative h-12 w-[84px] sm:h-14 sm:w-[98px] md:h-16 md:w-[112px]">
+                  <Image
+                    src="/care.png"
+                    alt="CARE Services"
+                    fill
+                    className="object-contain"
+                    priority
+                  />
+                </div>
               </Link>
             </div>
 
-            {/* Navigation - Absolument centrée */}
-            <nav className="hidden md:flex space-x-8 absolute left-1/2 transform -translate-x-1/2">
-              <Link href="/" className="hover:text-cyan-400 transition-colors">
+            {/* Navigation - Absolument centrée (desktop uniquement) */}
+            <nav className="hidden md:flex items-center space-x-8 absolute left-1/2 transform -translate-x-1/2">
+              <Link
+                href="/"
+                className="hover:text-cyan-400 transition-colors flex items-center"
+              >
                 Accueil
               </Link>
               <Link
                 href="/reservation"
-                className="hover:text-cyan-400 transition-colors"
+                className="hover:text-cyan-400 transition-colors flex items-center"
               >
                 Réservation
               </Link>
               <Link
                 href="/boutique"
-                className="hover:text-cyan-400 transition-colors"
+                className="hover:text-cyan-400 transition-colors flex items-center"
               >
                 Boutique
               </Link>
             </nav>
 
-            {/* Contact & CTA */}
-            <div className="flex items-center space-x-4 ml-auto">
+            {/* Partie droite : Contact & CTA */}
+            <div className="flex items-end md:items-center space-x-4">
               <div className="hidden lg:flex items-center space-x-2">
                 <svg
                   className="w-5 h-5"
@@ -135,15 +141,15 @@ export default function Navigation() {
                   href="tel:0123456789"
                   className="hover:text-cyan-400 transition-colors"
                 >
-                  +33 6 75 32 98 76
+                  +33 7 56 87 28 98
                 </a>
               </div>
 
               {/* Panier avec dropdown */}
-              <div className="relative">
+              <div className="relative flex items-end md:items-center">
                 <button
                   onClick={() => setShowCartDropdown(!showCartDropdown)}
-                  className="relative hover:text-cyan-400 transition-colors"
+                  className="relative hover:text-cyan-400 transition-colors flex items-center"
                 >
                   <ShoppingCartIcon className="w-6 h-6" />
                   {cartCount > 0 && (
@@ -332,7 +338,7 @@ export default function Navigation() {
                     href="tel:0123456789"
                     className="text-blue-600 hover:text-blue-700 hover:underline transition-colors font-medium"
                   >
-                    +33 6 75 32 98 76
+                    +33 7 56 87 28 98
                   </a>
                 </div>
 

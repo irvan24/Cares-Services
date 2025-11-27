@@ -2475,22 +2475,27 @@ export default function Home() {
 
           {/* Notre Histoire */}
           <div className="mb-8 lg:mb-16">
-            <div className="space-y-4 lg:space-y-6 mb-8 lg:mb-12">
-              <h3 className="text-xl lg:text-2xl font-bold text-gray-900">
+            {/* Mobile: Texte puis image */}
+            <div className="lg:hidden space-y-4 mb-8">
+              <h3 className="text-xl font-bold text-gray-900">
                 Notre Histoire
               </h3>
+              <p className="text-gray-600 leading-relaxed text-base">
+                Care est né d'une idée simple: le lavage de voiture doit être
+                pratique, professionnel et respectueux de l'environnement.
+                Aujourd'hui, nous apportons un lavage de qualité professionnelle
+                directement à votre porte.
+              </p>
+            </div>
 
-              <div className="space-y-4 lg:space-y-6 text-gray-600 leading-relaxed text-base lg:text-lg">
-                {/* Version mobile réduite */}
-                <p className="lg:hidden">
-                  Care est né d'une idée simple: le lavage de voiture doit être
-                  pratique, professionnel et respectueux de l'environnement.
-                  Aujourd'hui, nous apportons un lavage de qualité
-                  professionnelle directement à votre porte.
-                </p>
-
-                {/* Version desktop complète */}
-                <div className="hidden lg:block space-y-6">
+            {/* Desktop: Grid layout avec texte et image côte à côte */}
+            <div className="hidden lg:grid lg:grid-cols-2 gap-8 lg:gap-12">
+              {/* Colonne texte */}
+              <div className="space-y-6">
+                <h3 className="text-2xl font-bold text-gray-900">
+                  Notre Histoire
+                </h3>
+                <div className="space-y-6 text-gray-600 leading-relaxed text-lg">
                   <p>
                     Care est né d'une idée simple: le lavage de voiture doit
                     être pratique, professionnel et respectueux de
@@ -2515,12 +2520,27 @@ export default function Home() {
                   </p>
                 </div>
               </div>
+
+              {/* Colonne image */}
+              <div className="relative">
+                <div className="rounded-2xl overflow-hidden">
+                  <div className="relative w-full h-96">
+                    <Image
+                      src="/IMG_4453.JPG"
+                      alt="Care Service - équipe en action"
+                      fill
+                      className="object-cover"
+                      priority
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Image en pleine largeur */}
-            <div className="relative w-full">
+            {/* Image mobile en pleine largeur */}
+            <div className="lg:hidden relative w-full">
               <div className="rounded-2xl overflow-hidden">
-                <div className="relative w-full h-64 lg:h-96">
+                <div className="relative w-full h-64">
                   <Image
                     src="/IMG_4453.JPG"
                     alt="Care Service - équipe en action"
@@ -3102,7 +3122,7 @@ export default function Home() {
                   </div>
                   <div>
                     <div className="text-cyan-600 font-medium">
-                      +33 6 75 32 98 76
+                      +33 7 56 87 28 98
                     </div>
                     <div className="text-gray-600">
                       Disponible 7 jours sur 7
@@ -3258,7 +3278,7 @@ export default function Home() {
                         d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                       />
                     </svg>
-                    <span>Appeler : +33 6 75 32 98 76</span>
+                    <span>Appeler : +33 7 56 87 28 98</span>
                   </a>
                 </div>
               </div>
