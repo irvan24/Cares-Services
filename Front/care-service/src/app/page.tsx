@@ -462,12 +462,14 @@ export default function Home() {
                     setTimeout(() => setIsAutoPlaying(true), 1000);
                   }}
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300"
+                  aria-label="Image précédente"
                 >
                   <svg
                     className="w-5 h-5 text-white"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -488,12 +490,14 @@ export default function Home() {
                     setTimeout(() => setIsAutoPlaying(true), 1000);
                   }}
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300"
+                  aria-label="Image suivante"
                 >
                   <svg
                     className="w-5 h-5 text-white"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -1060,12 +1064,14 @@ export default function Home() {
                   e.currentTarget.style.backgroundColor =
                     "rgba(255, 255, 255, 0.7)";
                 }}
+                aria-label="Service précédent"
               >
                 <svg
                   className="w-6 h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -1113,12 +1119,14 @@ export default function Home() {
                   e.currentTarget.style.backgroundColor =
                     "rgba(255, 255, 255, 0.7)";
                 }}
+                aria-label="Service suivant"
               >
                 <svg
                   className="w-6 h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -1712,12 +1720,14 @@ export default function Home() {
                   e.currentTarget.style.backgroundColor =
                     "rgba(255, 255, 255, 0.7)";
                 }}
+                aria-label="Véhicule précédent"
               >
                 <svg
                   className="w-6 h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -1769,12 +1779,14 @@ export default function Home() {
                   e.currentTarget.style.backgroundColor =
                     "rgba(255, 255, 255, 0.7)";
                 }}
+                aria-label="Véhicule suivant"
               >
                 <svg
                   className="w-6 h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -3149,7 +3161,7 @@ export default function Home() {
                   </div>
                   <div>
                     <div className="text-cyan-600 font-medium">
-                      hello@carecarwash.com
+                      contact@servicescare.fr
                     </div>
                     <div className="text-gray-600">
                       Nous répondons sous 2 heures
@@ -3182,11 +3194,9 @@ export default function Home() {
                   </div>
                   <div>
                     <div className="text-gray-900 font-medium">
-                      Centre-ville & Banlieues
+                      Lieux de services
                     </div>
-                    <div className="text-gray-600">
-                      Couverture dans un rayon de 15 miles
-                    </div>
+                    <div className="text-gray-600">Ilê de France</div>
                   </div>
                 </div>
 

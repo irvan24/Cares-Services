@@ -76,6 +76,7 @@ export default function Navigation() {
               <button
                 onClick={() => setShowMobileMenu(true)}
                 className="md:hidden hover:text-cyan-400 transition-colors mr-4 flex items-end"
+                aria-label="Ouvrir le menu"
               >
                 <Bars3Icon className="w-8 h-8" />
               </button>
@@ -150,6 +151,9 @@ export default function Navigation() {
                 <button
                   onClick={() => setShowCartDropdown(!showCartDropdown)}
                   className="relative hover:text-cyan-400 transition-colors flex items-center"
+                  aria-label={`Panier${
+                    cartCount > 0 ? ` (${cartCount} articles)` : ""
+                  }`}
                 >
                   <ShoppingCartIcon className="w-6 h-6" />
                   {cartCount > 0 && (
@@ -176,6 +180,7 @@ export default function Navigation() {
                         <button
                           onClick={() => setShowCartDropdown(false)}
                           className="text-gray-500 hover:text-gray-700"
+                          aria-label="Fermer le panier"
                         >
                           <XMarkIcon className="w-5 h-5" />
                         </button>

@@ -40,14 +40,11 @@ export default function Footer() {
             <div className="space-y-3 mb-6">
               <div className="flex items-center space-x-3">
                 <PhoneIcon className="w-5 h-5 text-cyan-400" />
-                <span className="text-gray-300">+33 7 56 87 28 98
-                </span>
+                <span className="text-gray-300">+33 7 56 87 28 98</span>
               </div>
               <div className="flex items-center space-x-3">
                 <EnvelopeIcon className="w-5 h-5 text-cyan-400" />
-                <span className="text-gray-300">
-                  yohannbeeharry262@gmail.com
-                </span>
+                <span className="text-gray-300">contact@servicescare.fr</span>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPinIcon className="w-5 h-5 text-cyan-400" />
@@ -97,7 +94,6 @@ export default function Footer() {
                   Détailing Complet
                 </Link>
               </li>
-             
             </ul>
           </div>
 
@@ -109,13 +105,13 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="/about"
+                  href="/#about"
                   className="text-gray-300 hover:text-cyan-400 transition-colors"
                 >
                   À propos
                 </Link>
               </li>
-             
+
               <li>
                 <Link
                   href="/zones"
@@ -124,7 +120,6 @@ export default function Footer() {
                   Zones de Service
                 </Link>
               </li>
-              
             </ul>
           </div>
 
@@ -156,7 +151,6 @@ export default function Footer() {
                   FAQ
                 </Link>
               </li>
-             
             </ul>
           </div>
         </div>
@@ -166,8 +160,6 @@ export default function Footer() {
 
         {/* Deuxième section - Horaires, zones et réservation */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-       
-
           {/* Zones de service */}
           <div>
             <h3 className="text-lg font-semibold text-white mb-4">

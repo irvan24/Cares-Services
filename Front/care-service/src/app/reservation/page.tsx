@@ -36,6 +36,7 @@ export default function ReservationPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [optionsIndex, setOptionsIndex] = useState(0);
   const [formulaIndex, setFormulaIndex] = useState(0);
+  const [formulaType, setFormulaType] = useState<"basique" | "premium">("basique");
   const [showCalendly, setShowCalendly] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
@@ -309,119 +310,219 @@ export default function ReservationPage() {
       price: number;
       duration: string;
       features: string[];
+      category: "basique" | "premium";
     }[]
   > = {
     citadine: [
+      // Formules Basiques
       {
-        label: "Nettoyage Basic",
-        price: 25,
+        label: "Intérieur",
+        price: 35,
         duration: "30 min",
+        category: "basique",
         features: [
-          "Nettoyage extérieur à la main",
-          "Nettoyage jantes",
-          "Nettoyage vitres",
-          "Brillant pneus basic",
-          "Séchage serviette",
+          "Aspiration",
+          "Dépoussiérage",
+          "Parties plastiques",
+          "Surfaces vitrées",
         ],
       },
       {
-        label: "Nettoyage Premium",
-        price: 45,
-        duration: "60 min",
+        label: "Extérieur",
+        price: 35,
+        duration: "30 min",
+        category: "basique",
         features: [
-          "Nettoyage extérieur complet",
-          "Aspiration habitacle",
-          "Dépoussiérage tableau de bord",
-          "Nettoyage vitres intérieur/extérieur",
-          "Brillant pneus premium",
+          "Lavage à la main",
+          "Jantes en surface",
+          "Surfaces vitrées",
+          "Séchage",
         ],
       },
       {
-        label: "Détailing Complet",
-        price: 85,
-        duration: "120 min",
+        label: "Duo",
+        price: 55,
+        duration: "50 min",
+        category: "basique",
         features: [
-          "Nettoyage + cire protectrice",
-          "Shampoing sièges/tapis",
-          "Rénovation plastiques",
-          "Désinfection vapeur",
-          "Finition professionnelle",
+          "Intérieur Basique",
+          "Extérieur Basique",
+        ],
+      },
+      // Formules Premium
+      {
+        label: "Intérieur Premium",
+        price: 60,
+        duration: "45 min",
+        category: "premium",
+        features: [
+          "Shampoing moquette / tapis",
+          "Décontamination de l'habitacle",
+          "Traitement plastiques",
+          "Surfaces vitrées",
+        ],
+      },
+      {
+        label: "Extérieur Premium",
+        price: 60,
+        duration: "45 min",
+        category: "premium",
+        features: [
+          "Décontamination des jantes",
+          "Nettoyage des passages des roues",
+          "Cire pour la carrosserie et pneus",
+        ],
+      },
+      {
+        label: "Duo Premium",
+        price: 105,
+        duration: "80 min",
+        category: "premium",
+        features: [
+          "Intérieur Premium",
+          "Extérieur Premium",
         ],
       },
     ],
     berline: [
+      // Formules Basiques
       {
-        label: "Nettoyage Basic",
-        price: 30,
+        label: "Intérieur",
+        price: 40,
         duration: "35 min",
+        category: "basique",
         features: [
-          "Nettoyage extérieur à la main",
-          "Nettoyage jantes",
-          "Nettoyage vitres",
-          "Brillant pneus basic",
-          "Séchage serviette",
+          "Aspiration",
+          "Dépoussiérage",
+          "Parties plastiques",
+          "Surfaces vitrées",
         ],
       },
       {
-        label: "Nettoyage Premium",
-        price: 55,
-        duration: "75 min",
+        label: "Extérieur",
+        price: 40,
+        duration: "35 min",
+        category: "basique",
         features: [
-          "Nettoyage extérieur complet",
-          "Aspiration habitacle",
-          "Dépoussiérage tableau de bord",
-          "Nettoyage vitres intérieur/extérieur",
-          "Brillant pneus premium",
+          "Lavage à la main",
+          "Jantes en surface",
+          "Surfaces vitrées",
+          "Séchage",
         ],
       },
       {
-        label: "Détailing Complet",
-        price: 99,
-        duration: "140 min",
+        label: "Duo",
+        price: 65,
+        duration: "60 min",
+        category: "basique",
         features: [
-          "Lavage + cire protectrice",
-          "Shampoing sièges/tapis",
-          "Rénovation plastiques",
-          "Désinfection vapeur",
-          "Finition professionnelle",
+          "Intérieur Basique",
+          "Extérieur Basique",
+        ],
+      },
+      // Formules Premium
+      {
+        label: "Intérieur Premium",
+        price: 70,
+        duration: "50 min",
+        category: "premium",
+        features: [
+          "Shampoing moquette / tapis",
+          "Décontamination de l'habitacle",
+          "Traitement plastiques",
+          "Surfaces vitrées",
+        ],
+      },
+      {
+        label: "Extérieur Premium",
+        price: 70,
+        duration: "50 min",
+        category: "premium",
+        features: [
+          "Décontamination des jantes",
+          "Nettoyage des passages des roues",
+          "Cire pour la carrosserie et pneus",
+        ],
+      },
+      {
+        label: "Duo Premium",
+        price: 125,
+        duration: "90 min",
+        category: "premium",
+        features: [
+          "Intérieur Premium",
+          "Extérieur Premium",
         ],
       },
     ],
     suv: [
+      // Formules Basiques
       {
-        label: "Nettoyage Basic",
-        price: 35,
+        label: "Intérieur",
+        price: 45,
         duration: "40 min",
+        category: "basique",
         features: [
-          "Nettoyage extérieur à la main",
-          "Nettoyage jantes",
-          "Nettoyage vitres",
-          "Brillant pneus basic",
-          "Séchage serviette",
+          "Aspiration",
+          "Dépoussiérage",
+          "Parties plastiques",
+          "Surfaces vitrées",
         ],
       },
       {
-        label: "Nettoyage Premium",
-        price: 65,
-        duration: "90 min",
+        label: "Extérieur",
+        price: 45,
+        duration: "40 min",
+        category: "basique",
         features: [
-          "Nettoyage extérieur complet",
-          "Aspiration habitacle",
-          "Dépoussiérage tableau de bord",
-          "Nettoyage vitres intérieur/extérieur",
-          "Brillant pneus premium",
+          "Lavage à la main",
+          "Jantes en surface",
+          "Surfaces vitrées",
+          "Séchage",
         ],
       },
       {
-        label: "Détailing Complet",
-        price: 120,
-        duration: "160 min",
+        label: "Duo",
+        price: 75,
+        duration: "70 min",
+        category: "basique",
         features: [
-          "Lavage + cire protectrice",
-          "Shampoing sièges/tapis",
-          "Rénovation plastiques",
-          "Désinfection vapeur",
-          "Finition professionnelle",
+          "Intérieur Basique",
+          "Extérieur Basique",
+        ],
+      },
+      // Formules Premium
+      {
+        label: "Intérieur Premium",
+        price: 80,
+        duration: "55 min",
+        category: "premium",
+        features: [
+          "Shampoing moquette / tapis",
+          "Décontamination de l'habitacle",
+          "Traitement plastiques",
+          "Surfaces vitrées",
+        ],
+      },
+      {
+        label: "Extérieur Premium",
+        price: 80,
+        duration: "55 min",
+        category: "premium",
+        features: [
+          "Décontamination des jantes",
+          "Nettoyage des passages des roues",
+          "Cire pour la carrosserie et pneus",
+        ],
+      },
+      {
+        label: "Duo Premium",
+        price: 145,
+        duration: "100 min",
+        category: "premium",
+        features: [
+          "Intérieur Premium",
+          "Extérieur Premium",
         ],
       },
     ],
@@ -672,6 +773,51 @@ export default function ReservationPage() {
                 <p className="text-lg text-gray-600 max-w-4xl mx-auto leading-relaxed">
                   Sélectionnez la formule qui correspond le mieux à vos besoins
                 </p>
+
+                {/* Toggle Basique / Premium */}
+                <div className="flex justify-center mt-8">
+                  <div className="relative inline-flex items-center bg-gray-100 rounded-full p-1 shadow-inner">
+                    {/* Background slider animé */}
+                    <div
+                      className="absolute h-[calc(100%-8px)] w-[calc(50%-4px)] bg-white rounded-full shadow-md transition-all duration-300 ease-out"
+                      style={{
+                        left: formulaType === "basique" ? "4px" : "calc(50% + 0px)",
+                      }}
+                    />
+                    
+                    {/* Bouton Basique */}
+                    <button
+                      onClick={() => {
+                        setFormulaType("basique");
+                        setFormulaIndex(0);
+                        setSelectedPlan(null);
+                      }}
+                      className={`relative z-10 px-6 py-3 text-sm font-semibold rounded-full transition-colors duration-300 ${
+                        formulaType === "basique"
+                          ? "text-cyan-600"
+                          : "text-gray-500 hover:text-gray-700"
+                      }`}
+                    >
+                      Formules Basiques
+                    </button>
+                    
+                    {/* Bouton Premium */}
+                    <button
+                      onClick={() => {
+                        setFormulaType("premium");
+                        setFormulaIndex(0);
+                        setSelectedPlan(null);
+                      }}
+                      className={`relative z-10 px-6 py-3 text-sm font-semibold rounded-full transition-colors duration-300 ${
+                        formulaType === "premium"
+                          ? "text-cyan-600"
+                          : "text-gray-500 hover:text-gray-700"
+                      }`}
+                    >
+                      Formules Premium
+                    </button>
+                  </div>
+                </div>
               </div>
 
               {/* Cartes détaillées des formules */}
@@ -694,13 +840,15 @@ export default function ReservationPage() {
                       width: "max-content",
                     }}
                   >
-                    {plans[vehicle].map((plan, idx) => (
+                    {plans[vehicle]
+                      .filter((plan) => plan.category === formulaType)
+                      .map((plan, idx) => (
                       <div
                         key={plan.label}
                         className={`relative bg-white border-4 rounded-3xl p-8 hover:shadow-2xl transition-all duration-500 flex-shrink-0 ${
                           selectedPlan === plan.label
                             ? "border-green-300 shadow-xl"
-                            : idx === 1
+                            : (plan.label === "Duo" || plan.label === "Duo Premium")
                             ? "border-cyan-300 shadow-xl"
                             : "border-gray-200 shadow-lg"
                         }`}
@@ -712,7 +860,7 @@ export default function ReservationPage() {
                           boxSizing: "border-box",
                         }}
                       >
-                        {idx === 1 && (
+                        {(plan.label === "Duo" || plan.label === "Duo Premium") && (
                           <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
                             <span className="px-3 py-1 text-xs font-semibold text-white bg-cyan-500 rounded-full shadow-lg">
                               Le Plus Populaire
@@ -768,7 +916,7 @@ export default function ReservationPage() {
                           className={`blob-btn w-full inline-block text-center ${
                             selectedPlan === plan.label
                               ? "blob-btn--green"
-                              : idx === 1
+                              : (plan.label === "Duo" || plan.label === "Duo Premium")
                               ? "blob-btn--blue"
                               : ""
                           }`}
@@ -791,121 +939,133 @@ export default function ReservationPage() {
                 </div>
 
                 {/* Boutons de navigation mobile pour les formules */}
-                <button
-                  onClick={() => {
-                    const newIndex = formulaIndex === 0 ? 2 : formulaIndex - 1;
-                    setFormulaIndex(newIndex);
-                    if (formulaScrollRef.current) {
-                      const scrollContainer = formulaScrollRef.current;
-                      const flexContainer = scrollContainer.querySelector(
-                        "div"
-                      ) as HTMLElement;
-                      if (flexContainer) {
-                        const cardElement = flexContainer.children[
-                          newIndex
-                        ] as HTMLElement;
-                        if (cardElement) {
-                          cardElement.scrollIntoView({
-                            behavior: "smooth",
-                            block: "nearest",
-                            inline: "center",
-                          });
+                {(
+                  <>
+                    <button
+                      onClick={() => {
+                        const maxIndex = 2; // 3 cartes pour basique et premium
+                        const newIndex = formulaIndex === 0 ? maxIndex : formulaIndex - 1;
+                        setFormulaIndex(newIndex);
+                        if (formulaScrollRef.current) {
+                          const scrollContainer = formulaScrollRef.current;
+                          const flexContainer = scrollContainer.querySelector(
+                            "div"
+                          ) as HTMLElement;
+                          if (flexContainer) {
+                            const cardElement = flexContainer.children[
+                              newIndex
+                            ] as HTMLElement;
+                            if (cardElement) {
+                              cardElement.scrollIntoView({
+                                behavior: "smooth",
+                                block: "nearest",
+                                inline: "center",
+                              });
+                            }
+                          }
                         }
-                      }
-                    }
-                  }}
-                  className="lg:hidden absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-gray-700 transition-all duration-300 hover:scale-110 z-10"
-                  style={{
-                    marginTop: "0.5rem",
-                    backgroundColor: "rgba(255, 255, 255, 0.7)",
-                    backdropFilter: "blur(8px)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor =
-                      "rgba(255, 255, 255, 0.9)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor =
-                      "rgba(255, 255, 255, 0.7)";
-                  }}
-                >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 19l-7-7 7-7"
-                    />
-                  </svg>
-                </button>
+                      }}
+                      className="lg:hidden absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-gray-700 transition-all duration-300 hover:scale-110 z-10"
+                      style={{
+                        marginTop: "0.5rem",
+                        backgroundColor: "rgba(255, 255, 255, 0.7)",
+                        backdropFilter: "blur(8px)",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor =
+                          "rgba(255, 255, 255, 0.9)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor =
+                          "rgba(255, 255, 255, 0.7)";
+                      }}
+                      aria-label="Formule précédente"
+                    >
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 19l-7-7 7-7"
+                        />
+                      </svg>
+                    </button>
 
-                <button
-                  onClick={() => {
-                    const newIndex = formulaIndex === 2 ? 0 : formulaIndex + 1;
-                    setFormulaIndex(newIndex);
-                    if (formulaScrollRef.current) {
-                      const scrollContainer = formulaScrollRef.current;
-                      const flexContainer = scrollContainer.querySelector(
-                        "div"
-                      ) as HTMLElement;
-                      if (flexContainer) {
-                        const cardElement = flexContainer.children[
-                          newIndex
-                        ] as HTMLElement;
-                        if (cardElement) {
-                          cardElement.scrollIntoView({
-                            behavior: "smooth",
-                            block: "nearest",
-                            inline: "center",
-                          });
+                    <button
+                      onClick={() => {
+                        const maxIndex = 2; // 3 cartes pour basique et premium
+                        const newIndex = formulaIndex === maxIndex ? 0 : formulaIndex + 1;
+                        setFormulaIndex(newIndex);
+                        if (formulaScrollRef.current) {
+                          const scrollContainer = formulaScrollRef.current;
+                          const flexContainer = scrollContainer.querySelector(
+                            "div"
+                          ) as HTMLElement;
+                          if (flexContainer) {
+                            const cardElement = flexContainer.children[
+                              newIndex
+                            ] as HTMLElement;
+                            if (cardElement) {
+                              cardElement.scrollIntoView({
+                                behavior: "smooth",
+                                block: "nearest",
+                                inline: "center",
+                              });
+                            }
+                          }
                         }
-                      }
-                    }
-                  }}
-                  className="lg:hidden absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-gray-700 transition-all duration-300 hover:scale-110 z-10"
-                  style={{
-                    marginTop: "0.5rem",
-                    backgroundColor: "rgba(255, 255, 255, 0.7)",
-                    backdropFilter: "blur(8px)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor =
-                      "rgba(255, 255, 255, 0.9)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor =
-                      "rgba(255, 255, 255, 0.7)";
-                  }}
-                >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </button>
+                      }}
+                      className="lg:hidden absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-gray-700 transition-all duration-300 hover:scale-110 z-10"
+                      style={{
+                        marginTop: "0.5rem",
+                        backgroundColor: "rgba(255, 255, 255, 0.7)",
+                        backdropFilter: "blur(8px)",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor =
+                          "rgba(255, 255, 255, 0.9)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor =
+                          "rgba(255, 255, 255, 0.7)";
+                      }}
+                      aria-label="Formule suivante"
+                    >
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </button>
+                  </>
+                )}
 
                 {/* Desktop: Grid layout */}
-                <div className="hidden lg:grid lg:grid-cols-3 gap-8">
-                  {plans[vehicle].map((plan, idx) => (
+                <div className="hidden lg:grid lg:grid-cols-3 gap-8 justify-center max-w-5xl mx-auto">
+                  {plans[vehicle]
+                    .filter((plan) => plan.category === formulaType)
+                    .map((plan, idx) => (
                     <div
                       key={plan.label}
                       className={`relative bg-white border-4 rounded-3xl p-8 hover:shadow-2xl transition-all duration-500 transform hover:scale-105 ${
                         selectedPlan === plan.label
                           ? "border-green-300 lg:scale-105 shadow-xl"
-                          : idx === 1
+                          : (plan.label === "Duo" || plan.label === "Duo Premium")
                           ? "border-cyan-300 lg:scale-105 shadow-xl"
                           : "border-gray-200 hover:border-cyan-300 shadow-lg"
                       }`}
@@ -913,7 +1073,7 @@ export default function ReservationPage() {
                         boxSizing: "border-box",
                       }}
                     >
-                      {idx === 1 && (
+                      {(plan.label === "Duo" || plan.label === "Duo Premium") && (
                         <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                           <span className="px-3 py-1 text-xs font-semibold text-white bg-cyan-500 rounded-full shadow">
                             Le Plus Populaire
@@ -969,7 +1129,7 @@ export default function ReservationPage() {
                         className={`blob-btn w-full inline-block text-center ${
                           selectedPlan === plan.label
                             ? "blob-btn--green"
-                            : idx === 1
+                            : (plan.label === "Duo" || plan.label === "Duo Premium")
                             ? "blob-btn--blue"
                             : ""
                         }`}
@@ -1155,12 +1315,14 @@ export default function ReservationPage() {
                     e.currentTarget.style.backgroundColor =
                       "rgba(255, 255, 255, 0.7)";
                   }}
+                  aria-label="Option précédente"
                 >
                   <svg
                     className="w-6 h-6"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -1211,12 +1373,14 @@ export default function ReservationPage() {
                     e.currentTarget.style.backgroundColor =
                       "rgba(255, 255, 255, 0.7)";
                   }}
+                  aria-label="Option suivante"
                 >
                   <svg
                     className="w-6 h-6"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
