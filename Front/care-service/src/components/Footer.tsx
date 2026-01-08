@@ -9,9 +9,12 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="text-white" style={{ backgroundColor: "#3f3f3f" }}>
+    <footer
+      className="text-white relative overflow-hidden"
+      style={{ backgroundColor: "#3f3f3f" }}
+    >
       {/* Section principale */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-2 relative z-10">
         {/* Première section - Logo et navigation */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
           {/* Logo et informations de contact */}
@@ -75,7 +78,7 @@ export default function Footer() {
                   href="/reservation"
                   className="text-gray-300 hover:text-cyan-400 transition-colors"
                 >
-                  Nettoyage Basic
+                  Intèrieur
                 </Link>
               </li>
               <li>
@@ -83,15 +86,7 @@ export default function Footer() {
                   href="/reservation"
                   className="text-gray-300 hover:text-cyan-400 transition-colors"
                 >
-                  Nettoyage Premium
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/reservation"
-                  className="text-gray-300 hover:text-cyan-400 transition-colors"
-                >
-                  Détailing Complet
+                  Extèrieur
                 </Link>
               </li>
             </ul>
@@ -218,6 +213,17 @@ export default function Footer() {
             </Link>
           </div>
         </div>
+      </div>
+
+      {/* Image bulles en dessous du contenu */}
+      <div className="relative w-full h-44 md:h-52">
+        <Image
+          src="/bulles.png"
+          alt=""
+          width={1920}
+          height={200}
+          className="w-full h-full object-cover object-bottom"
+        />
       </div>
     </footer>
   );
