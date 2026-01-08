@@ -2,6 +2,10 @@ import Navigation from "../../../components/Navigation";
 import Footer from "../../../components/Footer";
 import ProductClient, { Product } from "../../../components/ProductClient";
 
+// Force la page à être dynamique pour éviter les timeouts lors du build statique
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function fetchProduct(productId: number): Promise<{
   product: Product | null;
   relatedProducts: Product[];
@@ -10,10 +14,23 @@ async function fetchProduct(productId: number): Promise<{
   try {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3004";
 
-    // Charger le produit spécifique
-    const response = await fetch(`${API_URL}/products/${productId}`, {
-      next: { revalidate: 120 }, // Cache pendant 2 minutes
-    });
+    // Charger le produit spécifique avec timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 secondes max
+
+    let response;
+    try {
+      response = await fetch(`${API_URL}/products/${productId}`, {
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+    } catch (fetchError: any) {
+      clearTimeout(timeoutId);
+      if (fetchError.name === 'AbortError') {
+        throw new Error("Timeout: L'API a pris trop de temps à répondre");
+      }
+      throw fetchError;
+    }
 
     if (!response.ok) {
       return {
@@ -46,9 +63,19 @@ async function fetchProduct(productId: number): Promise<{
     // Charger les produits similaires (même catégorie)
     let relatedProducts: Product[] = [];
     try {
-      const relatedResponse = await fetch(`${API_URL}/products`, {
-        next: { revalidate: 120 },
-      });
+      const relatedController = new AbortController();
+      const relatedTimeoutId = setTimeout(() => relatedController.abort(), 10000);
+      
+      let relatedResponse;
+      try {
+        relatedResponse = await fetch(`${API_URL}/products`, {
+          signal: relatedController.signal,
+        });
+        clearTimeout(relatedTimeoutId);
+      } catch (relatedError: any) {
+        clearTimeout(relatedTimeoutId);
+        throw relatedError;
+      }
 
       if (relatedResponse.ok) {
         const relatedData = await relatedResponse.json();
