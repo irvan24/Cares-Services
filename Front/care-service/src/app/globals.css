@@ -196,6 +196,24 @@ body {
   color: #10b981; /* texte vert quand le blanc recouvre */
 }
 
+/* Variante: bouton sombre avec animation cyan */
+.blob-btn--dark {
+  background: #4a4a4a;
+  color: #ffffff;
+}
+.blob-btn--dark:before {
+  border-color: #4a4a4a;
+}
+.blob-btn--dark .blob-btn__inner {
+  background: #4a4a4a;
+}
+.blob-btn--dark .blob-btn__blob {
+  background: rgb(34 211 238); /* cyan pour l'animation */
+}
+.blob-btn--dark:hover {
+  color: #ffffff;
+}
+
 /* Animations pour les cartes de services */
 @keyframes card-reveal {
   0% {

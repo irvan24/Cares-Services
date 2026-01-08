@@ -1,22 +1,14 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import Navigation from "../../components/Navigation";
 
 import {
   CalendarIcon,
   ClockIcon,
-  MapPinIcon,
-  StarIcon,
   ClipboardDocumentListIcon,
-  CheckCircleIcon,
   TruckIcon,
   SparklesIcon,
-  BellIcon,
-  ArrowRightIcon,
-  HomeIcon,
-  UserGroupIcon,
   SparklesIcon as SparklesIconSolid,
   ShieldCheckIcon,
   EyeIcon,
@@ -36,7 +28,9 @@ export default function ReservationPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [optionsIndex, setOptionsIndex] = useState(0);
   const [formulaIndex, setFormulaIndex] = useState(0);
-  const [formulaType, setFormulaType] = useState<"basique" | "premium">("basique");
+  const [formulaType, setFormulaType] = useState<"basique" | "premium">(
+    "basique"
+  );
   const [showCalendly, setShowCalendly] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
@@ -344,10 +338,7 @@ export default function ReservationPage() {
         price: 55,
         duration: "50 min",
         category: "basique",
-        features: [
-          "Intérieur Basique",
-          "Extérieur Basique",
-        ],
+        features: ["Intérieur Basique", "Extérieur Basique"],
       },
       // Formules Premium
       {
@@ -378,10 +369,7 @@ export default function ReservationPage() {
         price: 105,
         duration: "80 min",
         category: "premium",
-        features: [
-          "Intérieur Premium",
-          "Extérieur Premium",
-        ],
+        features: ["Intérieur Premium", "Extérieur Premium"],
       },
     ],
     berline: [
@@ -415,10 +403,7 @@ export default function ReservationPage() {
         price: 65,
         duration: "60 min",
         category: "basique",
-        features: [
-          "Intérieur Basique",
-          "Extérieur Basique",
-        ],
+        features: ["Intérieur Basique", "Extérieur Basique"],
       },
       // Formules Premium
       {
@@ -449,10 +434,7 @@ export default function ReservationPage() {
         price: 125,
         duration: "90 min",
         category: "premium",
-        features: [
-          "Intérieur Premium",
-          "Extérieur Premium",
-        ],
+        features: ["Intérieur Premium", "Extérieur Premium"],
       },
     ],
     suv: [
@@ -486,10 +468,7 @@ export default function ReservationPage() {
         price: 75,
         duration: "70 min",
         category: "basique",
-        features: [
-          "Intérieur Basique",
-          "Extérieur Basique",
-        ],
+        features: ["Intérieur Basique", "Extérieur Basique"],
       },
       // Formules Premium
       {
@@ -520,10 +499,7 @@ export default function ReservationPage() {
         price: 145,
         duration: "100 min",
         category: "premium",
-        features: [
-          "Intérieur Premium",
-          "Extérieur Premium",
-        ],
+        features: ["Intérieur Premium", "Extérieur Premium"],
       },
     ],
   };
@@ -781,10 +757,11 @@ export default function ReservationPage() {
                     <div
                       className="absolute h-[calc(100%-8px)] w-[calc(50%-4px)] bg-white rounded-full shadow-md transition-all duration-300 ease-out"
                       style={{
-                        left: formulaType === "basique" ? "4px" : "calc(50% + 0px)",
+                        left:
+                          formulaType === "basique" ? "4px" : "calc(50% + 0px)",
                       }}
                     />
-                    
+
                     {/* Bouton Basique */}
                     <button
                       onClick={() => {
@@ -800,7 +777,7 @@ export default function ReservationPage() {
                     >
                       Formules Basiques
                     </button>
-                    
+
                     {/* Bouton Premium */}
                     <button
                       onClick={() => {
@@ -843,108 +820,112 @@ export default function ReservationPage() {
                     {plans[vehicle]
                       .filter((plan) => plan.category === formulaType)
                       .map((plan, idx) => (
-                      <div
-                        key={plan.label}
-                        className={`relative bg-white border-4 rounded-3xl p-8 hover:shadow-2xl transition-all duration-500 flex-shrink-0 ${
-                          selectedPlan === plan.label
-                            ? "border-green-300 shadow-xl"
-                            : (plan.label === "Duo" || plan.label === "Duo Premium")
-                            ? "border-cyan-300 shadow-xl"
-                            : "border-gray-200 shadow-lg"
-                        }`}
-                        style={{
-                          width: "calc(100vw - 4rem)",
-                          maxWidth: "400px",
-                          scrollSnapAlign: "start",
-                          scrollMarginLeft: "1.5rem",
-                          boxSizing: "border-box",
-                        }}
-                      >
-                        {(plan.label === "Duo" || plan.label === "Duo Premium") && (
-                          <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
-                            <span className="px-3 py-1 text-xs font-semibold text-white bg-cyan-500 rounded-full shadow-lg">
-                              Le Plus Populaire
-                            </span>
-                          </div>
-                        )}
-                        <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                          {plan.label}
-                        </h3>
-                        <div className="mb-6">
-                          <div className="flex items-baseline space-x-1 mb-2">
-                            <span className="text-4xl font-bold text-cyan-500">
-                              {plan.price}€
-                            </span>
-                            <span className="text-gray-500">/ lavage</span>
-                          </div>
-                          <div className="flex items-center space-x-2 text-gray-500">
-                            <ClockIcon className="w-5 h-5" />
-                            <span className="text-sm">{plan.duration}</span>
-                          </div>
-                        </div>
-                        <ul className="space-y-3 mb-8">
-                          {plan.features.map((feature) => (
-                            <li
-                              key={feature}
-                              className="flex items-center space-x-3"
-                            >
-                              <div className="w-5 h-5 bg-cyan-500 rounded-full flex items-center justify-center">
-                                <svg
-                                  className="w-3 h-3 text-white"
-                                  fill="currentColor"
-                                  viewBox="0 0 20 20"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clipRule="evenodd"
-                                  />
-                                </svg>
-                              </div>
-                              <span className="text-gray-700">{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
-                        <button
-                          onClick={() => {
-                            if (selectedPlan === plan.label) {
-                              setSelectedPlan(null);
-                            } else {
-                              setSelectedPlan(plan.label);
-                            }
-                          }}
-                          className={`blob-btn w-full inline-block text-center ${
+                        <div
+                          key={plan.label}
+                          className={`relative bg-white border-4 rounded-3xl p-8 hover:shadow-2xl transition-all duration-500 flex-shrink-0 ${
                             selectedPlan === plan.label
-                              ? "blob-btn--green"
-                              : (plan.label === "Duo" || plan.label === "Duo Premium")
-                              ? "blob-btn--blue"
-                              : ""
+                              ? "border-green-300 shadow-xl"
+                              : plan.label === "Duo" ||
+                                plan.label === "Duo Premium"
+                              ? "border-cyan-300 shadow-xl"
+                              : "border-gray-200 shadow-lg"
                           }`}
+                          style={{
+                            width: "calc(100vw - 4rem)",
+                            maxWidth: "400px",
+                            scrollSnapAlign: "start",
+                            scrollMarginLeft: "1.5rem",
+                            boxSizing: "border-box",
+                          }}
                         >
-                          {selectedPlan === plan.label
-                            ? "✓ Formule Sélectionnée"
-                            : "Choisir cette Formule"}
-                          <span className="blob-btn__inner">
-                            <span className="blob-btn__blobs">
-                              <span className="blob-btn__blob"></span>
-                              <span className="blob-btn__blob"></span>
-                              <span className="blob-btn__blob"></span>
-                              <span className="blob-btn__blob"></span>
+                          {(plan.label === "Duo" ||
+                            plan.label === "Duo Premium") && (
+                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
+                              <span className="px-3 py-1 text-xs font-semibold text-white bg-cyan-500 rounded-full shadow-lg">
+                                Le Plus Populaire
+                              </span>
+                            </div>
+                          )}
+                          <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                            {plan.label}
+                          </h3>
+                          <div className="mb-6">
+                            <div className="flex items-baseline space-x-1 mb-2">
+                              <span className="text-4xl font-bold text-cyan-500">
+                                {plan.price}€
+                              </span>
+                              <span className="text-gray-500">/ lavage</span>
+                            </div>
+                            <div className="flex items-center space-x-2 text-gray-500">
+                              <ClockIcon className="w-5 h-5" />
+                              <span className="text-sm">{plan.duration}</span>
+                            </div>
+                          </div>
+                          <ul className="space-y-3 mb-8">
+                            {plan.features.map((feature) => (
+                              <li
+                                key={feature}
+                                className="flex items-center space-x-3"
+                              >
+                                <div className="w-5 h-5 bg-cyan-500 rounded-full flex items-center justify-center">
+                                  <svg
+                                    className="w-3 h-3 text-white"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path
+                                      fillRule="evenodd"
+                                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                      clipRule="evenodd"
+                                    />
+                                  </svg>
+                                </div>
+                                <span className="text-gray-700">{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+                          <button
+                            onClick={() => {
+                              if (selectedPlan === plan.label) {
+                                setSelectedPlan(null);
+                              } else {
+                                setSelectedPlan(plan.label);
+                              }
+                            }}
+                            className={`blob-btn w-full inline-block text-center ${
+                              selectedPlan === plan.label
+                                ? "blob-btn--green"
+                                : plan.label === "Duo" ||
+                                  plan.label === "Duo Premium"
+                                ? "blob-btn--blue"
+                                : ""
+                            }`}
+                          >
+                            {selectedPlan === plan.label
+                              ? "✓ Formule Sélectionnée"
+                              : "Choisir cette Formule"}
+                            <span className="blob-btn__inner">
+                              <span className="blob-btn__blobs">
+                                <span className="blob-btn__blob"></span>
+                                <span className="blob-btn__blob"></span>
+                                <span className="blob-btn__blob"></span>
+                                <span className="blob-btn__blob"></span>
+                              </span>
                             </span>
-                          </span>
-                        </button>
-                      </div>
-                    ))}
+                          </button>
+                        </div>
+                      ))}
                   </div>
                 </div>
 
                 {/* Boutons de navigation mobile pour les formules */}
-                {(
+                {
                   <>
                     <button
                       onClick={() => {
                         const maxIndex = 2; // 3 cartes pour basique et premium
-                        const newIndex = formulaIndex === 0 ? maxIndex : formulaIndex - 1;
+                        const newIndex =
+                          formulaIndex === 0 ? maxIndex : formulaIndex - 1;
                         setFormulaIndex(newIndex);
                         if (formulaScrollRef.current) {
                           const scrollContainer = formulaScrollRef.current;
@@ -1000,7 +981,8 @@ export default function ReservationPage() {
                     <button
                       onClick={() => {
                         const maxIndex = 2; // 3 cartes pour basique et premium
-                        const newIndex = formulaIndex === maxIndex ? 0 : formulaIndex + 1;
+                        const newIndex =
+                          formulaIndex === maxIndex ? 0 : formulaIndex + 1;
                         setFormulaIndex(newIndex);
                         if (formulaScrollRef.current) {
                           const scrollContainer = formulaScrollRef.current;
@@ -1053,101 +1035,104 @@ export default function ReservationPage() {
                       </svg>
                     </button>
                   </>
-                )}
+                }
 
                 {/* Desktop: Grid layout */}
                 <div className="hidden lg:grid lg:grid-cols-3 gap-8 justify-center max-w-5xl mx-auto">
                   {plans[vehicle]
                     .filter((plan) => plan.category === formulaType)
                     .map((plan, idx) => (
-                    <div
-                      key={plan.label}
-                      className={`relative bg-white border-4 rounded-3xl p-8 hover:shadow-2xl transition-all duration-500 transform hover:scale-105 ${
-                        selectedPlan === plan.label
-                          ? "border-green-300 lg:scale-105 shadow-xl"
-                          : (plan.label === "Duo" || plan.label === "Duo Premium")
-                          ? "border-cyan-300 lg:scale-105 shadow-xl"
-                          : "border-gray-200 hover:border-cyan-300 shadow-lg"
-                      }`}
-                      style={{
-                        boxSizing: "border-box",
-                      }}
-                    >
-                      {(plan.label === "Duo" || plan.label === "Duo Premium") && (
-                        <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                          <span className="px-3 py-1 text-xs font-semibold text-white bg-cyan-500 rounded-full shadow">
-                            Le Plus Populaire
-                          </span>
-                        </div>
-                      )}
-                      <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                        {plan.label}
-                      </h3>
-                      <div className="mb-6">
-                        <div className="flex items-baseline space-x-1 mb-2">
-                          <span className="text-4xl font-bold text-cyan-500">
-                            {plan.price}€
-                          </span>
-                          <span className="text-gray-500">/ lavage</span>
-                        </div>
-                        <div className="flex items-center space-x-2 text-gray-500">
-                          <ClockIcon className="w-5 h-5" />
-                          <span className="text-sm">{plan.duration}</span>
-                        </div>
-                      </div>
-                      <ul className="space-y-3 mb-8">
-                        {plan.features.map((feature) => (
-                          <li
-                            key={feature}
-                            className="flex items-center space-x-3"
-                          >
-                            <div className="w-5 h-5 bg-cyan-500 rounded-full flex items-center justify-center">
-                              <svg
-                                className="w-3 h-3 text-white"
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                              >
-                                <path
-                                  fillRule="evenodd"
-                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
-                            </div>
-                            <span className="text-gray-700">{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <button
-                        onClick={() => {
-                          if (selectedPlan === plan.label) {
-                            setSelectedPlan(null);
-                          } else {
-                            setSelectedPlan(plan.label);
-                          }
-                        }}
-                        className={`blob-btn w-full inline-block text-center ${
+                      <div
+                        key={plan.label}
+                        className={`relative bg-white border-4 rounded-3xl p-8 hover:shadow-2xl transition-all duration-500 transform hover:scale-105 ${
                           selectedPlan === plan.label
-                            ? "blob-btn--green"
-                            : (plan.label === "Duo" || plan.label === "Duo Premium")
-                            ? "blob-btn--blue"
-                            : ""
+                            ? "border-green-300 lg:scale-105 shadow-xl"
+                            : plan.label === "Duo" ||
+                              plan.label === "Duo Premium"
+                            ? "border-cyan-300 lg:scale-105 shadow-xl"
+                            : "border-gray-200 hover:border-cyan-300 shadow-lg"
                         }`}
+                        style={{
+                          boxSizing: "border-box",
+                        }}
                       >
-                        {selectedPlan === plan.label
-                          ? "✓ Formule Sélectionnée"
-                          : "Choisir cette Formule"}
-                        <span className="blob-btn__inner">
-                          <span className="blob-btn__blobs">
-                            <span className="blob-btn__blob"></span>
-                            <span className="blob-btn__blob"></span>
-                            <span className="blob-btn__blob"></span>
-                            <span className="blob-btn__blob"></span>
+                        {(plan.label === "Duo" ||
+                          plan.label === "Duo Premium") && (
+                          <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                            <span className="px-3 py-1 text-xs font-semibold text-white bg-cyan-500 rounded-full shadow">
+                              Le Plus Populaire
+                            </span>
+                          </div>
+                        )}
+                        <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                          {plan.label}
+                        </h3>
+                        <div className="mb-6">
+                          <div className="flex items-baseline space-x-1 mb-2">
+                            <span className="text-4xl font-bold text-cyan-500">
+                              {plan.price}€
+                            </span>
+                            <span className="text-gray-500">/ lavage</span>
+                          </div>
+                          <div className="flex items-center space-x-2 text-gray-500">
+                            <ClockIcon className="w-5 h-5" />
+                            <span className="text-sm">{plan.duration}</span>
+                          </div>
+                        </div>
+                        <ul className="space-y-3 mb-8">
+                          {plan.features.map((feature) => (
+                            <li
+                              key={feature}
+                              className="flex items-center space-x-3"
+                            >
+                              <div className="w-5 h-5 bg-cyan-500 rounded-full flex items-center justify-center">
+                                <svg
+                                  className="w-3 h-3 text-white"
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              </div>
+                              <span className="text-gray-700">{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        <button
+                          onClick={() => {
+                            if (selectedPlan === plan.label) {
+                              setSelectedPlan(null);
+                            } else {
+                              setSelectedPlan(plan.label);
+                            }
+                          }}
+                          className={`blob-btn w-full inline-block text-center ${
+                            selectedPlan === plan.label
+                              ? "blob-btn--green"
+                              : plan.label === "Duo" ||
+                                plan.label === "Duo Premium"
+                              ? "blob-btn--blue"
+                              : ""
+                          }`}
+                        >
+                          {selectedPlan === plan.label
+                            ? "✓ Formule Sélectionnée"
+                            : "Choisir cette Formule"}
+                          <span className="blob-btn__inner">
+                            <span className="blob-btn__blobs">
+                              <span className="blob-btn__blob"></span>
+                              <span className="blob-btn__blob"></span>
+                              <span className="blob-btn__blob"></span>
+                              <span className="blob-btn__blob"></span>
+                            </span>
                           </span>
-                        </span>
-                      </button>
-                    </div>
-                  ))}
+                        </button>
+                      </div>
+                    ))}
                 </div>
               </div>
 

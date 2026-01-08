@@ -231,290 +231,215 @@ export default function Home() {
     <div className="min-h-screen bg-white">
       <Navigation />
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen py-16 lg:py-20">
-        {/* Mobile Layout - Structure Apple */}
-        <div className="lg:hidden flex flex-col items-center justify-center min-h-screen space-y-12">
-          {/* Text Content - Centered */}
-          <div className="flex flex-col items-center text-center space-y-8 max-w-md">
-            <h1 className="text-5xl font-bold leading-none">
-              <span className="text-gray-800">Lavage Auto</span>
-              <br />
-              <span className="text-cyan-500">Professionnel</span>
-              <br />
-              <span className="text-emerald-400">À Domicile</span>
-            </h1>
-            <p className="text-xl text-gray-600 leading-relaxed">
-              Service rapide qui vient chez vous. Votre voiture impeccable sans
-              quitter votre domicile.
-            </p>
-
-            {/* CTA Buttons - Centered */}
-            <div className="flex flex-col gap-4 w-full max-w-sm pt-4">
-              <Link
-                href="/reservation"
-                className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-4 px-8 rounded-full transition-colors text-lg text-center"
-              >
-                Réserver
-              </Link>
-              <Link
-                href="#services"
-                className="w-full border-2 border-cyan-500 text-cyan-500 hover:bg-cyan-500 hover:text-white font-semibold py-4 px-8 rounded-full transition-colors text-lg text-center"
-              >
-                En savoir plus
-              </Link>
-            </div>
-          </div>
-
-          {/* Image - Full Width Below */}
-          <div className="w-full aspect-[4/5] relative mt-8">
-            <Image
-              src={carouselImages[0].src}
-              alt={carouselImages[0].alt}
-              fill
-              className="object-cover rounded-3xl"
-              priority
-            />
-          </div>
+      {/* Hero Section - New Design */}
+      <section className="relative min-h-[70vh] flex items-start justify-center overflow-hidden px-4 pt-6 pb-16 bg-white">
+        <style jsx>{`
+          @keyframes float {
+            0%,
+            100% {
+              transform: translateY(0px) translateX(0px);
+            }
+            25% {
+              transform: translateY(-20px) translateX(10px);
+            }
+            50% {
+              transform: translateY(-10px) translateX(-5px);
+            }
+            75% {
+              transform: translateY(-15px) translateX(5px);
+            }
+          }
+          .float-1 {
+            animation: float 6s ease-in-out infinite;
+          }
+          .float-2 {
+            animation: float 8s ease-in-out infinite;
+            animation-delay: -1s;
+          }
+          .float-3 {
+            animation: float 7s ease-in-out infinite;
+            animation-delay: -2s;
+          }
+          .float-4 {
+            animation: float 9s ease-in-out infinite;
+            animation-delay: -0.5s;
+          }
+        `}</style>
+        {/* Bulles décoratives SVG */}
+        <div className="absolute top-12 left-10 md:left-20 w-32 h-32 md:w-48 md:h-48 opacity-60 float-1">
+          <Image
+            src="/bulle.svg"
+            alt=""
+            width={190}
+            height={183}
+            className="w-full h-full"
+          />
+        </div>
+        <div className="absolute top-20 right-10 md:right-32 w-24 h-24 md:w-40 md:h-40 opacity-60 float-2">
+          <Image
+            src="/bulle.svg"
+            alt=""
+            width={190}
+            height={183}
+            className="w-full h-full"
+          />
+        </div>
+        <div className="absolute bottom-24 left-20 md:left-40 w-20 h-20 md:w-32 md:h-32 opacity-40 float-3">
+          <Image
+            src="/bulle.svg"
+            alt=""
+            width={190}
+            height={183}
+            className="w-full h-full"
+          />
+        </div>
+        <div className="absolute bottom-12 right-10 md:right-20 w-28 h-28 md:w-44 md:h-44 opacity-50 float-4">
+          <Image
+            src="/bulle.svg"
+            alt=""
+            width={190}
+            height={183}
+            className="w-full h-full"
+          />
         </div>
 
-        {/* Desktop Layout - Original */}
-        <div className="hidden lg:grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left Content */}
-          <div className="space-y-12 [&>*:last-child]:mb-0">
-            {/* Main Heading */}
-            <div className="space-y-6 text-center lg:text-left">
-              <h1 className="text-5xl lg:text-6xl font-bold leading-none">
-                <span className="text-gray-800">Lavage Auto</span>
-                <br />
-                <span className="text-cyan-500">Professionnel</span>
-                <br />
-                <span className="text-emerald-400">À Domicile</span>
-              </h1>
-              <p className="text-xl text-gray-600 leading-relaxed">
-                Service rapide, professionnel et pratique de lavage automobile
-                qui vient chez vous ou au bureau. Gardez votre voiture
-                impeccable sans quitter votre allée.
-              </p>
-            </div>
+        {/* Contenu centré avec halo bleu */}
+        <div className="relative z-10 text-center max-w-4xl mx-auto mt-24">
+          {/* Halo bleu très subtil */}
+          <div className="absolute inset-0 -z-10 blur-3xl opacity-20">
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-2xl max-h-96 bg-cyan-400 rounded-full"></div>
+          </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 leading-tight mb-8">
+            <span className="whitespace-nowrap">Lavage Auto Professionnel</span>
+            <br />À Domicile
+          </h1>
 
-            {/* Features */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <div className="flex items-center space-x-3 justify-center lg:justify-start">
-                <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <CalendarIcon className="w-6 h-6 text-cyan-600" />
-                </div>
-                <span className="text-gray-700 font-medium">
-                  Réservation en 2 minutes
-                </span>
-              </div>
-              <div className="flex items-center space-x-3 justify-center lg:justify-start">
-                <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <MapPinIcon className="w-6 h-6 text-cyan-600" />
-                </div>
-                <span className="text-gray-700 font-medium">
-                  Nous venons chez vous
-                </span>
-              </div>
-              <div className="flex items-center space-x-3 justify-center lg:justify-start">
-                <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <StarIcon className="w-6 h-6 text-cyan-600" />
-                </div>
-                <span className="text-gray-700 font-medium">
-                  Service 5 étoiles
-                </span>
-              </div>
-            </div>
+          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-12 leading-relaxed">
+            Service rapide, professionnel et pratique de lavage automobile qui
+            vient chez vous ou au bureau. Gardez votre voiture impeccable sans
+            quitter votre allée.
+          </p>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-2 justify-center lg:justify-start items-center lg:items-start">
-              <Link
-                href="/reservation"
-                className="blob-btn blob-btn--blue inline-flex items-center justify-center border-2 border-cyan-500 px-8 py-4 text-lg w-4/5"
-              >
-                <span className="flex items-center justify-center">
-                  <span>Réserver un Lavage</span>
-                  <ArrowRightIcon className="w-5 h-5 ml-2" />
+          {/* Boutons CTA avec animation blob */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link
+              href="/reservation"
+              className="blob-btn blob-btn--dark inline-flex items-center justify-center px-8 py-4 text-lg min-w-[200px]"
+            >
+              <span className="flex items-center justify-center">
+                Réserver maintenant
+              </span>
+              <span className="blob-btn__inner">
+                <span className="blob-btn__blobs">
+                  <span className="blob-btn__blob"></span>
+                  <span className="blob-btn__blob"></span>
+                  <span className="blob-btn__blob"></span>
+                  <span className="blob-btn__blob"></span>
                 </span>
-                <span className="blob-btn__inner">
-                  <span className="blob-btn__blobs">
-                    <span className="blob-btn__blob"></span>
-                    <span className="blob-btn__blob"></span>
-                    <span className="blob-btn__blob"></span>
-                    <span className="blob-btn__blob"></span>
-                  </span>
+              </span>
+            </Link>
+            <Link
+              href="#services"
+              className="blob-btn inline-flex items-center justify-center px-8 py-4 text-lg min-w-[200px]"
+            >
+              <span className="flex items-center justify-center">
+                Nos services
+              </span>
+              <span className="blob-btn__inner">
+                <span className="blob-btn__blobs">
+                  <span className="blob-btn__blob"></span>
+                  <span className="blob-btn__blob"></span>
+                  <span className="blob-btn__blob"></span>
+                  <span className="blob-btn__blob"></span>
                 </span>
-              </Link>
-
-              <Link
-                href="#services"
-                className="blob-btn inline-flex items-center justify-center w-4/5"
-              >
-                Voir nos Services
-                <span className="blob-btn__inner">
-                  <span className="blob-btn__blobs">
-                    <span className="blob-btn__blob"></span>
-                    <span className="blob-btn__blob"></span>
-                    <span className="blob-btn__blob"></span>
-                    <span className="blob-btn__blob"></span>
-                  </span>
-                </span>
-              </Link>
-            </div>
-
-            {/* Statistics Section - Left side with separator line */}
-            <div className="pt-12 border-t border-gray-200">
-              <div className="grid grid-cols-3 gap-6">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-cyan-500 mb-1">
-                    500+
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    Clients Satisfaits
-                  </div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-cyan-500 mb-1">
-                    4.9
-                  </div>
-                  <div className="text-sm text-gray-600">Note Moyenne</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-cyan-500 mb-1">
-                    7j/7
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    Service Disponible
-                  </div>
-                </div>
-              </div>
-            </div>
+              </span>
+            </Link>
           </div>
 
-          {/* Right Content - Carousel */}
-          <div className="relative">
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-              {/* Carousel Container */}
-              <div className="w-full h-[400px] lg:h-[600px] xl:h-[700px] relative">
-                {/* Images du carousel */}
-                {carouselImages.map((image, index) => (
-                  <div
-                    key={index}
-                    className={`absolute inset-0 transition-opacity duration-1000 ${
-                      index === currentImageIndex ? "opacity-100" : "opacity-0"
-                    }`}
-                  >
-                    <Image
-                      src={image.src}
-                      alt={image.alt}
-                      fill
-                      className="object-cover"
-                      priority={index === 0}
-                    />
-                  </div>
-                ))}
-
-                {/* Badge dynamique */}
-                <div className="absolute bottom-4 left-4 bg-white rounded-lg p-4 shadow-lg transition-all duration-500">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center">
-                      <StarIcon className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-800">
-                        {carouselImages[currentImageIndex].badge.title}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {carouselImages[currentImageIndex].badge.subtitle}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Indicateurs de navigation */}
-                <div className="absolute bottom-4 right-4 flex space-x-2">
-                  {carouselImages.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => {
-                        setCurrentImageIndex(index);
-                        setIsAutoPlaying(false);
-                        setTimeout(() => setIsAutoPlaying(true), 1000);
-                      }}
-                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                        index === currentImageIndex
-                          ? "bg-white"
-                          : "bg-white/50 hover:bg-white/75"
-                      }`}
-                    />
-                  ))}
-                </div>
-
-                {/* Boutons de navigation */}
-                <button
-                  onClick={() => {
-                    setCurrentImageIndex(
-                      currentImageIndex === 0
-                        ? carouselImages.length - 1
-                        : currentImageIndex - 1
-                    );
-                    setIsAutoPlaying(false);
-                    setTimeout(() => setIsAutoPlaying(true), 1000);
-                  }}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300"
-                  aria-label="Image précédente"
-                >
-                  <svg
-                    className="w-5 h-5 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 19l-7-7 7-7"
-                    />
-                  </svg>
-                </button>
-                <button
-                  onClick={() => {
-                    setCurrentImageIndex(
-                      currentImageIndex === carouselImages.length - 1
-                        ? 0
-                        : currentImageIndex + 1
-                    );
-                    setIsAutoPlaying(false);
-                    setTimeout(() => setIsAutoPlaying(true), 1000);
-                  }}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300"
-                  aria-label="Image suivante"
-                >
-                  <svg
-                    className="w-5 h-5 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </button>
+          {/* Features */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-12">
+            <div className="flex items-center justify-center space-x-3">
+              <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <CalendarIcon className="w-6 h-6 text-cyan-600" />
               </div>
+              <span className="text-gray-700 font-medium">
+                Réservation en 2 minutes
+              </span>
+            </div>
+            <div className="flex items-center justify-center space-x-3">
+              <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <MapPinIcon className="w-6 h-6 text-cyan-600" />
+              </div>
+              <span className="text-gray-700 font-medium">
+                Nous venons chez vous
+              </span>
+            </div>
+            <div className="flex items-center justify-center space-x-3">
+              <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <StarIcon className="w-6 h-6 text-cyan-600" />
+              </div>
+              <span className="text-gray-700 font-medium">
+                Service 5 étoiles
+              </span>
             </div>
           </div>
         </div>
-      </main>
+      </section>
+
+      {/* Section Media - Galerie photos */}
+      <section className="bg-white pt-8 pb-16 px-4 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          {/* Grille de photos */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            {/* Photo 1 - Grande */}
+            <div className="md:col-span-2 relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-lg group">
+              <Image
+                src="/img_ceo.jpg"
+                alt="Service de lavage auto professionnel"
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            </div>
+
+            {/* Photo 2 */}
+            <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-lg group">
+              <Image
+                src="/img_mercedes.jpg"
+                alt="Nettoyage extérieur avec mousse"
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            </div>
+
+            {/* Photo 3 */}
+            <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-lg group">
+              <Image
+                src="/IMG_4460.JPG"
+                alt="Nettoyage intérieur professionnel"
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            </div>
+
+            {/* Photo 4 - Grande */}
+            <div className="md:col-span-2 relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-lg group">
+              <Image
+                src="/IMG_4453.JPG"
+                alt="Détailing automobile"
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Section Nos Services */}
-      <section id="services" className="py-20 bg-gray-50 lg:bg-gray-50">
+      <section id="services" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Titre et Description */}
           <div className="text-center mb-16">
@@ -2517,11 +2442,11 @@ export default function Home() {
                   </p>
 
                   <p>
-                    En 2021, nous avons commencé avec une camionnette et une
-                    vision de révolutionner les soins automobiles. Aujourd'hui,
-                    nous sommes fiers de servir des centaines de clients
-                    satisfaits dans toute la ville, en apportant un lavage de
-                    voiture de qualité professionnelle directement à leur porte.
+                    Nous avons commencé avec une camionnette et une vision de
+                    révolutionner les soins automobiles. Aujourd'hui, nous
+                    sommes fiers de servir des centaines de clients satisfaits
+                    dans toute la ville, en apportant un lavage de voiture de
+                    qualité professionnelle directement à leur porte.
                   </p>
 
                   <p>
@@ -2868,12 +2793,6 @@ export default function Home() {
             </div>
 
             {/* Statistique 4 */}
-            <div className="text-center">
-              <div className="text-4xl font-bold text-cyan-500 mb-2">3</div>
-              <div className="text-gray-700 font-medium">
-                Années d'Expérience
-              </div>
-            </div>
           </div>
         </div>
       </section>
